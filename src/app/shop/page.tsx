@@ -1,7 +1,5 @@
 "use client";
 
-
-export const dynamic = "force-dynamic";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
@@ -41,7 +39,7 @@ function useProducts(): Product[] {
   return items;
 }
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const initialCat = searchParams.get("category") as ProductCategory | null;
 
@@ -113,5 +111,24 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function ShopFallback() {
+  return (
+    <div className="page-padding py-14 md:py-20">
+      <div className="mb-12">
+        <h1 className="section-title">Shop All</h1>
+      </div>
+      <p className="text-smoke text-sm">Loading products...</p>
+    </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<ShopFallback />}>
+      <ShopContent />
+    </Suspense>
   );
 }
