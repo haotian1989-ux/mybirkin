@@ -116,7 +116,7 @@ export default function AdminPanel() {
     { type: "telegram", label: "Telegram", url: "https://t.me/mybirkin" },
   ]);
 
-  const stores: Record<Tab, any> = { leathers, colors, hardwares, silhouettes, artisans, contact: contacts };
+  const stores: Record<Tab, any> = { leathers, colors, hardware: hardwares, silhouettes, artisans, contact: contacts };
 
   if (activeTab === "contact") {
     return (
