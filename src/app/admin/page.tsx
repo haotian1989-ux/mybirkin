@@ -169,7 +169,7 @@ function HomepageEditor() {
   const [msg, setMsg] = useState("");
 
   if (!hero.loaded || !sections.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
-  const saveAll = async () => { await hero.save(hero.value); await sections.save(sections.value); setMsg("已保存！"); setTimeout(() => setMsg(""), 2000); };
+  const saveAll = async () => { await hero.save(hero.value); await sections.save(sections.items); setMsg("已保存！"); setTimeout(() => setMsg(""), 2000); };
   return (
     <div className="max-w-2xl">
       <h2 className="font-serif text-lg mb-1">主图区域</h2>
