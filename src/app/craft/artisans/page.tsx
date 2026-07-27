@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const artisans = [
-  { name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\"The first cut sets the tone for everything. I read the hide — its grain, its stretch, its soul — before I ever pick up the knife.\"", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face" },
-  { name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\"A saddle stitch cannot be faked by a machine. Each stitch is a conversation between the awl, the thread, and my hands. That's what makes it last a lifetime.\"", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop&crop=face" },
-  { name: "Paolo Conti", role: "Edge & Finish Specialist", years: 18, quote: "\"The edge is where true quality reveals itself. I apply six layers of edge paint, sanding between each one. It takes a full day per bag.\"", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face" },
-  { name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\"Setting the hardware is the final act. Everything must align perfectly — the clasp, the strap anchors, the feet. One misalignment and the whole piece is off.\"", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face" },
+  { name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\(quote\)The first cut sets the tone for everything. I read the hide — its grain, its stretch, its soul — before I ever pick up the knife.\(quote\)", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face" },
+  { name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\(quote\)A saddle stitch cannot be faked by a machine. Each stitch is a conversation between the awl, the thread, and my hands. That's what makes it last a lifetime.\(quote\)", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop&crop=face" },
+  { name: "Paolo Conti", role: "Edge & Finish Specialist", years: 18, quote: "\(quote\)The edge is where true quality reveals itself. I apply six layers of edge paint, sanding between each one. It takes a full day per bag.\(quote\)", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face" },
+  { name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\(quote\)Setting the hardware is the final act. Everything must align perfectly — the clasp, the strap anchors, the feet. One misalignment and the whole piece is off.\(quote\)", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face" },
 ];
 
 export default function ArtisansPage() {

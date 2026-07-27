@@ -105,10 +105,10 @@ export default function AdminPanel() {
   ]);
 
   const artisans = useStore<ArtisanItem>("myb_admin_artisans", [
-    { id: "marco", name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\"I read the hide before I cut.\"", image: "" },
-    { id: "elena", name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\"Each stitch is a conversation.\"", image: "" },
-    { id: "paolo", name: "Paolo Conti", role: "Edge & Finish Master", years: 18, quote: "\"The edge reveals quality.\"", image: "" },
-    { id: "sofia", name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\"Everything must align.\"", image: "" },
+    { id: "marco", name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\(quote\)I read the hide before I cut.\(quote\)", image: "" },
+    { id: "elena", name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\(quote\)Each stitch is a conversation.\(quote\)", image: "" },
+    { id: "paolo", name: "Paolo Conti", role: "Edge & Finish Master", years: 18, quote: "\(quote\)The edge reveals quality.\(quote\)", image: "" },
+    { id: "sofia", name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\(quote\)Everything must align.\(quote\)", image: "" },
   ]);
 
   const contacts = useStore<ContactLink>("myb_contact_links", [

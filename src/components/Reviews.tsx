@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
+import { utcNow, relativeTime, formatLocal, normalizeTime } from "@/lib/time";
 
 interface Review {
   id: string;
@@ -9,7 +10,7 @@ interface Review {
   author: string;
   rating: number;
   content: string;
-  date: string;
+  date: string; // ISO 8601 UTC
 }
 
 const STORAGE_KEY = "mybirkin_reviews";
@@ -17,23 +18,32 @@ const STORAGE_KEY = "mybirkin_reviews";
 function loadReviews(): Review[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-  } catch { return []; }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed: Review[] = JSON.parse(raw);
+    // 迁移旧数据：将纯日期转为 ISO
+    return parsed.map((r) => ({
+      ...r,
+      date: normalizeTime(r.date),
+    }));
+  } catch {
+    return [];
+  }
 }
 
 function saveReviews(reviews: Review[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
 }
 
-// Pre-seeded reviews
+// 预置种子评论
 const seedReviews: Review[] = [
-  { id: "seed-1", productId: "hb-001", author: "Sophie L.", rating: 5, content: "The Mirage Tote exceeded every expectation. The leather is buttery soft and the craftsmanship is immediately apparent. I've had it for three months and it only gets better with age.", date: "2024-12-15" },
-  { id: "seed-2", productId: "hb-001", author: "Amara K.", rating: 5, content: "Worth every penny. The hand-stitching is flawless and the suede interior feels incredibly luxurious. I chose Cognac and the patina is developing beautifully.", date: "2024-11-28" },
-  { id: "seed-3", productId: "hb-001", author: "Claire V.", rating: 4, content: "Gorgeous bag. The only reason I'm not giving 5 stars is that I wish the shoulder strap was slightly wider for heavier loads. Otherwise, perfection.", date: "2024-10-09" },
-  { id: "seed-4", productId: "pt-001", author: "Marcus T.", rating: 5, content: "My Doberman has never looked more distinguished. The collar is substantial without being heavy, and the brass hardware has a wonderful weight to it.", date: "2024-12-01" },
-  { id: "seed-5", productId: "pt-001", author: "Yuki H.", rating: 5, content: "Finally, a luxury dog collar that doesn't compromise on quality. The hot-stamped initials were the perfect touch.", date: "2024-11-15" },
-  { id: "seed-6", productId: "hb-004", author: "David R.", rating: 5, content: "The Nomad Backpack is the most refined backpack I've ever owned. The bridle leather straps are a work of art. Fits my 16-inch MacBook perfectly.", date: "2024-12-20" },
-  { id: "seed-7", productId: "hb-002", author: "Isabella M.", rating: 5, content: "The Serpentine Clutch was the star of my gala. So many compliments. The wave edge is incredibly elegant in person.", date: "2024-11-05" },
+  { id: "seed-1", productId: "hb-001", author: "Sophie L.", rating: 5, content: "The Mirage Tote exceeded every expectation. The leather is buttery soft and the craftsmanship is immediately apparent. I've had it for three months and it only gets better with age.", date: "2024-12-15T10:30:00.000Z" },
+  { id: "seed-2", productId: "hb-001", author: "Amara K.", rating: 5, content: "Worth every penny. The hand-stitching is flawless and the suede interior feels incredibly luxurious. I chose Cognac and the patina is developing beautifully.", date: "2024-11-28T14:00:00.000Z" },
+  { id: "seed-3", productId: "hb-001", author: "Claire V.", rating: 4, content: "Gorgeous bag. The only reason I'm not giving 5 stars is that I wish the shoulder strap was slightly wider for heavier loads. Otherwise, perfection.", date: "2024-10-09T08:15:00.000Z" },
+  { id: "seed-4", productId: "pt-001", author: "Marcus T.", rating: 5, content: "My Doberman has never looked more distinguished. The collar is substantial without being heavy, and the brass hardware has a wonderful weight to it.", date: "2024-12-01T16:45:00.000Z" },
+  { id: "seed-5", productId: "pt-001", author: "Yuki H.", rating: 5, content: "Finally, a luxury dog collar that doesn't compromise on quality. The hot-stamped initials were the perfect touch.", date: "2024-11-15T09:00:00.000Z" },
+  { id: "seed-6", productId: "hb-004", author: "David R.", rating: 5, content: "The Nomad Backpack is the most refined backpack I've ever owned. The bridle leather straps are a work of art. Fits my 16-inch MacBook perfectly.", date: "2024-12-20T11:20:00.000Z" },
+  { id: "seed-7", productId: "hb-002", author: "Isabella M.", rating: 5, content: "The Serpentine Clutch was the star of my gala. So many compliments. The wave edge is incredibly elegant in person.", date: "2024-11-05T18:30:00.000Z" },
 ];
 
 if (typeof window !== "undefined") {
@@ -53,7 +63,6 @@ export default function Reviews({ productId, productName }: { productId: string;
 
   useEffect(() => {
     const all = loadReviews();
-    // Merge seeds if not present
     const ids = new Set(all.map((r) => r.id));
     const missing = seedReviews.filter((s) => !ids.has(s.id));
     if (missing.length > 0) {
@@ -66,9 +75,10 @@ export default function Reviews({ productId, productName }: { productId: string;
   }, [productId]);
 
   const productReviews = reviews;
-  const avgRating = productReviews.length > 0
-    ? (productReviews.reduce((s, r) => s + r.rating, 0) / productReviews.length).toFixed(1)
-    : "0.0";
+  const avgRating =
+    productReviews.length > 0
+      ? (productReviews.reduce((s, r) => s + r.rating, 0) / productReviews.length).toFixed(1)
+      : "0.0";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +89,7 @@ export default function Reviews({ productId, productName }: { productId: string;
       author: author.trim() || "Anonymous",
       rating,
       content: content.trim(),
-      date: new Date().toISOString().split("T")[0],
+      date: utcNow(), // ✅ 统一使用 UTC ISO 时间戳
     };
     saveReviews([newReview, ...all]);
     setReviews([newReview, ...reviews]);
@@ -100,12 +110,15 @@ export default function Reviews({ productId, productName }: { productId: string;
                 <Star
                   key={s}
                   size={14}
-                  className={s <= Math.round(Number(avgRating)) ? "fill-gold text-gold" : "text-border"}
+                  className={
+                    s <= Math.round(Number(avgRating)) ? "fill-gold text-gold" : "text-border"
+                  }
                 />
               ))}
             </div>
             <span className="text-sm text-smoke">
-              {avgRating} · {productReviews.length} review{productReviews.length !== 1 ? "s" : ""}
+              {avgRating} · {productReviews.length} review
+              {productReviews.length !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
@@ -114,12 +127,15 @@ export default function Reviews({ productId, productName }: { productId: string;
         </button>
       </div>
 
-      {/* Review form */}
       {showForm && (
         <form onSubmit={submit} className="bg-ivory/30 p-8 mb-10 space-y-5">
-          <h3 className="text-sm tracking-label uppercase text-smoke/60">Share Your Experience</h3>
+          <h3 className="text-sm tracking-label uppercase text-smoke/60">
+            Share Your Experience
+          </h3>
           <div>
-            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">Rating</label>
+            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">
+              Rating
+            </label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((s) => (
                 <button
@@ -131,38 +147,68 @@ export default function Reviews({ productId, productName }: { productId: string;
                 >
                   <Star
                     size={20}
-                    className={s <= (hoverStar || rating) ? "fill-gold text-gold" : "text-border"}
+                    className={
+                      s <= (hoverStar || rating) ? "fill-gold text-gold" : "text-border"
+                    }
                   />
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">Your Name</label>
-            <input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="How should we address you?" className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">
+              Your Name
+            </label>
+            <input
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="How should we address you?"
+              className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal"
+            />
           </div>
           <div>
-            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">Your Review</label>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} required rows={4} placeholder="Tell us about your experience with {productName}..." className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal resize-none" />
+            <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">
+              Your Review
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+              rows={4}
+              placeholder={`Tell us about your experience with ${productName}...`}
+              className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal resize-none"
+            />
           </div>
-          <button type="submit" className="btn-primary">Submit Review</button>
+          <button type="submit" className="btn-primary">
+            Submit Review
+          </button>
         </form>
       )}
 
-      {/* Reviews list */}
       <div className="space-y-8">
         {productReviews.length === 0 && !showForm && (
-          <p className="text-smoke text-sm">No reviews yet. Be the first to share your experience.</p>
+          <p className="text-smoke text-sm">
+            No reviews yet. Be the first to share your experience.
+          </p>
         )}
         {productReviews.map((r) => (
-          <div key={r.id} className="pb-8 border-b border-line last:border-0">
+          <div
+            key={r.id}
+            className="pb-8 border-b border-line last:border-0"
+          >
             <div className="flex items-center gap-2 mb-2">
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} size={12} className={s <= r.rating ? "fill-gold text-gold" : "text-border"} />
+                  <Star
+                    key={s}
+                    size={12}
+                    className={s <= r.rating ? "fill-gold text-gold" : "text-border"}
+                  />
                 ))}
               </div>
-              <span className="text-xs text-smoke/60">{r.date}</span>
+              <span className="text-xs text-smoke/60" title={formatLocal(r.date)}>
+                {relativeTime(r.date)}
+              </span>
             </div>
             <p className="text-sm text-smoke leading-relaxed mb-2">{r.content}</p>
             <p className="text-xs text-smoke/50">— {r.author}</p>
