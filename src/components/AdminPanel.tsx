@@ -274,6 +274,7 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: Tab; item?: any; onSav
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">纹理</label><select value={form.grain || ""} onChange={(e) => update("grain", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal bg-paper"><option value="">请选择</option><option value="smooth">光滑</option><option value="pebbled">荔枝纹</option><option value="textured">压纹</option><option value="matte">哑光</option></select></div>
           <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">特性</label><input value={form.characteristics || ""} onChange={(e) => update("characteristics", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">适合</label><input value={form.bestFor || ""} onChange={(e) => update("bestFor", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">皮料图片</label><ImageUploader value={form.image || ""} onChange={(url) => update("image", url)} /></div>
         </>)}
         {tab === "colors" && (<>
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名称</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
@@ -290,11 +291,13 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: Tab; item?: any; onSav
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">基础价格</label><input type="number" value={form.basePrice || 0} onChange={(e) => update("basePrice", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">尺寸</label><input value={form.dimensions || ""} onChange={(e) => update("dimensions", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label><input value={form.desc || ""} onChange={(e) => update("desc", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">款型图片</label><ImageUploader value={form.image || ""} onChange={(url) => update("image", url)} /></div>
         </>)}
         {tab === "artisans" && (<>
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">职位</label><input value={form.role || ""} onChange={(e) => update("role", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
           <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">工龄</label><input type="number" value={form.years || 0} onChange={(e) => update("years", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名言</label><input value={form.quote || ""} onChange={(e) => update("quote", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">工匠头像</label><ImageUploader value={form.image || ""} onChange={(url) => update("image", url)} /></div>
         </>)}
       </div>
       <div className="flex gap-2">

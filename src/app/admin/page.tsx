@@ -131,7 +131,32 @@ function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">材质</label><input value={form.materials} onChange={(e) => upd("materials", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">尺寸</label><input value={form.dimensions} onChange={(e) => upd("dimensions", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">颜色（逗号分隔）</label><input value={form.colors.join(", ")} onChange={(e) => upd("colors", e.target.value.split(",").map((s) => s.trim()).filter(Boolean))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">图片链接（每行一个）</label><textarea value={form.images.join("\n")} onChange={(e) => upd("images", e.target.value.split("\n").filter(Boolean))} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-mono text-xs" /></div>
+          <div className="col-span-2">
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-2">产品图片</label>
+            <div className="flex flex-wrap gap-3 mb-2">
+              {form.images.map((img, i) => (
+                <ImageUploader
+                  key={i}
+                  value={img}
+                  onChange={(url) => {
+                    const imgs = [...form.images];
+                    if (url) imgs[i] = url;
+                    else { imgs.splice(i, 1); if (imgs.length === 0) imgs.push(""); }
+                    upd("images", imgs);
+                  }}
+                />
+              ))}
+              {form.images.length < 12 && (
+                <button
+                  type="button"
+                  onClick={() => upd("images", [...form.images, ""])}
+                  className="flex items-center gap-1 border border-dashed border-line px-3 py-2 text-[10px] text-smoke/50 hover:text-smoke hover:border-smoke transition-colors h-fit"
+                >
+                  + 添加图片
+                </button>
+              )}
+            </div>
+          </div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">产品详情（每行一个）</label><textarea value={form.details.join("\n")} onChange={(e) => upd("details", e.target.value.split("\n").filter(Boolean))} rows={4} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         </div>
         <div className="flex gap-3"><button onClick={() => onSave(form)} className="btn-primary py-2 px-6 text-xs"><Save size={13} className="mr-1.5" /> 保存产品</button><button onClick={onCancel} className="btn-outline py-2 px-6 text-xs">取消</button></div>
