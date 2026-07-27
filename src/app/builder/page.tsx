@@ -143,13 +143,20 @@ export default function BuilderPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {leathers.map((l: any) => (
                 <button key={l.id} onClick={() => setLeather(l.id)}
-                  className={`text-left p-5 border transition-all duration-300 ${
+                  className={`text-left border transition-all duration-300 overflow-hidden ${
                     leatherId === l.id ? "border-charcoal ring-1 ring-charcoal" : "border-line hover:border-charcoal/30"}`}>
-                  <p className="text-sm font-medium">{l.name}</p>
-                  {l.hermesEquivalent && <p className="text-[10px] text-gold tracking-label uppercase">Hermès {l.hermesEquivalent}</p>}
-                  {l.grain && <p className="text-[10px] text-smoke/60 mt-1 capitalize">· {l.grain} grain</p>}
-                  {l.bestFor && <p className="text-[10px] text-smoke/50 mt-0.5">{l.bestFor}</p>}
-                  <p className="text-[10px] text-smoke/40 leading-relaxed mt-1.5">{typeof l.characteristics === "string" ? l.characteristics.slice(0, 80) : ""}...</p>
+                  {l.image && (
+                    <div className="aspect-[3/2] overflow-hidden bg-ivory/50">
+                      <img src={l.image} alt={l.name} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <p className="text-sm font-medium">{l.name}</p>
+                    {l.hermesEquivalent && <p className="text-[10px] text-gold tracking-label uppercase">Hermès {l.hermesEquivalent}</p>}
+                    {l.grain && <p className="text-[10px] text-smoke/60 mt-1 capitalize">· {l.grain} grain</p>}
+                    {l.bestFor && <p className="text-[10px] text-smoke/50 mt-0.5">{l.bestFor}</p>}
+                    <p className="text-[10px] text-smoke/40 leading-relaxed mt-1.5">{typeof l.characteristics === "string" ? l.characteristics.slice(0, 80) : ""}...</p>
+                  </div>
                 </button>
               ))}
             </div>
