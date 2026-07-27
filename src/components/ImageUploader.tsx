@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useRef } from "react";
-import { Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
+import { Upload, X, Loader } from "lucide-react";
 
 interface ImageUploaderProps {
   value: string;
@@ -10,62 +10,34 @@ interface ImageUploaderProps {
 }
 
 export default function ImageUploader({ value, onChange, label }: ImageUploaderProps) {
-  const widgetRef = useRef<any>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
-  const handleUpload = useCallback(() => {
-    if (typeof window === "undefined") return;
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    // Load Cloudinary widget if not loaded
-    const openWidget = () => {
-      const w = (window as any).cloudinary.createUploadWidget(
-        {
-          cloudName: "vzsmwu1w",
-          uploadPreset: "mybirkin_uploads",
-          maxFiles: 1,
-          sources: ["local", "url", "camera"],
-          resourceType: "image",
-          clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "avif"],
-          maxFileSize: 10000000, // 10MB
-          styles: {
-            palette: {
-              window: "#FAF8F5",
-              windowBorder: "#1C1C1C",
-              tabIcon: "#1C1C1C",
-              menuIcons: "#6B6B6B",
-              textDark: "#1C1C1C",
-              textLight: "#FAF8F5",
-              link: "#B8935A",
-              action: "#B8935A",
-              inactiveTabIcon: "#C0C0C0",
-              error: "#C44",
-              inProgress: "#B8935A",
-              complete: "#4A8",
-              sourceBg: "#F3EFE8",
-            },
-          },
-        },
-        (err: any, result: any) => {
-          if (!err && result && result.event === "success") {
-            onChange(result.info.secure_url);
-          }
-        }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "mybirkin_uploads");
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/vzsmwu1w/image/upload`,
+        { method: "POST", body: formData }
       );
-      widgetRef.current = w;
-      w.open();
-    };
 
-    if ((window as any).cloudinary) {
-      openWidget();
-    } else {
-      const script = document.createElement("script");
-      script.src = "https://upload-widget.cloudinary.com/global/all.js";
-      script.onload = openWidget;
-      document.head.appendChild(script);
+      const data = await res.json();
+      if (data.secure_url) {
+        onChange(data.secure_url);
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
-  }, [onChange]);
-
-  const handleRemove = () => {
-    onChange("");
   };
 
   return (
@@ -81,26 +53,26 @@ export default function ImageUploader({ value, onChange, label }: ImageUploaderP
             <img src={value} alt="" className="w-full h-full object-cover" />
           </div>
           <button
-            onClick={handleRemove}
+            onClick={() => onChange("")}
             className="absolute top-1 right-1 bg-charcoal/80 text-paper p-1 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <X size={12} />
           </button>
-          <button
-            onClick={handleUpload}
-            className="absolute bottom-1 left-1 bg-paper/90 text-charcoal px-2 py-1 text-[9px] tracking-label uppercase opacity-0 group-hover:opacity-100 transition-opacity"
-          >
+          <label className="absolute bottom-1 left-1 bg-paper/90 text-charcoal px-2 py-1 text-[9px] tracking-label uppercase opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
             本地上传
-          </button>
+            <input ref={inputRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+          </label>
         </div>
       ) : (
-        <button
-          onClick={handleUpload}
-          className="flex items-center gap-2 border border-dashed border-line px-4 py-3 text-xs text-smoke/50 hover:text-smoke hover:border-smoke transition-colors"
-        >
-          <Upload size={14} />
-          本地上传
-        </button>
+        <label className="flex items-center gap-2 border border-dashed border-line px-4 py-3 text-xs text-smoke/50 hover:text-smoke hover:border-smoke transition-colors cursor-pointer">
+          {uploading ? (
+            <Loader size={14} className="animate-spin" />
+          ) : (
+            <Upload size={14} />
+          )}
+          {uploading ? "上传中..." : "本地上传"}
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+        </label>
       )}
     </div>
   );
