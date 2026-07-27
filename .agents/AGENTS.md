@@ -38,3 +38,10 @@
 - 项目创建: 2026-07-26 (Asia/Shanghai)
 - 当前会话: 2026-07-26
 - 规则: 提及相对时间前先检查当前日期，禁止跨天混淆
+
+## 部署信息
+- 部署平台: Vercel (Hobby 免费版)
+- GitHub: haotian1989-ux/mybirkin
+- Vercel: mybirkin-wvv6.vercel.app
+- 正式域名: www.mybirkin.com (2026-07-27 上线)
+- DNS: Hostinger, CNAME www → Vercel DNS
