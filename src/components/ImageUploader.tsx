@@ -90,7 +90,7 @@ export default function ImageUploader({ value, onChange, label }: ImageUploaderP
             onClick={handleUpload}
             className="absolute bottom-1 left-1 bg-paper/90 text-charcoal px-2 py-1 text-[9px] tracking-label uppercase opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            Change
+            本地上传
           </button>
         </div>
       ) : (
@@ -99,7 +99,7 @@ export default function ImageUploader({ value, onChange, label }: ImageUploaderP
           className="flex items-center gap-2 border border-dashed border-line px-4 py-3 text-xs text-smoke/50 hover:text-smoke hover:border-smoke transition-colors"
         >
           <Upload size={14} />
-          Upload Image
+          本地上传
         </button>
       )}
     </div>
