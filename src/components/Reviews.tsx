@@ -86,7 +86,7 @@ export default function Reviews({ productId, productName }: { productId: string;
     const newReview: Review = {
       id: Date.now().toString(),
       productId,
-      author: author.trim() || "Anonymous",
+      author: author.trim() || "匿名用户",
       rating,
       content: content.trim(),
       date: utcNow(), // ✅ 统一使用 UTC ISO 时间戳
@@ -103,7 +103,7 @@ export default function Reviews({ productId, productName }: { productId: string;
     <section className="mt-20 pt-16 border-t border-line">
       <div className="flex items-center justify-between mb-10">
         <div>
-          <h2 className="font-serif text-xl md:text-2xl mb-2">Customer Reviews</h2>
+          <h2 className="font-serif text-xl md:text-2xl mb-2">客户评价</h2>
           <div className="flex items-center gap-2">
             <div className="flex">
               {[1, 2, 3, 4, 5].map((s) => (
@@ -123,14 +123,14 @@ export default function Reviews({ productId, productName }: { productId: string;
           </div>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="btn-outline">
-          {showForm ? "Cancel" : "Write a Review"}
+          {showForm ? "Cancel" : "写评价"}
         </button>
       </div>
 
       {showForm && (
         <form onSubmit={submit} className="bg-ivory/30 p-8 mb-10 space-y-5">
           <h3 className="text-sm tracking-label uppercase text-smoke/60">
-            Share Your Experience
+            分享您的体验
           </h3>
           <div>
             <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-2">
@@ -162,7 +162,7 @@ export default function Reviews({ productId, productName }: { productId: string;
             <input
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              placeholder="How should we address you?"
+              placeholder="我们该如何称呼您？"
               className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal"
             />
           </div>
@@ -175,7 +175,7 @@ export default function Reviews({ productId, productName }: { productId: string;
               onChange={(e) => setContent(e.target.value)}
               required
               rows={4}
-              placeholder={`Tell us about your experience with ${productName}...`}
+              placeholder={`分享您对 ${productName} 的体验...`}
               className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal resize-none"
             />
           </div>
@@ -188,7 +188,7 @@ export default function Reviews({ productId, productName }: { productId: string;
       <div className="space-y-8">
         {productReviews.length === 0 && !showForm && (
           <p className="text-smoke text-sm">
-            No reviews yet. Be the first to share your experience.
+            暂无评价，成为第一个分享体验的人。
           </p>
         )}
         {productReviews.map((r) => (

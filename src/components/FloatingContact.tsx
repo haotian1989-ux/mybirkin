@@ -93,7 +93,7 @@ export default function FloatingContact() {
             : "bg-charcoal text-paper hover:bg-gold hover:text-charcoal hover:scale-110"
           }
         `}
-        aria-label={open ? "Close contact" : "Contact us"}
+        aria-label={open ? "关闭联系" : "联系客服"}
       >
         {open ? <X size={20} strokeWidth={1.5} /> : <MessageCircle size={20} strokeWidth={1.5} />}
       </button>

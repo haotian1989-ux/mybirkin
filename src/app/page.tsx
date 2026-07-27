@@ -108,12 +108,12 @@ export default function Home() {
         <section className="page-padding py-24 md:py-32">
           <div className="flex items-end justify-between mb-14">
             <div>
-              <p className="section-label mb-3">Just Landed</p>
-              <h2 className="section-title">New Arrivals</h2>
+              <p className="section-label mb-3">新品上架</p>
+              <h2 className="section-title">新品上架</h2>
             </div>
             <Link href="/shop" className="hidden md:block btn-ghost">View All →</Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
             {newArrivals.map((p) => (<ProductCard key={p.id} product={p} />))}
           </div>
         </section>
@@ -123,9 +123,9 @@ export default function Home() {
       {featured.length > 0 && (
         <section className="py-24 md:py-32 bg-ivory/30">
           <div className="page-padding">
-            <p className="section-label mb-3">Curated Selection</p>
-            <h2 className="section-title mb-14">Featured Pieces</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
+            <p className="section-label mb-3">精选推荐</p>
+            <h2 className="section-title mb-14">精选单品</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
               {featured.map((p) => (<ProductCard key={p.id} product={p} />))}
             </div>
           </div>
@@ -134,12 +134,12 @@ export default function Home() {
 
       {/* Collections */}
       <section className="page-padding py-24 md:py-32">
-        <h2 className="section-title text-center mb-16">Our Collections</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
+        <h2 className="section-title text-center mb-16">系列分类</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1.5">
           {[
-            { title: "Handbags", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=85", href: "/shop?category=handbags" },
-            { title: "Charms & Accents", image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=700&q=85", href: "/shop?category=charms" },
-            { title: "Pet Collection", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=700&q=85", href: "/shop?category=pet" },
+            { title: "手袋", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=85", href: "/shop?category=handbags" },
+            { title: "挂件与配饰", image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=700&q=85", href: "/shop?category=charms" },
+            { title: "宠物系列", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=700&q=85", href: "/shop?category=pet" },
           ].map((cat) => (
             <Link key={cat.title} href={cat.href} className="group relative aspect-[4/5] overflow-hidden">
               <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
@@ -175,12 +175,12 @@ export default function Home() {
 
       {/* Custom CTA */}
       <section className="page-padding py-24 md:py-32 text-center max-w-3xl mx-auto">
-        <p className="section-label mb-3">Bespoke</p>
-        <h2 className="section-title mb-6">Design Your Own</h2>
+        <p className="section-label mb-3">定制服务</p>
+        <h2 className="section-title mb-6">设计您的专属</h2>
         <p className="body-text max-w-xl mx-auto mb-10">
-          Choose your leather, hardware, silhouette, and artisan. Create a piece that is unmistakably yours.
+          选择您的皮料、五金、款型和工匠。创造一件独一无二、属于您的作品。
         </p>
-        <Link href="/builder" className="btn-primary">Start Customizing</Link>
+        <Link href="/builder" className="btn-primary">开始定制</Link>
       </section>
     </>
   );

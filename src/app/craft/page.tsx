@@ -2,26 +2,26 @@ import Link from "next/link";
 
 const sections = [
   {
-    title: "Leather",
-    desc: "Full-grain hides from Tuscany's finest family tanneries. Vegetable-tanned, hand-selected.",
+    title: "皮料",
+    desc: "来自托斯卡纳顶级家族制革厂的全粒面皮革。植鞣工艺，手工挑选。",
     image: "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=700&q=85",
     href: "/craft/leather",
   },
   {
-    title: "Hardware",
-    desc: "Solid brass with hand-applied 18k gold, palladium, and gunmetal finishes.",
+    title: "五金",
+    desc: "实心黄铜，手工镀18k金、钯金和枪黑色表面处理。",
     image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=700&q=85",
     href: "/craft/hardware",
   },
   {
-    title: "Artisans",
-    desc: "Meet the hands behind every piece — master leatherworkers with decades of experience.",
+    title: "工匠",
+    desc: "认识每件作品背后的双手——拥有数十年经验的皮革大师。",
     image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&q=85",
     href: "/craft/artisans",
   },
   {
-    title: "Process",
-    desc: "From sketch to stitch — the 28-step journey of a MYBIRKIN piece.",
+    title: "工艺流程",
+    desc: "从草图到缝合——MYBIRKIN 作品的28步旅程。",
     image: "https://images.unsplash.com/photo-1523287562758-26cd0b08580a?w=700&q=85",
     href: "/craft/process",
   },
@@ -34,8 +34,8 @@ export default function CraftPage() {
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
         <img src="https://images.unsplash.com/photo-1590736969955-71cc94901144?w=1800&q=85" alt="Workshop" className="absolute inset-0 w-full h-full object-cover" />
         <div className="relative z-20 page-padding">
-          <p className="section-label mb-3 text-gold">The Atelier</p>
-          <h1 className="font-serif text-display text-paper">Craftsmanship</h1>
+          <p className="section-label mb-3 text-gold">工坊</p>
+          <h1 className="font-serif text-display text-paper">工艺展示</h1>
         </div>
       </section>
 
@@ -62,12 +62,12 @@ export default function CraftPage() {
 
       {/* Bespoke CTA */}
       <section className="page-padding py-24 bg-ivory/30 text-center">
-        <p className="section-label mb-3">Bespoke</p>
-        <h2 className="section-title mb-4">Design Your Own</h2>
+        <p className="section-label mb-3">定制服务</p>
+        <h2 className="section-title mb-4">设计您的专属</h2>
         <p className="body-text max-w-md mx-auto mb-8">
-          Choose your materials, hardware, and artisan. Create a one-of-a-kind piece.
+          选择您的材料、五金和工匠。创造独一无二的作品。
         </p>
-        <Link href="/builder" className="btn-primary">Start Customizing</Link>
+        <Link href="/builder" className="btn-primary">开始定制</Link>
       </section>
     </>
   );

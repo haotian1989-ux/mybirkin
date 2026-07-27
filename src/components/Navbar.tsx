@@ -86,11 +86,26 @@ export default function Navbar() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-xs tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-0.5"
+                className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5"
               >
                 {l.label}
               </Link>
             ))}
+            <div className="pt-3 border-t border-line mt-1">
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  setTimeout(() => {
+                    const btn = document.querySelector('[aria-label="Contact us"]') as HTMLButtonElement;
+                    if (btn) btn.click();
+                  }, 100);
+                }}
+                className="flex items-center gap-2 text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5 w-full text-left"
+              >
+                <MessageCircle size={16} strokeWidth={1.5} />
+                Contact
+              </button>
+            </div>
           </div>
         </div>
       )}

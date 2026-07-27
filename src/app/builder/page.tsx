@@ -34,7 +34,7 @@ function useStored<T>(key: string, defaults: T[]): [T[], boolean] {
   return [items, loaded];
 }
 
-const stepLabels = ["Leather", "Color", "Hardware", "Silhouette", "Artisan"];
+const stepLabels = ["皮料", "颜色", "五金", "款型", "工匠"];
 
 export default function BuilderPage() {
   const { dispatch } = useCart();
@@ -113,7 +113,7 @@ export default function BuilderPage() {
     <div className="page-padding py-14 md:py-20">
       <div className="max-w-3xl mx-auto mb-10">
         <div className="flex items-center justify-between mb-1">
-          <p className="section-label">Bespoke Atelier</p>
+          <p className="section-label">定制工坊</p>
           <button onClick={() => setShowAdmin(!showAdmin)} className="text-[10px] tracking-label uppercase text-smoke/30 hover:text-smoke transition-colors">
             {showAdmin ? "Close Admin" : "Manage Data"}
           </button>
@@ -138,7 +138,7 @@ export default function BuilderPage() {
         {/* Step 0: Leather */}
         {step === 0 && (
           <div>
-            <h2 className="font-serif text-xl md:text-2xl mb-1">Choose Your Leather</h2>
+            <h2 className="font-serif text-xl md:text-2xl mb-1">选择皮料</h2>
             <p className="text-xs text-smoke/60 mb-8">Each leather has a distinct character.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {leathers.map((l: any) => (
@@ -159,7 +159,7 @@ export default function BuilderPage() {
         {/* Step 1: Colors */}
         {step === 1 && (
           <div>
-            <h2 className="font-serif text-xl md:text-2xl mb-1">Choose Your Color</h2>
+            <h2 className="font-serif text-xl md:text-2xl mb-1">选择颜色</h2>
             <p className="text-xs text-smoke/60 mb-2">
               {(leather as any)?.name} leather in your perfect shade.
             </p>
@@ -208,7 +208,7 @@ export default function BuilderPage() {
         {/* Step 2: Hardware */}
         {step === 2 && (
           <div>
-            <h2 className="font-serif text-xl md:text-2xl mb-1">Choose Your Hardware</h2>
+            <h2 className="font-serif text-xl md:text-2xl mb-1">选择五金</h2>
             <p className="text-xs text-smoke/60 mb-8">Solid brass, hand-finished.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {hardwares.map((h: any) => (
@@ -231,8 +231,8 @@ export default function BuilderPage() {
         {/* Step 3: Silhouette */}
         {step === 3 && (
           <div>
-            <h2 className="font-serif text-xl md:text-2xl mb-1">Choose Your Silhouette</h2>
-            <p className="text-xs text-smoke/60 mb-8">The foundation of your design.</p>
+            <h2 className="font-serif text-xl md:text-2xl mb-1">选择款型</h2>
+            <p className="text-xs text-smoke/60 mb-8">设计的基础。</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {silhouettes.map((s: any) => (
                 <button key={s.id} onClick={() => setSilhouette(s.id)}
@@ -251,8 +251,8 @@ export default function BuilderPage() {
         {/* Step 4: Artisan */}
         {step === 4 && (
           <div>
-            <h2 className="font-serif text-xl md:text-2xl mb-1">Choose Your Artisan</h2>
-            <p className="text-xs text-smoke/60 mb-8">Who will bring your vision to life?</p>
+            <h2 className="font-serif text-xl md:text-2xl mb-1">选择工匠</h2>
+            <p className="text-xs text-smoke/60 mb-8">谁将把您的构想变为现实？</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {artisans.map((a: any) => (
                 <button key={a.id} onClick={() => setArtisan(a.id)}
@@ -287,7 +287,7 @@ export default function BuilderPage() {
 
         {(leather || primaryColor || hardwareId || silhouetteId) && (
           <div className="mt-8 p-5 border border-line bg-ivory/20">
-            <p className="text-[10px] tracking-label uppercase text-smoke/40 mb-3">Your Configuration</p>
+            <p className="text-[10px] tracking-label uppercase text-smoke/40 mb-3">您的配置</p>
             <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-smoke">
               {leather && <span>👜 {(leather as any).name}{(leather as any).hermesEquivalent ? ` (H. ${(leather as any).hermesEquivalent})` : ""}</span>}
               {pColor && <span>🎨 {bicolor && sColor ? "Bicolor: " : ""}{pColor.name}{bicolor && sColor ? ` × ${sColor.name}` : ""}</span>}

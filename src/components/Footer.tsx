@@ -10,26 +10,26 @@ export default function Footer() {
           <div className="md:col-span-2">
             <h3 className="font-serif text-xl text-paper tracking-wide mb-5">MYBIRKIN</h3>
             <p className="text-sm leading-relaxed max-w-sm text-paper/50">
-              A bespoke leather atelier crafting handbags, accessories, and pet goods from Italian full-grain leather. Each piece is handcrafted to order by a master artisan.
+              一家定制皮具工坊，使用意大利全粒面皮革手工制作手袋、配饰和宠物用品。每件作品均由资深工匠按单制作。
             </p>
           </div>
 
           <div>
-            <h4 className="text-[11px] tracking-label uppercase text-paper/40 mb-5">Shop</h4>
+            <h4 className="text-[11px] tracking-label uppercase text-paper/40 mb-5">购物</h4>
             <div className="flex flex-col gap-2.5 text-sm text-paper/50">
-              <Link href="/shop" className="hover:text-paper transition-colors">All Products</Link>
-              <Link href="/shop?category=handbags" className="hover:text-paper transition-colors">Handbags</Link>
-              <Link href="/shop?category=charms" className="hover:text-paper transition-colors">Charms</Link>
-              <Link href="/shop?category=pet" className="hover:text-paper transition-colors">Pet Collection</Link>
-              <Link href="/builder" className="hover:text-paper transition-colors">Custom Order</Link>
+              <Link href="/shop" className="hover:text-paper transition-colors">全部产品</Link>
+              <Link href="/shop?category=handbags" className="hover:text-paper transition-colors">手袋</Link>
+              <Link href="/shop?category=charms" className="hover:text-paper transition-colors">挂件</Link>
+              <Link href="/shop?category=pet" className="hover:text-paper transition-colors">宠物系列</Link>
+              <Link href="/builder" className="hover:text-paper transition-colors">定制订单</Link>
             </div>
           </div>
 
           <div>
-            <h4 className="text-[11px] tracking-label uppercase text-paper/40 mb-5">Atelier</h4>
+            <h4 className="text-[11px] tracking-label uppercase text-paper/40 mb-5">工坊</h4>
             <div className="flex flex-col gap-2.5 text-sm text-paper/50">
-              <Link href="/craft" className="hover:text-paper transition-colors">Craftsmanship</Link>
-              <Link href="/about" className="hover:text-paper transition-colors">Our Story</Link>
+              <Link href="/craft" className="hover:text-paper transition-colors">工艺展示</Link>
+              <Link href="/about" className="hover:text-paper transition-colors">品牌故事</Link>
               <a href="mailto:hello@mybirkin.com" className="hover:text-paper transition-colors">hello@mybirkin.com</a>
             </div>
           </div>
@@ -39,7 +39,7 @@ export default function Footer() {
           <span>© {year} MYBIRKIN Atelier</span>
           <div className="flex gap-6">
             <Link href="/admin" className="hover:text-paper/50 transition-colors">Admin</Link>
-            <span>Handcrafted to order · Made in Italy</span>
+            <span>按单手工制作 · 意大利制造</span>
           </div>
         </div>
       </div>

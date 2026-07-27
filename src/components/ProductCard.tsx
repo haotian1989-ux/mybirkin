@@ -31,10 +31,10 @@ export default function ProductCard({ product }: { product: Product }) {
               e.preventDefault();
               dispatch({ type: "ADD_ITEM", product });
             }}
-            className="bg-paper/95 backdrop-blur px-5 py-2.5 text-[10px] tracking-label uppercase 
-                       opacity-0 group-hover:opacity-100 transition-all duration-400 
-                       translate-y-2 group-hover:translate-y-0
-                       hover:bg-charcoal hover:text-paper"
+            className="bg-paper/95 backdrop-blur px-4 py-2.5 text-[10px] tracking-label uppercase 
+                       opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-400 
+                       translate-y-0 sm:translate-y-2 sm:group-hover:translate-y-0
+                       hover:bg-charcoal hover:text-paper active:bg-charcoal active:text-paper"
           >
             Add to Bag
           </button>
