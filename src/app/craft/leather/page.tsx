@@ -14,14 +14,14 @@ export default function LeatherPage() {
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
         <img src="https://images.unsplash.com/photo-1590736969955-71cc94901144?w=1800&q=85" alt="Leather" className="absolute inset-0 w-full h-full object-cover" />
         <div className="relative z-20 page-padding">
-          <p className="section-label mb-3 text-gold">Materials</p>
-          <h1 className="font-serif text-display text-paper">Our Leather</h1>
+          <p className="section-label mb-3 text-gold">材质</p>
+          <h1 className="font-serif text-display text-paper">我们的皮料</h1>
         </div>
       </section>
 
       <section className="page-padding py-20 md:py-28 max-w-5xl mx-auto">
         <p className="body-text text-center max-w-2xl mx-auto mb-20">
-          We source exclusively from multigenerational family tanneries in Italy. Each hide is hand-selected for grain consistency, color depth, and character. No two pieces are exactly alike — and that is by design.
+          我们全部从意大利世代家族制革厂采购。每张皮料根据纹理一致性、颜色深度和特性进行手工挑选。没有两件完全相同——这是我们的刻意追求。
         </p>
 
         <div className="space-y-20">
@@ -36,8 +36,8 @@ export default function LeatherPage() {
                 <p className="section-label mb-3">0{i + 1}</p>
                 <h2 className="font-serif text-2xl md:text-3xl mb-4">{l.name}</h2>
                 <div className="space-y-2 mb-5">
-                  <p className="text-xs text-smoke"><span className="tracking-label uppercase text-smoke/50 text-[11px]">Origin</span> <span className="ml-3">{l.origin}</span></p>
-                  <p className="text-xs text-smoke"><span className="tracking-label uppercase text-smoke/50 text-[11px]">Finish</span> <span className="ml-3">{l.finish}</span></p>
+                  <p className="text-xs text-smoke"><span className="tracking-label uppercase text-smoke/50 text-[11px]">产地</span> <span className="ml-3">{l.origin}</span></p>
+                  <p className="text-xs text-smoke"><span className="tracking-label uppercase text-smoke/50 text-[11px]">工艺</span> <span className="ml-3">{l.finish}</span></p>
                 </div>
                 <p className="body-text">{l.character}</p>
               </div>
@@ -46,7 +46,7 @@ export default function LeatherPage() {
         </div>
 
         <div className="text-center mt-20">
-          <Link href="/builder" className="btn-primary">Choose Your Leather</Link>
+          <Link href="/builder" className="btn-primary">选择您的皮料</Link>
         </div>
       </section>
     </>
