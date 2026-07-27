@@ -18,7 +18,7 @@ export default function CartDrawer() {
       <div className="fixed top-0 right-0 h-full w-full max-w-md bg-paper z-50 flex flex-col shadow-2xl animate-[slideIn_0.35s_ease-out]">
         <div className="flex items-center justify-between px-8 py-6 border-b border-line">
           <h2 className="font-serif text-lg tracking-wide">
-            购物袋 ({itemCount})
+            Shopping Bag ({itemCount})
           </h2>
           <button
             onClick={() => dispatch({ type: "CLOSE_CART" })}
@@ -31,7 +31,7 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-8 py-6">
           {state.items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-smoke">
-              <p className="text-sm">购物袋是空的</p>
+              <p className="text-sm">Your bag is empty</p>
             </div>
           ) : (
             <div className="flex flex-col gap-5">
@@ -87,22 +87,22 @@ export default function CartDrawer() {
         {state.items.length > 0 && (
           <div className="border-t border-line px-8 py-6">
             <div className="flex justify-between text-sm mb-5">
-              <span className="text-smoke">小计</span>
+              <span className="text-smoke">Subtotal</span>
               <span className="font-medium">${total.toLocaleString()}</span>
             </div>
-            <p className="text-xs text-smoke/60 mb-5">运费将在结算时计算</p>
+            <p className="text-xs text-smoke/60 mb-5">Shipping calculated at checkout</p>
             <Link
               href="/checkout"
               onClick={() => dispatch({ type: "CLOSE_CART" })}
               className="btn-primary w-full"
             >
-              去结算
+              Proceed to Checkout
             </Link>
             <button
               onClick={() => dispatch({ type: "CLOSE_CART" })}
               className="text-xs text-smoke/50 underline underline-offset-4 hover:text-charcoal transition-colors w-full text-center mt-4"
             >
-              继续购物
+              Continue Shopping
             </button>
           </div>
         )}

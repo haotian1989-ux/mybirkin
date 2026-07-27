@@ -13,14 +13,14 @@ export default function HardwarePage() {
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
         <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=1800&q=85" alt="Hardware" className="absolute inset-0 w-full h-full object-cover" />
         <div className="relative z-20 page-padding">
-          <p className="section-label mb-3 text-gold">细节</p>
-          <h1 className="font-serif text-display text-paper">五金件</h1>
+          <p className="section-label mb-3 text-gold">Details</p>
+          <h1 className="font-serif text-display text-paper">Hardware</h1>
         </div>
       </section>
 
       <section className="page-padding py-20 md:py-28 max-w-5xl mx-auto">
         <p className="body-text text-center max-w-2xl mx-auto mb-20">
-          每个搭扣、锁扣和拉链都在佛罗伦萨郊外的家族铸造厂由实心黄铜加工而成，然后手工打磨并按我们的规格进行电镀。我们从不使用空心或冲压五金件。
+          Every buckle, clasp, and zipper is machined from solid brass in a family-run foundry outside Florence. Then hand-finished and plated to our specifications. We never use hollow or stamped hardware.
         </p>
 
         {hardware.map((h, i) => (
@@ -40,7 +40,7 @@ export default function HardwarePage() {
         ))}
 
         <div className="text-center mt-10">
-          <Link href="/builder" className="btn-primary">选择您的五金件</Link>
+          <Link href="/builder" className="btn-primary">Choose Your Hardware</Link>
         </div>
       </section>
     </>

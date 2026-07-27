@@ -14,8 +14,8 @@ export default function ArtisansPage() {
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
         <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1800&q=85" alt="Artisans" className="absolute inset-0 w-full h-full object-cover" />
         <div className="relative z-20 page-padding">
-          <p className="section-label mb-3 text-gold">人物</p>
-          <h1 className="font-serif text-display text-paper">我们的工匠</h1>
+          <p className="section-label mb-3 text-gold">People</p>
+          <h1 className="font-serif text-display text-paper">Our Artisans</h1>
         </div>
       </section>
 

@@ -51,7 +51,7 @@ export default function ProductPage() {
   return (
     <div className="page-padding py-10 md:py-20">
       <nav className="text-[11px] text-smoke/60 tracking-label mb-10">
-        <Link href="/" className="hover:text-charcoal transition-colors">首页</Link>
+        <Link href="/" className="hover:text-charcoal transition-colors">Home</Link>
         <span className="mx-2.5">/</span>
         <Link href={`/shop?category=${product.category}`} className="hover:text-charcoal transition-colors capitalize">{product.category}</Link>
         <span className="mx-2.5">/</span>
@@ -105,20 +105,20 @@ export default function ProductPage() {
 
           <button onClick={handleAdd} disabled={!product.inStock}
             className={`btn-primary w-full md:w-auto mb-6 ${added ? "bg-green-800 hover:bg-green-800 border-0" : ""}`}>
-            {added ? (<><Check size={15} className="mr-2" /> 已加入购物袋</>) : product.inStock ? "加入购物袋" : "已售罄"}
+            {added ? (<><Check size={15} className="mr-2" /> Added to Bag</>) : product.inStock ? "Add to Bag" : "Out of Stock"}
           </button>
 
           <div className="flex items-center gap-2 text-xs text-smoke/60 mb-10">
             <Truck size={14} strokeWidth={1.5} />
-            <span>订单满 $500 全球免运费</span>
+            <span>Free worldwide shipping on orders over $500</span>
           </div>
 
           <div className="border-t border-line pt-8 space-y-5">
-            {product.materials && <div><h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">材质</h3><p className="text-sm text-smoke">{product.materials}</p></div>}
-            {product.dimensions && <div><h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">尺寸</h3><p className="text-sm text-smoke">{product.dimensions}</p></div>}
+            {product.materials && <div><h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">Materials</h3><p className="text-sm text-smoke">{product.materials}</p></div>}
+            {product.dimensions && <div><h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">Dimensions</h3><p className="text-sm text-smoke">{product.dimensions}</p></div>}
             {product.details.length > 0 && (
               <div>
-                <h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">产品详情</h3>
+                <h3 className="text-[11px] tracking-label uppercase text-smoke/40 mb-2">Details</h3>
                 <ul className="text-sm text-smoke space-y-1.5">
                   {product.details.map((d, i) => <li key={i} className="flex gap-2"><span className="text-gold mt-0.5">·</span>{d}</li>)}
                 </ul>

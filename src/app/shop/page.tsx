@@ -8,16 +8,16 @@ import { ProductCategory, Product } from "@/lib/types";
 import { SlidersHorizontal, X } from "lucide-react";
 
 const categories: { label: string; value: ProductCategory | "all" }[] = [
-  { label: "全部", value: "all" },
-  { label: "手袋", value: "handbags" },
-  { label: "挂件", value: "charms" },
-  { label: "宠物系列", value: "pet" },
+  { label: "All", value: "all" },
+  { label: "Handbags", value: "handbags" },
+  { label: "Charms", value: "charms" },
+  { label: "Pet Collection", value: "pet" },
 ];
 
 const sortOptions = [
-  { label: "最新", value: "newest" },
-  { label: "价格：从低到高", value: "price-asc" },
-  { label: "价格：从高到低", value: "price-desc" },
+  { label: "Newest", value: "newest" },
+  { label: "Price: Low to High", value: "price-asc" },
+  { label: "Price: High to Low", value: "price-desc" },
 ];
 
 function useProducts(): Product[] {
@@ -62,8 +62,8 @@ function ShopContent() {
     <div className="page-padding py-14 md:py-20">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
         <div>
-          <p className="section-label mb-2">系列</p>
-          <h1 className="section-title">全部商品</h1>
+          <p className="section-label mb-2">Collection</p>
+          <h1 className="section-title">Shop All</h1>
         </div>
         <button onClick={() => setShowFilters(!showFilters)} className="md:hidden flex items-center gap-2 text-xs tracking-label uppercase text-smoke">
           <SlidersHorizontal size={14} strokeWidth={1.5} /> Filters
@@ -74,7 +74,7 @@ function ShopContent() {
         <aside className={`${showFilters ? "fixed inset-0 z-40 bg-paper p-8 pt-24" : "hidden"} md:block md:relative md:inset-auto md:z-auto md:bg-transparent md:p-0 md:w-52 flex-shrink-0`}>
           {showFilters && <button onClick={() => setShowFilters(false)} className="md:hidden absolute top-8 right-8"><X size={18} strokeWidth={1.5} /></button>}
           <div className="mb-10">
-            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">分类</h3>
+            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Category</h3>
             <div className="flex flex-col gap-2">
               {categories.map((c) => (
                 <button key={c.value} onClick={() => setActiveCat(c.value)}
@@ -83,29 +83,29 @@ function ShopContent() {
             </div>
           </div>
           <div className="mb-10">
-            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">排序</h3>
+            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Sort by</h3>
             <select value={sort} onChange={(e) => setSort(e.target.value)}
               className="text-sm bg-transparent border border-line px-3 py-2.5 w-full focus:outline-none focus:border-charcoal appearance-none cursor-pointer">
               {sortOptions.map((o) => (<option key={o.value} value={o.value}>{o.label}</option>))}
             </select>
           </div>
           <div>
-            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">价格</h3>
+            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Price</h3>
             <input type="range" min={0} max={2000} step={50} value={priceRange[1]}
               onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])} className="w-full accent-charcoal" />
-            <div className="flex justify-between text-xs text-smoke/50 mt-2.5"><span>$0</span><span>最高 ${priceRange[1]}</span></div>
+            <div className="flex justify-between text-xs text-smoke/50 mt-2.5"><span>$0</span><span>Up to ${priceRange[1]}</span></div>
           </div>
         </aside>
 
         <div className="flex-1">
-          <p className="text-xs text-smoke/50 tracking-label uppercase mb-6">{filtered.length} 件商品</p>
+          <p className="text-xs text-smoke/50 tracking-label uppercase mb-6">{filtered.length} Products</p>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
             {filtered.map((p) => (<ProductCard key={p.id} product={p} />))}
           </div>
           {filtered.length === 0 && (
             <div className="text-center py-24 text-smoke">
-              <p className="mb-3">没有符合筛选条件的商品。</p>
-              <button onClick={() => { setActiveCat("all"); setPriceRange([0, 2000]); }} className="text-xs underline underline-offset-4 hover:text-charcoal">清除所有筛选</button>
+              <p className="mb-3">No products match your filters.</p>
+              <button onClick={() => { setActiveCat("all"); setPriceRange([0, 2000]); }} className="text-xs underline underline-offset-4 hover:text-charcoal">Clear all filters</button>
             </div>
           )}
         </div>
@@ -118,9 +118,9 @@ function ShopFallback() {
   return (
     <div className="page-padding py-14 md:py-20">
       <div className="mb-12">
-        <h1 className="section-title">全部商品</h1>
+        <h1 className="section-title">Shop All</h1>
       </div>
-      <p className="text-smoke text-sm">加载中...</p>
+      <p className="text-smoke text-sm">Loading products...</p>
     </div>
   );
 }
