@@ -37,6 +37,7 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-10">
+            <Link href="/" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-charcoal hover:text-gold transition-colors py-1.5 font-medium">Home</Link>
           {links.map((l) => (
             <Link
               key={l.href}
@@ -81,6 +82,7 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-line bg-paper">
           <div className="page-padding py-5 flex flex-col gap-4">
+            <Link href="/" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-charcoal hover:text-gold transition-colors py-1.5 font-medium">Home</Link>
             {links.map((l) => (
               <Link
                 key={l.href}
