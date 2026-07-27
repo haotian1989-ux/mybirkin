@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { CraftPageData, DEFAULT_CRAFT, CRAFT_KEYS } from "@/lib/craft-data";
+import ImageLightbox from "./ImageLightbox";
 
 function usePageData(key: string): CraftPageData {
   const [data, setData] = useState<CraftPageData>(DEFAULT_CRAFT[key] || DEFAULT_CRAFT.overview);
@@ -76,7 +77,7 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
                 <div className={i % 2 === 1 ? "md:[direction:ltr]" : ""}>
                   <div className="aspect-[4/5] overflow-hidden">
                     {b.image ? (
-                      <img src={b.image} alt={b.title} className="w-full h-full object-cover" />
+                      <ImageLightbox src={b.image} alt={b.title} />
                     ) : (
                       <div className="w-full h-full bg-ivory/50" />
                     )}
@@ -101,8 +102,8 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
             {data.blocks.map((b, i) => (
               <div key={b.id} className="group">
                 {b.image && (
-                  <div className="aspect-[4/5] overflow-hidden mb-6 bg-ivory/50">
-                    <img src={b.image} alt={b.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-600" />
+                  <div className="aspect-[4/5] overflow-hidden mb-6 bg-ivory/50 group">
+                    <ImageLightbox src={b.image} alt={b.title} className="grayscale group-hover:grayscale-0 transition-all duration-600" />
                   </div>
                 )}
                 <h3 className="font-serif text-xl mb-0.5">{b.title}</h3>

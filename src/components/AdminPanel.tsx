@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, Edit3, Save, X } from "lucide-react";
+import ImageUploader from "./ImageUploader";
 
 type Tab = "leathers" | "colors" | "hardware" | "silhouettes" | "artisans" | "contact";
 

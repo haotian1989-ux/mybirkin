@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { Product } from "@/lib/types";
+import ImageLightbox from "./ImageLightbox";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { dispatch } = useCart();
@@ -13,11 +14,10 @@ export default function ProductCard({ product }: { product: Product }) {
         href={`/product/${product.slug}`}
         className="block relative aspect-[3/4] overflow-hidden bg-ivory/50 mb-5"
       >
-        <img
+        <ImageLightbox
           src={product.images[0]}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          loading="lazy"
+          className="absolute inset-0"
         />
         {product.newArrival && (
           <span className="absolute top-4 left-4 bg-paper/90 backdrop-blur px-3 py-1.5 text-[10px] tracking-label uppercase text-charcoal">

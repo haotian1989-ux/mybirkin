@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette } from "lucide-react";
 import { useAdminStore, useSiteConfig } from "@/lib/use-admin-store";
 import { Product } from "@/lib/types";
+import ImageUploader from "@/components/ImageUploader";
 import { products as defaultProducts } from "@/lib/data";
 import AdminPanel from "@/components/AdminPanel";
 import CraftEditor from "@/components/CraftEditor";
@@ -158,7 +159,15 @@ function HomepageEditor() {
       <h2 className="font-serif text-lg mb-1">主图区域</h2>
       <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
       <div className="space-y-4 mb-8">
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片链接</label><input value={hero.value.image} onChange={(e) => hero.save({ ...hero.value, image: e.target.value })} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal font-mono text-xs" />{hero.value.image && <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50"><img src={hero.value.image} alt="预览" className="w-full h-full object-cover" /></div>}</div>
+        <div>
+          <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片</label>
+          <ImageUploader value={hero.value.image} onChange={(url) => hero.save({ ...hero.value, image: url })} />
+          {hero.value.image && (
+            <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50">
+              <img src={hero.value.image} alt="预览" className="w-full h-full object-cover" />
+            </div>
+          )}
+        </div>
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标语</label><input value={hero.value.tagline} onChange={(e) => hero.save({ ...hero.value, tagline: e.target.value })} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题</label><textarea value={hero.value.headline} onChange={(e) => hero.save({ ...hero.value, headline: e.target.value })} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={hero.value.subtext} onChange={(e) => hero.save({ ...hero.value, subtext: e.target.value })} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>

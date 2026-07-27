@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Save, ArrowUp, ArrowDown } from "lucide-react";
+import ImageUploader from "@/components/ImageUploader";
 import {
   CraftPageData, CraftBlock,
   CRAFT_KEYS, DEFAULT_CRAFT, CRAFT_PAGE_LABELS,
@@ -104,12 +105,8 @@ export default function CraftEditor() {
         <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Hero 区域</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-2">
-            <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">背景图片链接</label>
-            <input
-              value={data.heroImage}
-              onChange={(e) => updateField("heroImage", e.target.value)}
-              className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal"
-            />
+            <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">背景图片</label>
+            <ImageUploader value={data.heroImage} onChange={(url) => updateField("heroImage", url)} />
           </div>
           <div>
             <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">标语</label>
@@ -173,12 +170,8 @@ export default function CraftEditor() {
                 />
               </div>
               <div>
-                <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">图片链接</label>
-                <input
-                  value={block.image}
-                  onChange={(e) => updateBlock(block.id, "image", e.target.value)}
-                  className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal"
-                />
+                <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">图片</label>
+                <ImageUploader value={block.image} onChange={(url) => updateBlock(block.id, "image", url)} />
               </div>
               <div className="md:col-span-2">
                 <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label>
