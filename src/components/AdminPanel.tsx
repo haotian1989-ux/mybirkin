@@ -48,7 +48,7 @@ export default function AdminPanel() {
     { id: "orange-h", name: "Orange H", hex: "#D4722A" },
   ]);
 
-  const hardwares = useAdminSupabaseList<HardwareItem>("builder_hardware", [
+  const hardware = useAdminSupabaseList<HardwareItem>("builder_hardware", [
     { id: "gold", name: "18k Gold", material: "Brass, 18k Gold-Plated", hex: "#C8A96E", description: "Warm, luminous finish.", price: 0 },
     { id: "palladium", name: "Palladium", material: "Brass, Palladium-Plated", hex: "#C0C0C0", description: "Cool, modern silver.", price: 0 },
     { id: "rose-gold", name: "Rose Gold", material: "Brass, Rose Gold-Plated", hex: "#B76E79", description: "Soft, romantic warmth.", price: 30 },
