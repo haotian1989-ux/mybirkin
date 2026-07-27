@@ -56,7 +56,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       setError("");
       setPassword("");
     } else {
-      setError("Incorrect password");
+      setError("密码错误");
       setPassword("");
     }
   };
@@ -76,8 +76,8 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
             <div className="w-14 h-14 bg-charcoal rounded-full flex items-center justify-center mx-auto mb-5">
               <Lock size={20} className="text-paper" />
             </div>
-            <h1 className="font-serif text-xl mb-1">Admin Access</h1>
-            <p className="text-xs text-smoke">Enter password to continue</p>
+            <h1 className="font-serif text-xl mb-1">管理后台</h1>
+            <p className="text-xs text-smoke">请输入密码</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -86,7 +86,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                placeholder="密码"
                 autoFocus
                 className="w-full border border-line bg-transparent px-4 py-3.5 pr-12 text-sm focus:outline-none focus:border-charcoal"
               />
@@ -106,12 +106,12 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
               disabled={!password}
               className="btn-primary w-full disabled:opacity-30"
             >
-              Sign In
+              登录
             </button>
           </form>
 
           <p className="text-[10px] text-smoke/30 text-center mt-8">
-            MYBIRKIN Admin · Secure Access
+            MYBIRKIN 管理后台 · 安全入口
           </p>
         </div>
       </div>
@@ -122,11 +122,11 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     <>
       {/* Logout bar */}
       <div className="bg-charcoal text-paper/30 flex items-center justify-between px-6 py-2">
-        <span className="text-[10px] tracking-label uppercase">Admin</span>
+        <span className="text-[10px] tracking-label uppercase">管理员</span>
         <div className="flex items-center gap-4">
           <PasswordChanger currentPassword={storedPassword} onChanged={(p) => setStoredPassword(p)} />
           <button onClick={handleLogout} className="text-[10px] tracking-label uppercase hover:text-paper transition-colors">
-            Sign Out
+            退出登录
           </button>
         </div>
       </div>
@@ -143,16 +143,16 @@ function PasswordChanger({ currentPassword, onChanged }: { currentPassword: stri
 
   const handleChange = () => {
     if (oldPw !== currentPassword) {
-      setMsg("Current password incorrect");
+      setMsg("当前密码错误");
       return;
     }
     if (newPw.length < 6) {
-      setMsg("New password must be at least 6 characters");
+      setMsg("新密码至少需要6位");
       return;
     }
     localStorage.setItem(PASSWORD_KEY, newPw);
     onChanged(newPw);
-    setMsg("Password updated");
+    setMsg("密码已更新");
     setOpen(false);
     setTimeout(() => setMsg(""), 2000);
   };
@@ -160,17 +160,17 @@ function PasswordChanger({ currentPassword, onChanged }: { currentPassword: stri
   return (
     <div className="relative">
       <button onClick={() => setOpen(!open)} className="text-[10px] tracking-label uppercase hover:text-paper transition-colors">
-        Change Password
+        修改密码
       </button>
       {open && (
         <div className="absolute right-0 top-8 bg-paper border border-line p-4 w-64 z-50 shadow-xl">
           <div className="space-y-3">
-            <input type="password" value={oldPw} onChange={(e) => setOldPw(e.target.value)} placeholder="Current password" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" />
-            <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="New password (min 6 chars)" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" />
+            <input type="password" value={oldPw} onChange={(e) => setOldPw(e.target.value)} placeholder="当前密码" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" />
+            <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="新密码（至少6位）" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" />
             {msg && <p className="text-[10px] text-gold">{msg}</p>}
             <div className="flex gap-2">
-              <button onClick={handleChange} className="text-[10px] bg-charcoal text-paper px-3 py-1.5">Save</button>
-              <button onClick={() => setOpen(false)} className="text-[10px] border border-line px-3 py-1.5">Cancel</button>
+              <button onClick={handleChange} className="text-[10px] bg-charcoal text-paper px-3 py-1.5">保存</button>
+              <button onClick={() => setOpen(false)} className="text-[10px] border border-line px-3 py-1.5">取消</button>
             </div>
           </div>
         </div>

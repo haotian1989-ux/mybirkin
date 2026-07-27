@@ -53,12 +53,12 @@ function useStore<T extends StoreItem | ContactLink>(key: string, defaults: T[])
 }
 
 const tabs: { key: Tab; label: string }[] = [
-  { key: "leathers", label: "Leather" },
-  { key: "colors", label: "Colors" },
-  { key: "hardware", label: "Hardware" },
-  { key: "silhouettes", label: "Silhouettes" },
-  { key: "artisans", label: "Artisans" },
-  { key: "contact", label: "Contact" },
+  { key: "leathers", label: "皮料" },
+  { key: "colors", label: "颜色" },
+  { key: "hardware", label: "五金" },
+  { key: "silhouettes", label: "款型" },
+  { key: "artisans", label: "工匠" },
+  { key: "contact", label: "联系方式" },
 ];
 
 export default function AdminPanel() {
@@ -133,7 +133,7 @@ export default function AdminPanel() {
         </div>
 
         <div className="p-6 max-w-lg">
-          <p className="text-xs text-smoke/60 mb-6">Configure your WhatsApp and Telegram contact links. These appear in the floating contact button across the entire site.</p>
+          <p className="text-xs text-smoke/60 mb-6">配置您的 WhatsApp 和 Telegram 联系链接，这些将显示在全站悬浮客服按钮中。</p>
           
           <ContactLinkForm
             links={contacts.items}
@@ -145,7 +145,7 @@ export default function AdminPanel() {
   }
 
   const current = stores[activeTab];
-  if (!current?.loaded) return <div className="py-8 text-xs text-smoke/40">Loading...</div>;
+  if (!current?.loaded) return <div className="py-8 text-xs text-smoke/40">加载中...</div>;
 
   return (
     <div className="mb-12 border border-line bg-paper">
@@ -160,7 +160,7 @@ export default function AdminPanel() {
         ))}
         <div className="flex-1" />
         <button onClick={() => { setShowAdd(true); setEditingId(null); }} className="px-4 py-3 flex items-center gap-1 text-[10px] tracking-label uppercase text-smoke/50 hover:text-charcoal transition-colors">
-          <Plus size={12} /> Add
+          <Plus size={12} /> 添加
         </button>
       </div>
 
@@ -193,7 +193,7 @@ export default function AdminPanel() {
               )}
             </div>
           ))}
-          {current.items.length === 0 && <p className="text-xs text-smoke/30 py-6 text-center">No items. Click Add to create one.</p>}
+          {current.items.length === 0 && <p className="text-xs text-smoke/30 py-6 text-center">暂无数据，点击添加创建</p>}
         </div>
       </div>
     </div>
@@ -218,7 +218,7 @@ function ContactLinkForm({ links, onSave }: { links: ContactLink[]; onSave: (lin
   return (
     <div className="space-y-5">
       <div>
-        <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1.5">WhatsApp Link</label>
+        <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1.5">WhatsApp 链接</label>
         <input
           value={whatsappUrl}
           onChange={(e) => setWhatsappUrl(e.target.value)}
@@ -229,7 +229,7 @@ function ContactLinkForm({ links, onSave }: { links: ContactLink[]; onSave: (lin
       </div>
 
       <div>
-        <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1.5">Telegram Link</label>
+        <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1.5">Telegram 链接</label>
         <input
           value={telegramUrl}
           onChange={(e) => setTelegramUrl(e.target.value)}
@@ -240,7 +240,7 @@ function ContactLinkForm({ links, onSave }: { links: ContactLink[]; onSave: (lin
       </div>
 
       <button onClick={handleSave} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>
-        {saved ? "✓ Saved" : "Save Contact Links"}
+        {saved ? "✓ 已保存" : "保存联系链接"}
       </button>
     </div>
   );
@@ -263,42 +263,42 @@ function ItemForm({ tab, item, onSave, onCancel }: { tab: Tab; item?: any; onSav
     <div className="p-4 mb-3 border border-charcoal/20 bg-ivory/30">
       <div className="grid grid-cols-2 gap-3 mb-3">
         {tab !== "colors" && (
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">ID</label><input value={form.id} onChange={(e) => update("id", e.target.value)} placeholder="auto-generated if empty" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">ID</label><input value={form.id} onChange={(e) => update("id", e.target.value)} placeholder="留空自动生成" className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         )}
         {tab !== "colors" && tab !== "hardware" && (
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Name</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名称</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         )}
         {tab === "leathers" && (<>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Hermès Eq.</label><input value={form.hermesEquivalent || ""} onChange={(e) => update("hermesEquivalent", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Grain</label><select value={form.grain || ""} onChange={(e) => update("grain", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal bg-paper"><option value="">Select</option><option value="smooth">Smooth</option><option value="pebbled">Pebbled</option><option value="textured">Textured</option><option value="matte">Matte</option></select></div>
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Characteristics</label><input value={form.characteristics || ""} onChange={(e) => update("characteristics", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Best For</label><input value={form.bestFor || ""} onChange={(e) => update("bestFor", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">爱马仕对应</label><input value={form.hermesEquivalent || ""} onChange={(e) => update("hermesEquivalent", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">纹理</label><select value={form.grain || ""} onChange={(e) => update("grain", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal bg-paper"><option value="">请选择</option><option value="smooth">光滑</option><option value="pebbled">荔枝纹</option><option value="textured">压纹</option><option value="matte">哑光</option></select></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">特性</label><input value={form.characteristics || ""} onChange={(e) => update("characteristics", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">适合</label><input value={form.bestFor || ""} onChange={(e) => update("bestFor", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         </>)}
         {tab === "colors" && (<>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Name</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Hex</label><div className="flex gap-2"><input type="color" value={form.hex || "#000"} onChange={(e) => update("hex", e.target.value)} className="w-8 h-8 border-0 cursor-pointer" /><input value={form.hex || ""} onChange={(e) => update("hex", e.target.value)} className="flex-1 border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名称</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">色值</label><div className="flex gap-2"><input type="color" value={form.hex || "#000"} onChange={(e) => update("hex", e.target.value)} className="w-8 h-8 border-0 cursor-pointer" /><input value={form.hex || ""} onChange={(e) => update("hex", e.target.value)} className="flex-1 border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div></div>
         </>)}
         {tab === "hardware" && (<>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Name</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Price (+$)</label><input type="number" value={form.price || 0} onChange={(e) => update("price", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Material</label><input value={form.material || ""} onChange={(e) => update("material", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Hex</label><input value={form.hex || ""} onChange={(e) => update("hex", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Description</label><input value={form.description || ""} onChange={(e) => update("description", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名称</label><input value={form.name || ""} onChange={(e) => update("name", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">加价 (+$)</label><input type="number" value={form.price || 0} onChange={(e) => update("price", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">材质</label><input value={form.material || ""} onChange={(e) => update("material", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">色值</label><input value={form.hex || ""} onChange={(e) => update("hex", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label><input value={form.description || ""} onChange={(e) => update("description", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         </>)}
         {tab === "silhouettes" && (<>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Base Price</label><input type="number" value={form.basePrice || 0} onChange={(e) => update("basePrice", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Dimensions</label><input value={form.dimensions || ""} onChange={(e) => update("dimensions", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Description</label><input value={form.desc || ""} onChange={(e) => update("desc", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">基础价格</label><input type="number" value={form.basePrice || 0} onChange={(e) => update("basePrice", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">尺寸</label><input value={form.dimensions || ""} onChange={(e) => update("dimensions", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label><input value={form.desc || ""} onChange={(e) => update("desc", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         </>)}
         {tab === "artisans" && (<>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Role</label><input value={form.role || ""} onChange={(e) => update("role", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Years</label><input type="number" value={form.years || 0} onChange={(e) => update("years", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">Quote</label><input value={form.quote || ""} onChange={(e) => update("quote", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">职位</label><input value={form.role || ""} onChange={(e) => update("role", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">工龄</label><input type="number" value={form.years || 0} onChange={(e) => update("years", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2"><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">名言</label><input value={form.quote || ""} onChange={(e) => update("quote", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
         </>)}
       </div>
       <div className="flex gap-2">
-        <button onClick={handleSave} className="btn-primary text-[10px] py-1.5 px-4"><Save size={12} className="mr-1" /> Save</button>
-        <button onClick={onCancel} className="btn-outline text-[10px] py-1.5 px-4"><X size={12} className="mr-1" /> Cancel</button>
+        <button onClick={handleSave} className="btn-primary text-[10px] py-1.5 px-4"><Save size={12} className="mr-1" /> 保存</button>
+        <button onClick={onCancel} className="btn-outline text-[10px] py-1.5 px-4"><X size={12} className="mr-1" /> 取消</button>
       </div>
     </div>
   );
