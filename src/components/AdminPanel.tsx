@@ -5,7 +5,7 @@ import { Plus, Trash2, Edit3, Save, X } from "lucide-react";
 import ImageUploader from "./ImageUploader";
 import { useAdminSupabaseList } from "@/lib/use-supabase-data";
 
-type Tab = "leathers" | "colors" | "hardware" | "silhouettes" | "artisans" | "contact";
+type Tab = "leathers" | "colors" | "hardware" | "silhouettes" | "artisans";
 
 interface LeatherItem { id: string; name: string; hermesEquivalent: string; grain: string; characteristics: string; bestFor: string; image: string; }
 interface ColorItem { id: string; name: string; hex: string; }
