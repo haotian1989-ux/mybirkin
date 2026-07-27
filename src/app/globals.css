@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+@layer base {
+  body {
+    @apply bg-paper text-charcoal font-sans antialiased;
+  }
+  ::selection {
+    @apply bg-gold/20 text-charcoal;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center bg-charcoal text-paper px-10 py-3.5 
+           text-xs tracking-label uppercase font-medium
+           hover:bg-gold hover:text-charcoal transition-all duration-400;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center border border-charcoal/20 text-charcoal px-10 py-3.5 
+           text-xs tracking-label uppercase font-medium
+           hover:border-charcoal hover:bg-charcoal hover:text-paper transition-all duration-400;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center text-xs tracking-label uppercase text-smoke
+           hover:text-charcoal transition-colors duration-300;
+  }
+  .section-title {
+    @apply font-serif text-heading font-medium;
+  }
+  .section-label {
+    @apply text-[11px] tracking-label uppercase text-gold font-medium;
+  }
+  .page-padding {
+    @apply px-6 md:px-12 lg:px-20 xl:px-28;
+  }
+  .body-text {
+    @apply text-smoke leading-relaxed;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
