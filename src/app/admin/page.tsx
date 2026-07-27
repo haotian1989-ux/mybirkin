@@ -7,15 +7,17 @@ import { useAdminStore, useSiteConfig } from "@/lib/use-admin-store";
 import { Product } from "@/lib/types";
 import { products as defaultProducts } from "@/lib/data";
 import AdminPanel from "@/components/AdminPanel";
+import CraftEditor from "@/components/CraftEditor";
 import AdminGate from "@/components/AdminGate";
 
-type AdminTab = "products" | "builder" | "homepage" | "contact";
+type AdminTab = "products" | "builder" | "homepage" | "contact" | "craft";
 
 const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "products", label: "产品管理", icon: ShoppingBag },
   { key: "builder", label: "定制数据", icon: Palette },
   { key: "homepage", label: "首页编辑", icon: Layout },
   { key: "contact", label: "联系方式", icon: MessageCircle },
+  { key: "craft", label: "工艺页面", icon: Palette },
 ];
 
 function AdminContent() {
@@ -53,6 +55,7 @@ function AdminContent() {
         {activeTab === "builder" && <AdminPanel />}
         {activeTab === "homepage" && <HomepageEditor />}
         {activeTab === "contact" && <ContactEditor />}
+        {activeTab === "craft" && <CraftEditor />}
       </div>
     </div>
   );
