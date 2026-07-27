@@ -260,7 +260,7 @@ export default function BuilderPage() {
                     artisanId === a.id ? "border-charcoal ring-1 ring-charcoal" : "border-line hover:border-charcoal/30"}`}>
                   <p className="text-sm font-medium">{a.name}</p>
                   <p className="text-[10px] text-smoke/60">{a.role}{a.years ? ` · ${a.years} yrs` : ""}</p>
-                  {a.quote && <p className="text-[10px] text-smoke/40 italic mt-2 leading-relaxed">"{a.quote}"</p>}
+                  {a.quote && <p className="text-[10px] text-smoke/40 italic mt-2 leading-relaxed">&ldquo;{a.quote}&rdquo;</p>}
                 </button>
               ))}
             </div>
