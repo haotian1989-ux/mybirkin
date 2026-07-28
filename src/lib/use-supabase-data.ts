@@ -41,7 +41,13 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
 
   useEffect(() => {
     supabase.from(table).select("*").then(({ data, error }) => {
-      if (!error && data && data.length > 0) setItems(data as T[]);
+      if (!error && data && data.length > 0) {
+        if (table === "products") {
+          setItems(data.map((row: any) => ({ ...row, inStock: row.in_stock, newArrival: row.new_arrival })) as T[]);
+        } else {
+          setItems(data as T[]);
+        }
+      }
       setLoaded(true);
     });
   }, [table]);

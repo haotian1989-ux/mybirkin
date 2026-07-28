@@ -12,8 +12,9 @@ import { Product } from "@/lib/types";
 import { products as defaultProducts } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
 
-function useProducts(): Product[] {
+function useProducts(): { products: Product[]; loading: boolean } {
   const [items, setItems] = useState<Product[]>(defaultProducts);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     supabase.from("products").select("*").then(({ data, error }) => {
       if (!error && data && data.length > 0) {
@@ -34,20 +35,22 @@ function useProducts(): Product[] {
           newArrival: row.new_arrival,
         })));
       }
+      setLoaded(true);
     });
   }, []);
-  return items;
+  return { products: items, loading: !loaded };
 }
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
-  const products = useProducts();
+  const { products, loading } = useProducts();
   const product = products.find((p) => p.slug === slug);
   const { dispatch } = useCart();
   const [imgIndex, setImgIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [added, setAdded] = useState(false);
 
+  if (loading) return <div className="page-padding py-20 text-center text-smoke/40">加载中...</div>;
   if (!product) notFound();
 
   const nextImg = () => setImgIndex((i) => (i + 1) % product.images.length);
