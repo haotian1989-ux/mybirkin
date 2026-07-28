@@ -56,10 +56,11 @@ export default function CraftEditor() {
     });
   }, [activePage]);
 
-  const handleSave = async () => {
+  const handleSave = async () => { try {
     await saveToSupabase(activePage, data);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    } catch (e: any) { setSaved(false); alert("发布失败: " + (e.message || "请重试")); }
   };
 
   const updateField = (field: keyof CraftPageData, value: string) => {
@@ -148,7 +149,7 @@ export default function CraftEditor() {
         </div>
 
         <button onClick={handleSave} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>
-          <Save size={14} className="mr-1" />{saved ? "已保存" : "保存"}
+          <Save size={14} className="mr-1" />{saved ? "已发布" : "发布"}
         </button>
       </div>
     </div>

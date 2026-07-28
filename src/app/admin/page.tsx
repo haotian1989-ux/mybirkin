@@ -147,7 +147,7 @@ function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">细节（每行一个）</label><textarea value={form.details.join("\n")} onChange={(e) => upd("details", e.target.value.split("\n").filter(Boolean))} rows={4} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => onSave(form)} className="btn-primary text-xs py-2 px-6"><Save size={14} className="mr-1" /> 保存</button>
+          <button onClick={() => onSave(form)} className="btn-primary text-xs py-2 px-6"><Save size={14} className="mr-1" /> 发布</button>
           <button onClick={onCancel} className="btn-outline text-xs py-2 px-6"><X size={14} className="mr-1" /> 取消</button>
         </div>
       </div>
@@ -181,7 +181,7 @@ function HomepageEditor() {
     try {
       await hero.save(form);
       await sections.save(sections.items);
-      setMsg("已保存！");
+      setMsg("已发布！");
       setTimeout(() => setMsg(""), 2000);
     } catch (e: any) {
       setError(e.message || "保存失败，请重试");
@@ -208,7 +208,7 @@ function HomepageEditor() {
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
-      <button onClick={saveAll} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{msg || "保存首页"}</button>
+      <button onClick={saveAll} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{msg || "发布首页"}</button>
     </div>
   );
 }
@@ -219,6 +219,7 @@ function ContactEditor() {
   const [whatsapp, setWhatsapp] = useState("");
   const [telegram, setTelegram] = useState("");
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (contacts.loaded) {
@@ -227,24 +228,26 @@ function ContactEditor() {
     }
   }, [contacts.loaded, contacts.links]);
 
-  const save = async () => {
+  const save = async () => { setError(""); try {
     const links: any[] = [];
     if (whatsapp.trim()) links.push({ type: "whatsapp", label: "WhatsApp", url: whatsapp.trim() });
     if (telegram.trim()) links.push({ type: "telegram", label: "Telegram", url: telegram.trim() });
     await contacts.save(links);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    } catch (e: any) { setError(e.message || "发布失败"); }
   };
 
   if (!contacts.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
   return (
     <div className="max-w-lg">
       <h2 className="font-serif text-lg mb-1">联系链接</h2><p className="text-xs text-smoke/60 mb-6">悬浮客服按钮链接</p>
+      {error && <p className="text-xs text-red-500 mb-4 bg-red-50 p-3">{error}</p>}
       <div className="space-y-4 mb-6">
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">WhatsApp 链接</label><input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="https://wa.me/1234567890" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal font-mono text-xs" /></div>
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">Telegram 链接</label><input value={telegram} onChange={(e) => setTelegram(e.target.value)} placeholder="https://t.me/yourusername" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal font-mono text-xs" /></div>
       </div>
-      <button onClick={save} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>{saved ? "✓ 已保存" : "保存链接"}</button>
+      <button onClick={save} className={`btn-primary ${saved ? "bg-green-800 border-0" : ""}`}>{saved ? "✓ 已发布" : "发布链接"}</button>
     </div>
   );
 }

@@ -185,7 +185,7 @@ function EditForm({ tab, initial, onSave, onCancel }: { tab: Tab; initial?: any;
         </>)}
       </div>
       <div className="flex gap-2">
-        <button onClick={handleSave} className="btn-primary text-[10px] py-1.5 px-4"><Save size={12} className="mr-1" /> 保存</button>
+        <button onClick={handleSave} className="btn-primary text-[10px] py-1.5 px-4">发布</button>
         <button onClick={onCancel} className="btn-outline text-[10px] py-1.5 px-4"><X size={12} className="mr-1" /> 取消</button>
       </div>
     </div>
