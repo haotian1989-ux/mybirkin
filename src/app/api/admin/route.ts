@@ -13,6 +13,13 @@ const TABLE_MAP: Record<string, string> = {
   homepage_sections: "homepage_sections",
   contact: "contact_links",
   reviews: "reviews",
+  builder_leathers: "builder_leathers",
+  builder_colors: "builder_colors",
+  builder_hardware: "builder_hardware",
+  builder_silhouettes: "builder_silhouettes",
+  builder_artisans: "builder_artisans",
+  craft_pages: "craft_pages",
+  contact_links: "contact_links",
 };
 
 const FIELD_MAP: Record<string, string> = {

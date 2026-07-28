@@ -170,7 +170,16 @@ function HomepageEditor() {
   const [form, setForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { if (hero.loaded && hero.value) setForm((prev: any) => prev || { ...hero.value }); }, [hero.loaded, hero.value]);
+  useEffect(() => { 
+    if (hero.loaded && hero.value) {
+      const v = { ...hero.value };
+      // Convert snake_case to camelCase for form fields
+      const vv = v as any;
+      if (vv.primary_btn_label !== undefined) { vv.primaryBtnLabel = vv.primaryBtnLabel || vv.primary_btn_label; }
+      if (vv.secondary_btn_label !== undefined) { vv.secondaryBtnLabel = vv.secondaryBtnLabel || vv.secondary_btn_label; }
+      setForm((prev: any) => prev || vv);
+    }
+  }, [hero.loaded, hero.value]);
 
   if (!hero.loaded || !sections.loaded || !form) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
 
