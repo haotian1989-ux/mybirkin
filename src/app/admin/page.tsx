@@ -243,7 +243,7 @@ function HomepageEditor() {
           <button onClick={addSection} className="btn-outline text-[10px] gap-1 py-1.5 px-3"><Plus size={12} /> 添加区块</button>
         </div>
         {sections.items.length === 0 ? (
-          <p className="text-xs text-smoke/40 py-6 text-center border border-dashed border-line">暂无区块，点击"添加区块"创建</p>
+          <p className="text-xs text-smoke/40 py-6 text-center border border-dashed border-line">暂无区块，点击「添加区块」创建</p>
         ) : (
           <div className="space-y-3">
             {sections.items.map((sec: any, i: number) => (
