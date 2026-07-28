@@ -56,7 +56,17 @@ function useHeroConfig() {
 
   useEffect(() => {
     supabase.from("homepage_hero").select("*").limit(1).maybeSingle().then(({ data: h }) => {
-      if (h && h.image) setHero(h as any);
+      if (h) {
+        setHero((prev) => ({
+          ...prev,
+          image: h.image || prev.image,
+          tagline: h.tagline || prev.tagline,
+          headline: h.headline || prev.headline,
+          subtext: h.subtext || prev.subtext,
+          primaryBtnLabel: h.primary_btn_label || prev.primaryBtnLabel,
+          secondaryBtnLabel: h.secondary_btn_label || prev.secondaryBtnLabel,
+        }));
+      }
     });
     supabase.from("homepage_sections").select("*").order("sort_order").then(({ data: s }) => {
       if (s && s.length > 0) setPromise(s[0] as any);
