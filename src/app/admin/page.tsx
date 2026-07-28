@@ -162,32 +162,51 @@ function HomepageEditor() {
     tagline: "Handmade in Italy",
     headline: "The Art of Leather",
     subtext: "Each MYBIRKIN piece is handcrafted by a single artisan from start to finish. No assembly lines. No compromises. Just pure, uncompromising craftsmanship.",
-    primaryBtnLabel: "探索系列",
-    secondaryBtnLabel: "匠心工艺",
+    primaryBtnLabel: "Explore Collection",
+    secondaryBtnLabel: "Our Craft",
   });
   const sections = useAdminSections("homepage_sections", []);
   const [msg, setMsg] = useState("");
+  const [error, setError] = useState("");
+  const [form, setForm] = useState<any>(null);
 
-  if (!hero.loaded || !sections.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
-  const saveAll = async () => { await hero.save(hero.value); await sections.save(sections.items); setMsg("已保存！"); setTimeout(() => setMsg(""), 2000); };
+  useEffect(() => { if (hero.loaded) setForm({ ...hero.value }); }, [hero.loaded, hero.value]);
+
+  if (!hero.loaded || !sections.loaded || !form) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
+
+  const upd = (key: string, val: string) => setForm((f: any) => ({ ...f, [key]: val }));
+
+  const saveAll = async () => {
+    setError("");
+    try {
+      await hero.save(form);
+      await sections.save(sections.items);
+      setMsg("已保存！");
+      setTimeout(() => setMsg(""), 2000);
+    } catch (e: any) {
+      setError(e.message || "保存失败，请重试");
+    }
+  };
+
   return (
     <div className="max-w-2xl">
       <h2 className="font-serif text-lg mb-1">主图区域</h2>
       <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
+      {error && <p className="text-xs text-red-500 mb-4 bg-red-50 p-3">{error}</p>}
       <div className="space-y-4 mb-8">
         <div>
           <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片</label>
-          <ImageUploader value={hero.value.image} onChange={(url) => hero.save({ ...hero.value, image: url })} />
-          {hero.value.image && (
+          <ImageUploader value={form.image} onChange={(url) => upd("image", url)} />
+          {form.image && (
             <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50">
-              <img src={hero.value.image} alt="预览" className="w-full h-full object-cover" />
+              <img src={form.image} alt="预览" className="w-full h-full object-cover" />
             </div>
           )}
         </div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标语</label><input value={hero.value.tagline} onChange={(e) => hero.save({ ...hero.value, tagline: e.target.value })} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题</label><textarea value={hero.value.headline} onChange={(e) => hero.save({ ...hero.value, headline: e.target.value })} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={hero.value.subtext} onChange={(e) => hero.save({ ...hero.value, subtext: e.target.value })} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
-        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={hero.value.primaryBtnLabel} onChange={(e) => hero.save({ ...hero.value, primaryBtnLabel: e.target.value })} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={hero.value.secondaryBtnLabel} onChange={(e) => hero.save({ ...hero.value, secondaryBtnLabel: e.target.value })} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标语</label><input value={form.tagline || ""} onChange={(e) => upd("tagline", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题</label><textarea value={form.headline || ""} onChange={(e) => upd("headline", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
+        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
       <button onClick={saveAll} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{msg || "保存首页"}</button>
     </div>
