@@ -1,4 +1,5 @@
 "use client";
+import { optimizeImage } from "@/lib/image";
 
 import { X, Minus, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
@@ -39,7 +40,7 @@ export default function CartDrawer() {
                 <div key={item.product.id} className="flex gap-4 pb-5 border-b border-line">
                   <div className="w-20 h-24 bg-ivory flex-shrink-0">
                     <img
-                      src={item.product.images[0]}
+                      src={optimizeImage(item.product.images[0])}
                       alt={item.product.name}
                       className="w-full h-full object-cover"
                     />

@@ -1,4 +1,5 @@
 "use client";
+import { optimizeImage } from "@/lib/image";
 
 import Link from "next/link";
 import { useCart } from "./CartContext";
@@ -15,7 +16,7 @@ export default function ProductCard({ product }: { product: Product }) {
         className="block relative aspect-[3/4] overflow-hidden bg-ivory/50 mb-5"
       >
         <ImageLightbox
-          src={product.images[0]}
+          src={optimizeImage(product.images[0])}
           alt={product.name}
           className="absolute inset-0"
         />

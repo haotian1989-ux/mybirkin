@@ -1,4 +1,5 @@
 "use client";
+import { optimizeImage } from "@/lib/image";
 
 import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
@@ -71,7 +72,7 @@ export default function ProductPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
         <div>
           <div className="aspect-[3/4] overflow-hidden bg-ivory/50 relative group">
-            {product.images[imgIndex] && <ImageLightbox src={product.images[imgIndex]} alt={product.name} />}
+            {optimizeImage(product.images[imgIndex]) && <ImageLightbox src={optimizeImage(product.images[imgIndex])} alt={product.name} />}
             {product.images.length > 1 && (
               <>
                 <button onClick={prevImg} className="absolute left-4 top-1/2 -translate-y-1/2 bg-paper/90 backdrop-blur p-2.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"><ChevronLeft size={16} /></button>
@@ -84,7 +85,7 @@ export default function ProductPage() {
             <div className="flex gap-2 mt-3">
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setImgIndex(i)} className={`w-16 h-20 flex-shrink-0 ${i === imgIndex ? "ring-1 ring-charcoal ring-offset-2" : "opacity-50 hover:opacity-80"}`}>
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={optimizeImage(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

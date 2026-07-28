@@ -1,3 +1,4 @@
+import { optimizeImage } from "@/lib/image";
 "use client";
 
 import { useState, useEffect } from "react";

@@ -1,4 +1,5 @@
 "use client";
+import { optimizeImage } from "@/lib/image";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -56,7 +57,7 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
                 <div>
                   <h3 className="font-serif text-xl md:text-2xl mb-2">{b.title}</h3>
                   <p className="body-text whitespace-pre-line">{b.description}</p>
-                  {b.image && <img src={b.image} alt={b.title} className="mt-4 w-full max-w-md" />}
+                  {b.image && <img src={optimizeImage(b.image)} alt={b.title} className="mt-4 w-full max-w-md" />}
                   {b.videoUrl && (
                     <div className="mt-4 aspect-video max-w-md">
                       <iframe src={b.videoUrl} className="w-full h-full" allowFullScreen />
@@ -73,7 +74,7 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
                 <div className={i % 2 === 1 ? "md:[direction:ltr]" : ""}>
                   <div className="aspect-[4/5] overflow-hidden">
                     {b.image ? (
-                      <ImageLightbox src={b.image} alt={b.title} />
+                      <ImageLightbox src={optimizeImage(b.image)} alt={b.title} />
                     ) : (
                       <div className="w-full h-full bg-ivory/50" />
                     )}
@@ -98,7 +99,7 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
               <div key={b.id} className="group">
                 {b.image && (
                   <div className="aspect-[4/5] overflow-hidden mb-6 bg-ivory/50 group">
-                    <ImageLightbox src={b.image} alt={b.title} className="grayscale group-hover:grayscale-0 transition-all duration-600" />
+                    <ImageLightbox src={optimizeImage(b.image)} alt={b.title} className="grayscale group-hover:grayscale-0 transition-all duration-600" />
                   </div>
                 )}
                 <h3 className="font-serif text-xl mb-0.5">{b.title}</h3>

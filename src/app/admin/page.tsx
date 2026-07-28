@@ -159,11 +159,11 @@ function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave
 function HomepageEditor() {
   const hero = useAdminSupabaseSingle("homepage_hero", true, {
     image: "",
-    tagline: "Handmade in Italy",
-    headline: "The Art of Leather",
-    subtext: "Each MYBIRKIN piece is handcrafted by a single artisan from start to finish. No assembly lines. No compromises. Just pure, uncompromising craftsmanship.",
-    primaryBtnLabel: "Explore Collection",
-    secondaryBtnLabel: "Our Craft",
+    tagline: "意大利手工 · 始于2024",
+    headline: "皮革艺术\n匠心之作",
+    subtext: "每一件 MYBIRKIN 作品均由匠人独立手工完成。无流水线，无妥协，只有纯粹无暇的工艺。",
+    primaryBtnLabel: "探索系列",
+    secondaryBtnLabel: "匠心工艺",
   });
   const sections = useAdminSections("homepage_sections", []);
   const [msg, setMsg] = useState("");

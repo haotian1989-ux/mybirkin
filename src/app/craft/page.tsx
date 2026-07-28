@@ -1,4 +1,5 @@
 "use client";
+import { optimizeImage } from "@/lib/image";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -50,7 +51,7 @@ export default function CraftPage() {
               const href = subPages[i] ? `/craft/${subPages[i]}` : "#";
               return (
                 <Link key={b.id} href={href} className="group relative aspect-[4/5] overflow-hidden">
-                  {b.image && <img src={b.image} alt={b.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
+                  {b.image && <img src={optimizeImage(b.image)} alt={b.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-charcoal/20 to-transparent flex flex-col justify-end p-8 md:p-10">
                     <h2 className="font-serif text-2xl md:text-3xl text-paper mb-2">{b.title}</h2>
                     <p className="text-sm text-paper/60 max-w-xs">{b.description}</p>
