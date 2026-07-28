@@ -216,6 +216,7 @@ function HomepageEditor() {
 
   return (
     <div className="max-w-2xl">
+      <div className="bg-amber-100 border border-amber-300 text-amber-800 text-xs px-3 py-2 mb-4">🔧 下方可编辑首页区块（排序/增删）— 往下滚动查看</div>
       <h2 className="font-serif text-lg mb-1">主图区域</h2>
       <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
       <div className="space-y-4 mb-8">
