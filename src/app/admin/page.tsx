@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, ArrowUp, ArrowDown } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
 import { Product } from "@/lib/types";
 import ImageUploader from "@/components/ImageUploader";
@@ -171,6 +171,7 @@ function HomepageEditor() {
     secondaryBtnLabel: "匠心工艺",
   });
   const sections = useAdminSections("homepage_sections", []);
+  const { moveUp, moveDown, addSection, removeSection, updateSection } = sections;
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
@@ -178,10 +179,22 @@ function HomepageEditor() {
   useEffect(() => { 
     if (hero.loaded && hero.value) {
       const v = { ...hero.value };
-      // Convert snake_case to camelCase for form fields
       const vv = v as any;
+      // Map snake_case → camelCase
       if (vv.primary_btn_label !== undefined) { vv.primaryBtnLabel = vv.primaryBtnLabel || vv.primary_btn_label; }
       if (vv.secondary_btn_label !== undefined) { vv.secondaryBtnLabel = vv.secondaryBtnLabel || vv.secondary_btn_label; }
+      // Fill empty fields with defaults
+      const defaults: any = {
+        image: "",
+        tagline: "意大利手工 · 始于2024",
+        headline: "皮革艺术\n匠心之作",
+        subtext: "每一件 MYBIRKIN 作品均由匠人独立手工完成。无流水线，无妥协，只有纯粹无暇的工艺。",
+        primaryBtnLabel: "探索系列",
+        secondaryBtnLabel: "匠心工艺",
+      };
+      for (const key of Object.keys(defaults)) {
+        if (!vv[key] && defaults[key]) vv[key] = defaults[key];
+      }
       setForm((prev: any) => prev || vv);
     }
   }, [hero.loaded, hero.value]);
@@ -220,7 +233,41 @@ function HomepageEditor() {
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
-      <button onClick={saveAll} disabled={saving} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "发布中..." : (msg || "发布首页")}</button>
+      {/* 首页区块 */}
+      <div className="border-t border-line pt-8 mt-8">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h2 className="font-serif text-lg">首页区块</h2>
+            <p className="text-xs text-smoke/60">拖拽排序暂不支持，请用上下箭头调整顺序</p>
+          </div>
+          <button onClick={addSection} className="btn-outline text-[10px] gap-1 py-1.5 px-3"><Plus size={12} /> 添加区块</button>
+        </div>
+        {sections.items.length === 0 ? (
+          <p className="text-xs text-smoke/40 py-6 text-center border border-dashed border-line">暂无区块，点击"添加区块"创建</p>
+        ) : (
+          <div className="space-y-3">
+            {sections.items.map((sec: any, i: number) => (
+              <div key={i} className="p-4 border border-line/50 space-y-3">
+                <div className="flex items-center gap-1">
+                  <span className="text-[10px] text-smoke/40 w-6">#{i + 1}</span>
+                  <button onClick={() => moveUp(i)} disabled={i === 0} className="p-1 text-smoke/30 hover:text-charcoal disabled:opacity-20" title="上移"><ArrowUp size={14} /></button>
+                  <button onClick={() => moveDown(i)} disabled={i === sections.items.length - 1} className="p-1 text-smoke/30 hover:text-charcoal disabled:opacity-20" title="下移"><ArrowDown size={14} /></button>
+                  <div className="flex-1" />
+                  <button onClick={() => removeSection(i)} className="p-1 text-smoke/30 hover:text-red-500" title="删除"><Trash2 size={14} /></button>
+                </div>
+                <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">标题</label><input value={sec.title || ""} onChange={(e) => updateSection(i, "title", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
+                <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label><textarea value={sec.description || ""} onChange={(e) => updateSection(i, "description", e.target.value)} rows={2} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal resize-none" /></div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">图片 URL</label><input value={sec.image || ""} onChange={(e) => updateSection(i, "image", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
+                  <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">链接</label><input value={sec.link || ""} onChange={(e) => updateSection(i, "link", e.target.value)} placeholder="/shop?category=handbags" className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <button onClick={saveAll} disabled={saving} className={`btn-primary mt-6 ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "发布中..." : (msg || "发布首页")}</button>
     </div>
   );
 }

@@ -126,7 +126,37 @@ export function useAdminSections(table: string, defaults: any[]) {
     return res.success ? null : (res.error || "保存失败");
   }, [table]);
 
-  return { items, loaded, save };
+  const moveUp = useCallback((index: number) => {
+    if (index <= 0) return;
+    setItems((prev) => {
+      const next = [...prev];
+      [next[index - 1], next[index]] = [next[index], next[index - 1]];
+      return next;
+    });
+  }, []);
+
+  const moveDown = useCallback((index: number) => {
+    setItems((prev) => {
+      if (index >= prev.length - 1) return prev;
+      const next = [...prev];
+      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+      return next;
+    });
+  }, []);
+
+  const addSection = useCallback(() => {
+    setItems((prev) => [...prev, { title: "", description: "", image: "", link: "", sort_order: prev.length }]);
+  }, []);
+
+  const removeSection = useCallback((index: number) => {
+    setItems((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const updateSection = useCallback((index: number, field: string, value: string) => {
+    setItems((prev) => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  }, []);
+
+  return { items, loaded, save, moveUp, moveDown, addSection, removeSection, updateSection };
 }
 
 export function useAdminContact(defaultLinks: any[]) {
