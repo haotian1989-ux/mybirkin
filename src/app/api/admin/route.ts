@@ -127,8 +127,19 @@ export async function POST(req: NextRequest) {
 
   
 
+  console.log('[API] action=' + action + ' table=' + table + ' id=' + id);
+  if (action === 'update' || action === 'add') {
+    const snake = toSnakeRow(data, table);
+    console.log('[API] data keys:', Object.keys(data).join(','), '→ snake keys:', Object.keys(snake).join(','));
+    if (table === 'products') {
+      console.log('[API] product booleans:', { inStock: data.inStock, featured: data.featured, newArrival: data.newArrival },
+        '→', { in_stock: snake.in_stock, featured: snake.featured, new_arrival: snake.new_arrival });
+    }
+  }
+
   try {
   const supabase = getServiceSupabase();
+    let result;
     if (action === "save_all") {
       // Replace all rows for this table (used for array-type data)
       await supabase.from(dbTable).delete().neq("id", "__never_match__");
@@ -168,6 +179,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    console.log('[API] success for', action, table);
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

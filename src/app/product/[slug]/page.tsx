@@ -12,12 +12,16 @@ import { Product } from "@/lib/types";
 import { products as defaultProducts } from "@/lib/data";
 import { supabase } from "@/lib/supabase";
 
-function useProducts(): { products: Product[]; loading: boolean } {
+function useProducts(): { products: Product[]; loading: boolean; error: string | null } {
   const [items, setItems] = useState<Product[]>(defaultProducts);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data, error }) => {
-      if (!error && data && data.length > 0) {
+    supabase.from("products").select("*").then(({ data, error: supaErr }) => {
+      if (supaErr) {
+        console.error("Supabase fetch error:", supaErr);
+        setError("数据库连接失败: " + supaErr.message);
+      } else if (data && data.length > 0) {
         setItems(data.map((row: any) => ({
           id: row.id,
           name: row.name,
@@ -38,18 +42,19 @@ function useProducts(): { products: Product[]; loading: boolean } {
       setLoaded(true);
     });
   }, []);
-  return { products: items, loading: !loaded };
+  return { products: items, loading: !loaded, error };
 }
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { products, loading } = useProducts();
+  const { products, loading, error } = useProducts();
   const product = products.find((p) => p.slug === slug);
   const { dispatch } = useCart();
   const [imgIndex, setImgIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [added, setAdded] = useState(false);
 
+  if (error) return <div className="page-padding py-20 text-center text-red-500">❌ {error}</div>;
   if (loading) return <div className="page-padding py-20 text-center text-smoke/40">加载中...</div>;
   if (!product) notFound();
 
