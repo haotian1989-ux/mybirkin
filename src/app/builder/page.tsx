@@ -1,5 +1,6 @@
 "use client";
 
+import { supabase } from "@/lib/supabase";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -11,26 +12,17 @@ import {
 } from "@/lib/builder-data";
 import AdminPanel from "@/components/AdminPanel";
 
-function useStored<T>(key: string, defaults: T[]): [T[], boolean] {
+function useSupabaseStored<T>(table: string, defaults: T[]): [T[], boolean] {
   const [items, setItems] = useState<T[]>(defaults);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(key);
-      if (raw) { const p = JSON.parse(raw); if (Array.isArray(p) && p.length > 0) { setItems(p); setLoaded(true); return; } }
-    } catch {}
-    setItems(defaults);
-    localStorage.setItem(key, JSON.stringify(defaults));
-    setLoaded(true);
-    const onStorage = () => {
-      try {
-        const r = localStorage.getItem(key);
-        if (r) { const p = JSON.parse(r); if (Array.isArray(p) && p.length > 0) setItems(p); }
-      } catch {}
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, [key, defaults]);
+    import("@/lib/supabase").then(({ supabase }) => {
+      supabase.from(table).select("*").then(({ data, error }) => {
+        if (!error && data && data.length > 0) setItems(data as T[]);
+        setLoaded(true);
+      });
+    });
+  }, [table]);
   return [items, loaded];
 }
 
@@ -48,11 +40,11 @@ export default function BuilderPage() {
   const [artisanId, setArtisan] = useState("");
   const [showAdmin, setShowAdmin] = useState(false);
 
-  const [leathers] = useStored<LeatherType>("myb_admin_leathers", defaultLeatherTypes as any);
-  const [colors] = useStored<ColorOption>("myb_admin_colors", defaultColors);
-  const [hardwares] = useStored<HardwareOption>("myb_admin_hardware", defaultHardware as any);
-  const [silhouettes] = useStored<SilhouetteOption>("myb_admin_silhouettes", defaultSilhouettes as any);
-  const [artisans] = useStored<ArtisanOption>("myb_admin_artisans", defaultArtisans as any);
+  const [leathers] = useSupabaseStored<LeatherType>("builder_leathers", defaultLeatherTypes as any);
+  const [colors] = useSupabaseStored<ColorOption>("builder_colors", defaultColors);
+  const [hardwares] = useSupabaseStored<HardwareOption>("builder_hardware", defaultHardware as any);
+  const [silhouettes] = useSupabaseStored<SilhouetteOption>("builder_silhouettes", defaultSilhouettes as any);
+  const [artisans] = useSupabaseStored<ArtisanOption>("builder_artisans", defaultArtisans as any);
 
   const leather = leathers.find((l: any) => l.id === leatherId);
   const hw = hardwares.find((h: any) => h.id === hardwareId);
