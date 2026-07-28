@@ -11,7 +11,7 @@ export function optimizeImage(url: string): string {
 
   // Unsplash：自动格式 + 质量
   if (url.includes("images.unsplash.com")) {
-    if (url.includes("auto=format")) return url;
+    if (url.includes("auto=format") || url.includes("q=80")) return url;
     const sep = url.includes("?") ? "&" : "?";
     return `${url}${sep}q=80&auto=format`;
   }
