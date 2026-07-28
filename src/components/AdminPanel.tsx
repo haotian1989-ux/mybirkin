@@ -79,9 +79,9 @@ export default function AdminPanel() {
   const current = stores[activeTab];
   if (!current.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
 
-  const handleDelete = async (id: string) => { await current.remove(id); if (editingId === id) setEditingId(null); };
-  const handleAdd = async (item: any) => { await current.add(item); setShowAdd(false); };
-  const handleUpdate = async (id: string, updates: any) => { await current.update(id, updates); setEditingId(null); };
+  const handleDelete = async (id: string) => { const err = await current.remove(id); if (err) { alert("删除失败: " + err); return; } if (editingId === id) setEditingId(null); };
+  const handleAdd = async (item: any) => { const err = await current.add(item); if (err) { alert("添加失败: " + err); return; } setShowAdd(false); };
+  const handleUpdate = async (id: string, updates: any) => { const err = await current.update(id, updates); if (err) { alert("更新失败: " + err); return; } setEditingId(null); };
 
   return (
     <div>

@@ -56,11 +56,14 @@ export default function CraftEditor() {
     });
   }, [activePage]);
 
-  const handleSave = async () => { try {
-    await saveToSupabase(activePage, data);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    } catch (e: any) { setSaved(false); alert("发布失败: " + (e.message || "请重试")); }
+  const handleSave = async () => {
+    try {
+      await saveToSupabase(activePage, data);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e: any) {
+      alert("发布失败: " + (e.message || "请重试"));
+    }
   };
 
   const updateField = (field: keyof CraftPageData, value: string) => {

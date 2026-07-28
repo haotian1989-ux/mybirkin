@@ -3,72 +3,36 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabase";
 
-/* ── 公开读取 hooks ── */
-
-export function useSupabaseQuery<T>(table: string, defaultValue: T) {
-  const [value, setValue] = useState<T>(defaultValue);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    supabase.from(table).select("*").then(({ data, error }) => {
-      if (!error && data && data.length > 0) {
-        setValue(data as T);
-      }
-      setLoaded(true);
-    });
-  }, [table]);
-
-  return { value, loaded };
-}
-
-export function useSupabaseArray<T>(table: string, defaults: T[]) {
-  const [items, setItems] = useState<T[]>(defaults);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    supabase.from(table).select("*").then(({ data, error }) => {
-      if (!error && data && data.length > 0) {
-        setItems(data as T[]);
-      }
-      setLoaded(true);
-    });
-  }, [table]);
-
-  return { items, loaded };
-}
-
-export function useSupabaseSingle<T extends Record<string, any>>(table: string, id: string, defaultValue: T) {
-  const [value, setValue] = useState<T>(defaultValue);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    supabase.from(table).select("*").eq("id", id).single().then(({ data, error }) => {
-      if (!error && data) setValue(data as T);
-      setLoaded(true);
-    });
-  }, [table, id]);
-
-  return { value, loaded };
-}
-
-/* ── Admin 写操作 ── */
-
 const ADMIN_PASSWORD = "mybirkin2024";
 
-async function adminFetch(table: string, action: string, data?: any, id?: string) {
-  const res = await fetch("/api/admin", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-admin-password": ADMIN_PASSWORD,
-    },
-    body: JSON.stringify({ table, action, data, id }),
-  });
-  if (!res.ok) {
-    const { error } = await res.json();
-    throw new Error(error || "请求失败");
+async function adminFetch(table: string, action: string, data?: any, id?: string): Promise<{ success: boolean; error?: string }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+  
+  try {
+    const res = await fetch("/api/admin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-password": ADMIN_PASSWORD,
+      },
+      body: JSON.stringify({ table, action, data, id }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    
+    const json = await res.json();
+    if (!res.ok) {
+      return { success: false, error: json.error || `HTTP ${res.status}` };
+    }
+    return json;
+  } catch (e: any) {
+    clearTimeout(timeout);
+    if (e.name === "AbortError") {
+      return { success: false, error: "请求超时，请检查网络" };
+    }
+    return { success: false, error: e.message || "网络错误" };
   }
-  return res.json();
 }
 
 export function useAdminSupabaseList<T extends { id: string }>(table: string, defaults: T[]) {
@@ -82,27 +46,31 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
     });
   }, [table]);
 
-  const saveAll = useCallback(async (newItems: T[]) => {
+  const saveAll = useCallback(async (newItems: T[]): Promise<string | null> => {
     setItems(newItems);
-    await adminFetch(table, "save_all", newItems);
+    const res = await adminFetch(table, "save_all", newItems);
+    return res.success ? null : (res.error || "保存失败");
   }, [table]);
 
-  const add = useCallback(async (item: T) => {
+  const add = useCallback(async (item: T): Promise<string | null> => {
     const next = [...items, item];
     setItems(next);
-    await adminFetch(table, "add", item);
+    const res = await adminFetch(table, "add", item);
+    return res.success ? null : (res.error || "添加失败");
   }, [items, table]);
 
-  const remove = useCallback(async (id: string) => {
+  const remove = useCallback(async (id: string): Promise<string | null> => {
     const next = items.filter((i) => i.id !== id);
     setItems(next);
-    await adminFetch(table, "delete", null, id);
+    const res = await adminFetch(table, "delete", null, id);
+    return res.success ? null : (res.error || "删除失败");
   }, [items, table]);
 
-  const update = useCallback(async (id: string, updates: Partial<T>) => {
+  const update = useCallback(async (id: string, updates: Partial<T>): Promise<string | null> => {
     const next = items.map((i) => i.id === id ? { ...i, ...updates } : i);
     setItems(next);
-    await adminFetch(table, "update", { ...items.find((i) => i.id === id), ...updates }, id);
+    const res = await adminFetch(table, "update", { ...items.find((i) => i.id === id), ...updates }, id);
+    return res.success ? null : (res.error || "更新失败");
   }, [items, table]);
 
   return { items, loaded, saveAll, add, remove, update };
@@ -113,24 +81,23 @@ export function useAdminSupabaseSingle<T extends Record<string, any>>(table: str
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const col = typeof id === "boolean" ? "id" : "page";
-    const val = typeof id === "boolean" ? "true" : id;
     if (typeof id === "boolean") {
       supabase.from(table).select("*").limit(1).maybeSingle().then(({ data, error }) => {
         if (!error && data) setValue(data as T);
         setLoaded(true);
       });
     } else {
-      supabase.from(table).select("*").eq(col, val).maybeSingle().then(({ data, error }) => {
+      supabase.from(table).select("*").eq("page", id).maybeSingle().then(({ data, error }) => {
         if (!error && data) setValue(data as T);
         setLoaded(true);
       });
     }
   }, [table, id]);
 
-  const save = useCallback(async (v: T) => {
+  const save = useCallback(async (v: T): Promise<string | null> => {
     setValue(v);
-    await adminFetch(table, "upsert", v);
+    const res = await adminFetch(table, "upsert", v);
+    return res.success ? null : (res.error || "发布失败");
   }, [table]);
 
   return { value, loaded, save };
@@ -147,9 +114,10 @@ export function useAdminSections(table: string, defaults: any[]) {
     });
   }, [table]);
 
-  const save = useCallback(async (newItems: any[]) => {
+  const save = useCallback(async (newItems: any[]): Promise<string | null> => {
     setItems(newItems);
-    await adminFetch(table, "save_homepage_sections", newItems);
+    const res = await adminFetch(table, "save_homepage_sections", newItems);
+    return res.success ? null : (res.error || "保存失败");
   }, [table]);
 
   return { items, loaded, save };
@@ -166,9 +134,10 @@ export function useAdminContact(defaultLinks: any[]) {
     });
   }, []);
 
-  const save = useCallback(async (newLinks: any[]) => {
+  const save = useCallback(async (newLinks: any[]): Promise<string | null> => {
     setLinks(newLinks);
-    await adminFetch("contact", "save_contact", newLinks);
+    const res = await adminFetch("contact", "save_contact", newLinks);
+    return res.success ? null : (res.error || "保存失败");
   }, []);
 
   return { links, loaded, save };

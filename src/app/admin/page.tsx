@@ -88,7 +88,7 @@ function ProductManager() {
           className="btn-primary text-[10px] gap-1 py-2 px-4"><Plus size={12} /> 添加产品</button>
       </div>
       {(editing || adding) && (
-        <ProductEditor product={editing!} onSave={(p) => { if (adding) { products.add(p); setAdding(false); } else products.update(p.id, p); setEditing(null); }} onCancel={() => { setEditing(null); setAdding(false); }} />
+        <ProductEditor product={editing!} onSave={async (p) => { if (adding) { const err = await products.add(p); if (err) { alert("添加失败: " + err); return; } setAdding(false); } else { const err = await products.update(p.id, p); if (err) { alert("更新失败: " + err); return; } setEditing(null); } }} onCancel={() => { setEditing(null); setAdding(false); }} />
       )}
       <div className="space-y-1">
         {products.items.map((p) => (
@@ -106,7 +106,7 @@ function ProductManager() {
               <p className="text-xs text-smoke">${p.price.toLocaleString()}{!p.inStock ? " · 已售罄" : ""}</p>
             </div>
             <button onClick={() => setEditing({ ...p })} className="p-1.5 text-smoke/30 hover:text-charcoal"><Edit3 size={14} /></button>
-            <button onClick={() => products.remove(p.id)} className="p-1.5 text-smoke/30 hover:text-red-500"><Trash2 size={14} /></button>
+            <button onClick={async () => { const err = await products.remove(p.id); if (err) alert("删除失败: " + err); }} className="p-1.5 text-smoke/30 hover:text-red-500"><Trash2 size={14} /></button>
           </div>
         ))}
       </div>
@@ -167,48 +167,46 @@ function HomepageEditor() {
   });
   const sections = useAdminSections("homepage_sections", []);
   const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
   const [form, setForm] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
 
-  useEffect(() => { if (hero.loaded) setForm({ ...hero.value }); }, [hero.loaded, hero.value]);
+  useEffect(() => { if (hero.loaded && !form) setForm({ ...hero.value }); }, [hero.loaded]);
 
   if (!hero.loaded || !sections.loaded || !form) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
 
   const upd = (key: string, val: string) => setForm((f: any) => ({ ...f, [key]: val }));
 
   const saveAll = async () => {
-    setError("");
-    try {
-      await hero.save(form);
-      await sections.save(sections.items);
-      setMsg("已发布！");
-      setTimeout(() => setMsg(""), 2000);
-    } catch (e: any) {
-      setError(e.message || "保存失败，请重试");
-    }
+    setSaving(true);
+    const heroErr = await hero.save(form);
+    if (heroErr) { alert("\u9996\u9875\u53d1\u5e03\u5931\u8d25: " + heroErr); setSaving(false); return; }
+    const secErr = await sections.save(sections.items);
+    if (secErr) { alert("\u9996\u9875\u53d1\u5e03\u5931\u8d25: " + secErr); setSaving(false); return; }
+    setMsg("\u5df2\u53d1\u5e03\uff01");
+    setSaving(false);
+    setTimeout(() => setMsg(""), 2000);
   };
 
   return (
     <div className="max-w-2xl">
-      <h2 className="font-serif text-lg mb-1">主图区域</h2>
-      <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
-      {error && <p className="text-xs text-red-500 mb-4 bg-red-50 p-3">{error}</p>}
+      <h2 className="font-serif text-lg mb-1">\u4e3b\u56fe\u533a\u57df</h2>
+      <p className="text-xs text-smoke/60 mb-6">\u9996\u9875\u4e3b\u6a2a\u5e45</p>
       <div className="space-y-4 mb-8">
         <div>
-          <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片</label>
-          <ImageUploader value={form.image} onChange={(url) => upd("image", url)} />
+          <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u80cc\u666f\u56fe\u7247</label>
+          <ImageUploader value={form.image || ""} onChange={(url) => upd("image", url)} />
           {form.image && (
             <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50">
-              <img src={form.image} alt="预览" className="w-full h-full object-cover" />
+              <img src={form.image} alt="\u9884\u89c8" className="w-full h-full object-cover" />
             </div>
           )}
         </div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标语</label><input value={form.tagline || ""} onChange={(e) => upd("tagline", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题</label><textarea value={form.headline || ""} onChange={(e) => upd("headline", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
-        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u6807\u8bed</label><input value={form.tagline || ""} onChange={(e) => upd("tagline", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u6807\u9898</label><textarea value={form.headline || ""} onChange={(e) => upd("headline", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u526f\u6807\u9898</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
+        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u4e3b\u6309\u94ae</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u526f\u6309\u94ae</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
-      <button onClick={saveAll} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{msg || "发布首页"}</button>
+      <button onClick={saveAll} disabled={saving} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "\u53d1\u5e03\u4e2d..." : (msg || "\u53d1\u5e03\u9996\u9875")}</button>
     </div>
   );
 }
@@ -228,14 +226,14 @@ function ContactEditor() {
     }
   }, [contacts.loaded, contacts.links]);
 
-  const save = async () => { setError(""); try {
+  const save = async () => { setSaved(false);
     const links: any[] = [];
     if (whatsapp.trim()) links.push({ type: "whatsapp", label: "WhatsApp", url: whatsapp.trim() });
     if (telegram.trim()) links.push({ type: "telegram", label: "Telegram", url: telegram.trim() });
-    await contacts.save(links);
+    const err = await contacts.save(links);
+    if (err) { alert("\u53d1\u5e03\u5931\u8d25: " + err); return; }
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
-    } catch (e: any) { setError(e.message || "发布失败"); }
   };
 
   if (!contacts.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
