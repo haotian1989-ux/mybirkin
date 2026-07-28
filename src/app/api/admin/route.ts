@@ -118,9 +118,10 @@ export async function POST(req: NextRequest) {
   const dbTable = TABLE_MAP[table];
   if (!dbTable) return NextResponse.json({ error: "未知表" }, { status: 400 });
 
-  const supabase = getServiceSupabase();
+  
 
   try {
+  const supabase = getServiceSupabase();
     if (action === "save_all") {
       // Replace all rows for this table (used for array-type data)
       await supabase.from(dbTable).delete().neq("id", "__never_match__");
