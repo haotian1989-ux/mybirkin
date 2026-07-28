@@ -170,7 +170,7 @@ function HomepageEditor() {
   const [form, setForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => { if (hero.loaded && !form) setForm({ ...hero.value }); }, [hero.loaded]);
+  useEffect(() => { if (hero.loaded && hero.value) setForm((prev: any) => prev || { ...hero.value }); }, [hero.loaded, hero.value]);
 
   if (!hero.loaded || !sections.loaded || !form) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
 
