@@ -179,38 +179,37 @@ function HomepageEditor() {
   const saveAll = async () => {
     setSaving(true);
     const heroErr = await hero.save(form);
-    if (heroErr) { alert("\u9996\u9875\u53d1\u5e03\u5931\u8d25: " + heroErr); setSaving(false); return; }
+    if (heroErr) { alert("首页发布失败: " + heroErr); setSaving(false); return; }
     const secErr = await sections.save(sections.items);
-    if (secErr) { alert("\u9996\u9875\u53d1\u5e03\u5931\u8d25: " + secErr); setSaving(false); return; }
-    setMsg("\u5df2\u53d1\u5e03\uff01");
+    if (secErr) { alert("首页发布失败: " + secErr); setSaving(false); return; }
+    setMsg("已发布！");
     setSaving(false);
     setTimeout(() => setMsg(""), 2000);
   };
 
   return (
     <div className="max-w-2xl">
-      <h2 className="font-serif text-lg mb-1">\u4e3b\u56fe\u533a\u57df</h2>
-      <p className="text-xs text-smoke/60 mb-6">\u9996\u9875\u4e3b\u6a2a\u5e45</p>
+      <h2 className="font-serif text-lg mb-1">主图区域</h2>
+      <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
       <div className="space-y-4 mb-8">
         <div>
-          <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u80cc\u666f\u56fe\u7247</label>
+          <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片</label>
           <ImageUploader value={form.image || ""} onChange={(url) => upd("image", url)} />
           {form.image && (
             <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50">
-              <img src={form.image} alt="\u9884\u89c8" className="w-full h-full object-cover" />
+              <img src={form.image} alt="预览" className="w-full h-full object-cover" />
             </div>
           )}
         </div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u6807\u8bed</label><input value={form.tagline || ""} onChange={(e) => upd("tagline", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u6807\u9898</label><textarea value={form.headline || ""} onChange={(e) => upd("headline", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
-        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u526f\u6807\u9898</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
-        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u4e3b\u6309\u94ae</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">\u526f\u6309\u94ae</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标语</label><input value={form.tagline || ""} onChange={(e) => upd("tagline", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">标题</label><textarea value={form.headline || ""} onChange={(e) => upd("headline", e.target.value)} rows={2} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none font-serif text-lg" /></div>
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
+        <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
-      <button onClick={saveAll} disabled={saving} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "\u53d1\u5e03\u4e2d..." : (msg || "\u53d1\u5e03\u9996\u9875")}</button>
+      <button onClick={saveAll} disabled={saving} className={`btn-primary ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "发布中..." : (msg || "发布首页")}</button>
     </div>
   );
 }
-
 // ── Contact Editor ──
 function ContactEditor() {
   const contacts = useAdminContact([]);
