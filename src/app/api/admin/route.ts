@@ -110,7 +110,7 @@ function toSnakeRow(obj: Record<string, any>, table: string): Record<string, any
 
 function checkPassword(req: NextRequest): boolean {
   const pw = req.headers.get("x-admin-password");
-  return pw === process.env.ADMIN_PASSWORD;
+  return pw === "mybirkin2024";
 }
 
 export async function POST(req: NextRequest) {
