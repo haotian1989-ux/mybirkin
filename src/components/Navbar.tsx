@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ShoppingBag, Menu, X, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "./CartContext";
@@ -15,6 +16,7 @@ const links = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { itemCount, dispatch } = useCart();
 
@@ -42,6 +44,7 @@ export default function Navbar() {
             <Link
               key={l.href}
               href={l.href}
+              onClick={(e) => { e.preventDefault(); router.push(l.href); }}
               className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300"
             >
               {l.label}
@@ -87,7 +90,7 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => { e.preventDefault(); router.push(l.href); setMobileOpen(false); }}
                 className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5"
               >
                 {l.label}
