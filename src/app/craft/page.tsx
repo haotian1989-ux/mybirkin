@@ -33,7 +33,7 @@ export default function CraftPage() {
     <>
       <section className="relative h-[50vh] min-h-[400px] flex items-center">
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
-        <img src={data.heroImage} alt="Workshop" className="absolute inset-0 w-full h-full object-cover" />
+        {data.heroImage && <img src={data.heroImage} alt="Workshop" className="absolute inset-0 w-full h-full object-cover" />}
         <div className="relative z-20 page-padding">
           <p className="section-label mb-3 text-gold">{data.heroTagline}</p>
           <h1 className="font-serif text-display text-paper">{data.heroTitle}</h1>

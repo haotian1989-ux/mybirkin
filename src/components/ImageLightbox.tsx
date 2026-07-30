@@ -11,6 +11,7 @@ interface ImageLightboxProps {
 }
 
 export default function ImageLightbox({ src, alt, className = "", hover = true }: ImageLightboxProps) {
+  if (!src) return <div className={className} />;
   const [open, setOpen] = useState(false);
   const [zoomed, setZoomed] = useState(false);
 

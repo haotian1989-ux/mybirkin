@@ -1,7 +1,7 @@
 // 图片优化：自动格式 + 智能压缩，保持原始尺寸
 
 export function optimizeImage(url: string): string {
-  if (!url) return url;
+  if (!url) return "";
 
   // Cloudinary：f_auto 自动 WebP/AVIF，q_auto 智能压缩
   if (url.includes("res.cloudinary.com") || url.includes("cloudinary.com")) {
