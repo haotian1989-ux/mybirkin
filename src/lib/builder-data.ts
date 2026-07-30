@@ -52,7 +52,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "pebbled",
     characteristics: "Soft, lightweight calfskin with a fine, even grain. Resilient and scratch-resistant. The most popular choice for everyday bags.",
     bestFor: "Totes, shoulder bags, everyday pieces",
-    image: "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&q=85",
+    image: "",
   },
   {
     id: "epsom",
@@ -61,7 +61,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "textured",
     characteristics: "Embossed calfskin with a rigid structure. Holds its shape beautifully. Lightweight and rain-resistant.",
     bestFor: "Structured bags, clutches, pieces that need to hold form",
-    image: "https://images.unsplash.com/photo-1523287562758-26cd0b08580a?w=400&q=85",
+    image: "",
   },
   {
     id: "clemence",
@@ -70,7 +70,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "pebbled",
     characteristics: "Bullcalf with a larger, flatter grain than Togo. Supple with a beautiful slouch. Develops a rich patina over time.",
     bestFor: "Slouchy totes, backpacks, relaxed silhouettes",
-    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=85",
+    image: "",
   },
   {
     id: "swift",
@@ -79,7 +79,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "smooth",
     characteristics: "Extremely soft calfskin with a fine grain and subtle sheen. Takes color vibrantly. Luxuriously supple.",
     bestFor: "Clutches, evening bags, pieces that showcase color",
-    image: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=400&q=85",
+    image: "",
   },
   {
     id: "box",
@@ -88,7 +88,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "smooth",
     characteristics: "Smooth, glossy calfskin with a mirror-like finish. The most formal and traditional leather. Scratches develop into a beautiful patina.",
     bestFor: "Formal handbags, briefcases, heirloom pieces",
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=85",
+    image: "",
   },
   {
     id: "barenia",
@@ -97,7 +97,7 @@ export const defaultLeatherTypes: LeatherType[] = [
     grain: "matte",
     characteristics: "Smooth natural calfskin with a matte finish. Absorbs oils and develops a deep, personal patina unique to each owner. The most organic leather.",
     bestFor: "Heritage pieces, bags meant to be passed down",
-    image: "https://images.unsplash.com/photo-1590736969955-71cc94901144?w=400&q=85",
+    image: "",
   },
 ];
 
@@ -123,18 +123,18 @@ export const defaultHardware: HardwareOption[] = [
 ];
 
 export const defaultSilhouettes: SilhouetteOption[] = [
-  { id: "tote-30", name: "The Tote 30", desc: "Structured tote with magnetic closure. Detachable shoulder strap.", dimensions: "30cm × 24cm × 14cm · Handle drop 10cm", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=85", basePrice: 980 },
-  { id: "tote-36", name: "The Tote 36", desc: "Larger tote for everyday. Same structure, more room.", dimensions: "36cm × 28cm × 16cm · Handle drop 12cm", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=85", basePrice: 1180 },
-  { id: "shoulder", name: "The Shoulder Bag", desc: "Crescent silhouette. Day to night. Double handles + crossbody strap.", dimensions: "28cm × 20cm × 10cm · Strap 105-120cm", image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=85", basePrice: 860 },
-  { id: "clutch", name: "The Clutch", desc: "Evening clutch. Wave-edge top. Silk interior. Optional chain.", dimensions: "22cm × 14cm × 5cm", image: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=500&q=85", basePrice: 720 },
-  { id: "backpack", name: "The Backpack", desc: "Refined backpack. Roll-top. Padded laptop sleeve.", dimensions: "40cm × 30cm × 15cm · Fits 16\(quote\) laptop", image: "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=500&q=85", basePrice: 1280 },
-  { id: "crossbody", name: "The Crossbody", desc: "Compact, hands-free. Adjustable strap. Multiple compartments.", dimensions: "22cm × 16cm × 7cm · Strap 95-125cm", image: "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?w=500&q=85", basePrice: 680 },
+  { id: "tote-30", name: "The Tote 30", desc: "Structured tote with magnetic closure. Detachable shoulder strap.", dimensions: "30cm × 24cm × 14cm · Handle drop 10cm", image: "", basePrice: 980 },
+  { id: "tote-36", name: "The Tote 36", desc: "Larger tote for everyday. Same structure, more room.", dimensions: "36cm × 28cm × 16cm · Handle drop 12cm", image: "", basePrice: 1180 },
+  { id: "shoulder", name: "The Shoulder Bag", desc: "Crescent silhouette. Day to night. Double handles + crossbody strap.", dimensions: "28cm × 20cm × 10cm · Strap 105-120cm", image: "", basePrice: 860 },
+  { id: "clutch", name: "The Clutch", desc: "Evening clutch. Wave-edge top. Silk interior. Optional chain.", dimensions: "22cm × 14cm × 5cm", image: "", basePrice: 720 },
+  { id: "backpack", name: "The Backpack", desc: "Refined backpack. Roll-top. Padded laptop sleeve.", dimensions: "40cm × 30cm × 15cm · Fits 16\(quote\) laptop", image: "", basePrice: 1280 },
+  { id: "crossbody", name: "The Crossbody", desc: "Compact, hands-free. Adjustable strap. Multiple compartments.", dimensions: "22cm × 16cm × 7cm · Strap 95-125cm", image: "", basePrice: 680 },
 ];
 
 export const defaultArtisans: ArtisanOption[] = [
-  { id: "marco", name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\(quote\)I read the hide before I ever pick up the knife.\(quote\)", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face" },
-  { id: "elena", name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\(quote\)Each saddle stitch is a conversation between my hands and the leather.\(quote\)", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face" },
-  { id: "paolo", name: "Paolo Conti", role: "Edge & Finish Master", years: 18, quote: "\(quote\)The edge is where true quality reveals itself. Six layers, no shortcuts.\(quote\)", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face" },
-  { id: "sofia", name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\(quote\)Everything must align. One millimeter off and the whole piece is gone.\(quote\)", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face" },
-  { id: "giovanni", name: "Giovanni Ferro", role: "Pattern & Design", years: 25, quote: "\(quote\)The pattern is the soul of the bag. Every curve, every proportion — intentional.\(quote\)", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face" },
+  { id: "marco", name: "Marco Bellini", role: "Master Leather Cutter", years: 28, quote: "\(quote\)I read the hide before I ever pick up the knife.\(quote\)", image: "" },
+  { id: "elena", name: "Elena Rossi", role: "Master Stitcher", years: 22, quote: "\(quote\)Each saddle stitch is a conversation between my hands and the leather.\(quote\)", image: "" },
+  { id: "paolo", name: "Paolo Conti", role: "Edge & Finish Master", years: 18, quote: "\(quote\)The edge is where true quality reveals itself. Six layers, no shortcuts.\(quote\)", image: "" },
+  { id: "sofia", name: "Sofia Bianchi", role: "Hardware & Assembly", years: 15, quote: "\(quote\)Everything must align. One millimeter off and the whole piece is gone.\(quote\)", image: "" },
+  { id: "giovanni", name: "Giovanni Ferro", role: "Pattern & Design", years: 25, quote: "\(quote\)The pattern is the soul of the bag. Every curve, every proportion — intentional.\(quote\)", image: "" },
 ];

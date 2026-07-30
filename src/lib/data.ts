@@ -20,9 +20,9 @@ export const products: Product[] = [
     dimensions: "32 × 24 × 14 cm / Handle drop 10 cm",
     colors: ["Noir", "Cognac", "Ivory"],
     images: [
-      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800",
-      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800",
-      "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=800",
+      "",
+      "",
+      "",
     ],
     inStock: true,
     featured: true,
@@ -46,8 +46,8 @@ export const products: Product[] = [
     dimensions: "22 × 14 × 5 cm",
     colors: ["Onyx", "Ruby", "Sapphire"],
     images: [
-      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800",
-      "https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?w=800",
+      "",
+      "",
     ],
     inStock: true,
     featured: true,
@@ -71,8 +71,8 @@ export const products: Product[] = [
     dimensions: "28 × 20 × 10 cm / Strap 105–120 cm",
     colors: ["Taupe", "Burgundy", "Forest"],
     images: [
-      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800",
-      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800",
+      "",
+      "",
     ],
     inStock: true,
     featured: false,
@@ -97,8 +97,8 @@ export const products: Product[] = [
     dimensions: "40 × 30 × 15 cm (closed) / 50 cm (extended)",
     colors: ["Tobacco", "Black"],
     images: [
-      "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800",
-      "https://images.unsplash.com/photo-1491637639811-60e2756cc1c7?w=800",
+      "",
+      "",
     ],
     inStock: true,
     featured: true,
@@ -121,7 +121,7 @@ export const products: Product[] = [
     dimensions: "18 cm total length",
     colors: ["Noir", "Cognac", "Ivory", "Ruby"],
     images: [
-      "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=800",
+      "",
     ],
     inStock: true,
     featured: true,
@@ -144,7 +144,7 @@ export const products: Product[] = [
     dimensions: "15 cm total length",
     colors: ["Blush", "Sage", "Midnight"],
     images: [
-      "https://images.unsplash.com/photo-1608236415053-3691791ac335?w=800",
+      "",
     ],
     inStock: true,
     featured: false,
@@ -169,8 +169,8 @@ export const products: Product[] = [
     dimensions: "Width 2.5 cm / S: 30–38, M: 38–48, L: 48–58 cm",
     colors: ["Noir", "Cognac", "Burgundy"],
     images: [
-      "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800",
-      "https://images.unsplash.com/photo-1576201836106-db1758fd1c97?w=800",
+      "",
+      "",
     ],
     inStock: true,
     featured: true,
@@ -194,7 +194,7 @@ export const products: Product[] = [
     dimensions: "120 cm length / 1.5 cm diameter",
     colors: ["Noir", "Cognac", "Burgundy"],
     images: [
-      "https://images.unsplash.com/photo-1568572933382-74d440642117?w=800",
+      "",
     ],
     inStock: true,
     featured: false,
@@ -219,7 +219,7 @@ export const products: Product[] = [
     dimensions: "S: chest 40–50 / M: chest 50–65 / L: chest 65–80 cm",
     colors: ["Noir", "Cognac"],
     images: [
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800",
+      "",
     ],
     inStock: true,
     featured: true,

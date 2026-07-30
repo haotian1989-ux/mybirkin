@@ -149,9 +149,9 @@ export default function Home() {
         <h2 className="section-title text-center mb-16">Our Collections</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1.5">
           {[
-            { title: "Handbags", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=85", href: "/shop?category=handbags" },
-            { title: "Charms & Accents", image: "https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=700&q=85", href: "/shop?category=charms" },
-            { title: "Pet Collection", image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=700&q=85", href: "/shop?category=pet" },
+            { title: "Handbags", image: "", href: "/shop?category=handbags" },
+            { title: "Charms & Accents", image: "", href: "/shop?category=charms" },
+            { title: "Pet Collection", image: "", href: "/shop?category=pet" },
           ].map((cat) => (
             <Link key={cat.title} href={cat.href} className="group relative aspect-[4/5] overflow-hidden">
               <img src={cat.image} alt={cat.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
