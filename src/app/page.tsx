@@ -56,7 +56,6 @@ function useHeroConfig() {
 
   useEffect(() => {
     supabase.from("homepage_hero").select("*").limit(1).maybeSingle().then(({ data: h }) => {
-      console.log('[Homepage] Supabase hero data:', h);
       if (h) {
         setHero((prev) => ({
           ...prev,
