@@ -70,7 +70,7 @@ export default function FloatingContact() {
           transition-all duration-400 ease-out
           ${open
             ? "bg-charcoal text-paper rotate-90 scale-110"
-            : "bg-charcoal text-paper hover:bg-gold hover:text-charcoal hover:scale-110"
+            : "bg-[#25D366] text-white hover:bg-[#1ea952] hover:scale-110"
           }
         `}
         aria-label={open ? "Close contact" : "Contact us"}
@@ -79,7 +79,7 @@ export default function FloatingContact() {
       </button>
 
       {!open && (
-        <div className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-charcoal/20 animate-ping pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-14 h-14 rounded-full bg-[#25D366]/30 animate-ping pointer-events-none" />
       )}
     </div>
   );
