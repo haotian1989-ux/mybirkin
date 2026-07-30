@@ -44,6 +44,7 @@ function useHeroConfig() {
     primaryBtnLabel: "Explore Collection",
     secondaryBtnLabel: "Our Craft",
   });
+  const [sections, setSections] = useState<any[]>([]);
   const [promise, setPromise] = useState({
     promiseTitle: "The MYBIRKIN Promise",
     promise1Title: "Italian Leather",
@@ -69,16 +70,19 @@ function useHeroConfig() {
       }
     });
     supabase.from("homepage_sections").select("*").order("sort_order").then(({ data: s }) => {
-      if (s && s.length > 0) setPromise(s[0] as any);
+      if (s && s.length > 0) {
+        setPromise(s[0] as any);
+      }
+      setSections(s || []);
     });
   }, []);
 
-  return { hero, promise };
+  return { hero, promise, sections };
 }
 
 export default function Home() {
   const products = useProducts();
-  const { hero, promise } = useHeroConfig();
+  const { hero, promise, sections } = useHeroConfig();
 
   const featured = products.filter((p) => p.featured);
   const newArrivals = products.filter((p) => p.newArrival);
