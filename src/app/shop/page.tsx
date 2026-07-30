@@ -53,6 +53,11 @@ function ShopContent() {
   const initialCat = searchParams.get("category") as ProductCategory | null;
 
   const [activeCat, setActiveCat] = useState<ProductCategory | "all">(initialCat || "all");
+
+  useEffect(() => {
+    const cat = searchParams.get("category") as ProductCategory | null;
+    if (cat) setActiveCat(cat);
+  }, [searchParams]);
   const [sort, setSort] = useState("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [showFilters, setShowFilters] = useState(false);
