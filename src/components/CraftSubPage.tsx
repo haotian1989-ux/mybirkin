@@ -7,8 +7,9 @@ import { CraftPageData, DEFAULT_CRAFT } from "@/lib/craft-data";
 import { supabase } from "@/lib/supabase";
 import ImageLightbox from "./ImageLightbox";
 
-function usePageData(key: string): CraftPageData {
+function usePageData(key: string): { data: CraftPageData; loaded: boolean } {
   const [data, setData] = useState<CraftPageData>(DEFAULT_CRAFT[key] || DEFAULT_CRAFT.overview);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     supabase.from("craft_pages").select("*").eq("page", key).maybeSingle().then(({ data: row, error }) => {
       if (!error && row) {
@@ -20,22 +21,23 @@ function usePageData(key: string): CraftPageData {
           blocks: row.blocks || [],
         });
       }
+      setLoaded(true);
     });
   }, [key]);
-  return data;
+  return { data, loaded };
 }
 
 export default function CraftSubPage({ pageKey }: { pageKey: string }) {
-  const data = usePageData(pageKey);
+  const { data, loaded } = usePageData(pageKey);
 
   const hasImages = data.blocks.some((b) => b.image);
   const isProcess = pageKey === "process";
 
   return (
     <>
-      <section className="relative h-[45vh] min-h-[350px] flex items-center">
+      <section className="relative h-[45vh] min-h-[350px] flex items-center bg-ivory">
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
-        <img src={data.heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        {loaded && <img src={data.heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />}
         <div className="relative z-20 page-padding">
           <p className="section-label mb-3 text-gold">{data.heroTagline}</p>
           <h1 className="font-serif text-display text-paper">{data.heroTitle}</h1>
