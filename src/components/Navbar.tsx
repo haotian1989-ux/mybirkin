@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ShoppingBag, Menu, X, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "./CartContext";
@@ -16,7 +15,6 @@ const links = [
 ];
 
 export default function Navbar() {
-  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { itemCount, dispatch } = useCart();
 
@@ -41,14 +39,13 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-10">
             <Link href="/" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-charcoal hover:text-gold transition-colors py-1.5 font-medium">Home</Link>
           {links.map((l) => (
-            <Link
+            <a
               key={l.href}
               href={l.href}
-              onClick={(e) => { e.preventDefault(); router.push(l.href); }}
               className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300"
             >
               {l.label}
-            </Link>
+            </a>
           ))}
         </div>
 
@@ -87,14 +84,14 @@ export default function Navbar() {
           <div className="page-padding py-5 flex flex-col gap-4">
             <Link href="/" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-charcoal hover:text-gold transition-colors py-1.5 font-medium">Home</Link>
             {links.map((l) => (
-              <Link
+              <a
                 key={l.href}
                 href={l.href}
-                onClick={(e) => { e.preventDefault(); router.push(l.href); setMobileOpen(false); }}
+                onClick={() => setMobileOpen(false)}
                 className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5"
               >
                 {l.label}
-              </Link>
+              </a>
             ))}
             <div className="pt-3 border-t border-line mt-1">
               <button
