@@ -56,6 +56,7 @@ function useHeroConfig() {
 
   useEffect(() => {
     supabase.from("homepage_hero").select("*").limit(1).maybeSingle().then(({ data: h }) => {
+      console.log('[Homepage] Supabase hero data:', h);
       if (h) {
         setHero((prev) => ({
           ...prev,
@@ -99,10 +100,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/shop" className="btn-primary bg-paper text-charcoal hover:bg-gold hover:text-charcoal border-0">
-              {hero.primaryBtnLabel}
+              {hero.primaryBtnLabel || '探索系列'}
             </Link>
             <Link href="/craft" className="btn-outline border-paper/30 text-paper hover:bg-paper/10 hover:border-paper/50">
-              {hero.secondaryBtnLabel}
+              {hero.secondaryBtnLabel || '匠心工艺'}
             </Link>
           </div>
         </div>
@@ -195,3 +196,4 @@ export default function Home() {
     </>
   );
 }
+
