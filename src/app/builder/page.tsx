@@ -39,6 +39,15 @@ export default function BuilderPage() {
   const [silhouetteId, setSilhouette] = useState("");
   const [artisanId, setArtisan] = useState("");
   const [showAdmin, setShowAdmin] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState("");
+
+  useEffect(() => {
+    import("@/lib/supabase").then(({ supabase }) => {
+      supabase.from("contact_links").select("*").eq("type", "whatsapp").maybeSingle().then(({ data }) => {
+        if (data?.url) setWhatsappUrl(data.url);
+      });
+    });
+  }, []);
 
   const [leathers] = useSupabaseStored<LeatherType>("builder_leathers", defaultLeatherTypes as any);
   const [colors] = useSupabaseStored<ColorOption>("builder_colors", defaultColors);
@@ -278,9 +287,16 @@ export default function BuilderPage() {
               Next <ArrowRight size={14} className="ml-2" />
             </button>
           ) : (
-            <Link href="/checkout" onClick={handleAddToCart} className="btn-primary">
-              Add to Bag — ${totalPrice.toLocaleString()}
-            </Link>
+            <div className="flex gap-3">
+              {whatsappUrl && (
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn-outline">
+                  💬 WhatsApp 客服
+                </a>
+              )}
+              <Link href="/checkout" onClick={handleAddToCart} className="btn-primary">
+                Add to Bag — ${totalPrice.toLocaleString()}
+              </Link>
+            </div>
           )}
         </div>
 
