@@ -47,3 +47,7 @@
     text-wrap: balance;
   }
 }
+/* Hide alt text while image is loading */
+img {
+  color: transparent;
+}
