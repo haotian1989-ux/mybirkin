@@ -88,8 +88,8 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative h-[90vh] min-h-[650px] flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10" />
+      <section className="relative h-[90vh] min-h-[650px] flex items-center bg-ivory">
+        <div className={`absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10 transition-opacity duration-700 ${heroReady ? "opacity-100" : "opacity-0"}`} />
         {heroReady && <img src={hero.image || "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1800&q=85"} alt="Hero" className="absolute inset-0 w-full h-full object-cover animate-fadeIn" />}
         <div className={`relative z-20 page-padding max-w-2xl transition-opacity duration-500 ${heroReady ? "opacity-100" : "opacity-0"}`}>
           <p className="section-label mb-6 tracking-label">{hero.tagline}</p>
