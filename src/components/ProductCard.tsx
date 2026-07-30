@@ -6,7 +6,7 @@ import { useCart } from "./CartContext";
 import { Product } from "@/lib/types";
 import ImageLightbox from "./ImageLightbox";
 
-export default function ProductCard({ product, loaded = true }: { product: Product; loaded?: boolean }) {
+export default function ProductCard({ product }: { product: Product }) {
   const { dispatch } = useCart();
 
   return (
@@ -15,15 +15,11 @@ export default function ProductCard({ product, loaded = true }: { product: Produ
         href={`/product/${product.slug}`}
         className="block relative aspect-[3/4] overflow-hidden bg-ivory/50 mb-5"
       >
-        {loaded && product.images[0] ? (
-          <ImageLightbox
-            src={optimizeImage(product.images[0])}
-            alt={product.name}
-            className="absolute inset-0"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-ivory/80 animate-pulse" />
-        )}
+        <ImageLightbox
+          src={optimizeImage(product.images[0])}
+          alt={product.name}
+          className="absolute inset-0"
+        />
         {product.newArrival && (
           <span className="absolute top-4 left-4 bg-paper/90 backdrop-blur px-3 py-1.5 text-[10px] tracking-label uppercase text-charcoal">
             New Arrival

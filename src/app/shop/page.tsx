@@ -21,9 +21,8 @@ const sortOptions = [
   { label: "Price: High to Low", value: "price-desc" },
 ];
 
-function useProducts(): { products: Product[]; loaded: boolean } {
+function useProducts(): Product[] {
   const [items, setItems] = useState<Product[]>(defaultProducts);
-  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     supabase.from("products").select("*").then(({ data, error }) => {
       if (!error && data && data.length > 0) {
@@ -45,9 +44,8 @@ function useProducts(): { products: Product[]; loaded: boolean } {
         })));
       }
     });
-    setLoaded(true);
   }, []);
-  return { products: items, loaded };
+  return items;
 }
 
 function ShopContent() {
@@ -64,7 +62,7 @@ function ShopContent() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const { products, loaded } = useProducts();
+  const products = useProducts();
 
   const filtered = useMemo(() => {
     let result = activeCat === "all" ? [...products] : products.filter((p) => p.category === activeCat);
@@ -116,7 +114,7 @@ function ShopContent() {
         <div className="flex-1">
           <p className="text-xs text-smoke/50 tracking-label uppercase mb-6">{filtered.length} Products</p>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-            {filtered.map((p) => (<ProductCard key={p.id} product={p} loaded={loaded} />))}
+            {filtered.map((p) => (<ProductCard key={p.id} product={p} />))}
           </div>
           {filtered.length === 0 && (
             <div className="text-center py-24 text-smoke">
