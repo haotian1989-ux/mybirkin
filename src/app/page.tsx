@@ -44,7 +44,6 @@ function useHeroConfig() {
     primaryBtnLabel: "Explore Collection",
     secondaryBtnLabel: "Our Craft",
   });
-  const [heroReady, setHeroReady] = useState(false);
   const [promise, setPromise] = useState({
     promiseTitle: "The MYBIRKIN Promise",
     promise1Title: "Italian Leather",
@@ -68,19 +67,18 @@ function useHeroConfig() {
           secondaryBtnLabel: h.secondary_btn_label || prev.secondaryBtnLabel,
         }));
       }
-      setHeroReady(true);
     });
     supabase.from("homepage_sections").select("*").order("sort_order").then(({ data: s }) => {
       if (s && s.length > 0) setPromise(s[0] as any);
     });
   }, []);
 
-  return { hero, promise, heroReady };
+  return { hero, promise };
 }
 
 export default function Home() {
   const products = useProducts();
-  const { hero, promise, heroReady } = useHeroConfig();
+  const { hero, promise } = useHeroConfig();
 
   const featured = products.filter((p) => p.featured);
   const newArrivals = products.filter((p) => p.newArrival);
@@ -88,10 +86,10 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative h-[90vh] min-h-[650px] flex items-center bg-ivory">
-        <div className={`absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10 transition-opacity duration-700 ${heroReady ? "opacity-100" : "opacity-0"}`} />
-        {heroReady && <img src={hero.image || "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1800&q=85"} alt="Hero" className="absolute inset-0 w-full h-full object-cover animate-fadeIn" />}
-        <div className={`relative z-20 page-padding max-w-2xl transition-opacity duration-500 ${heroReady ? "opacity-100" : "opacity-0"}`}>
+      <section className="relative h-[90vh] min-h-[650px] flex items-center">
+        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10" />
+        <img src={hero.image} alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="relative z-20 page-padding max-w-2xl">
           <p className="section-label mb-6 tracking-label">{hero.tagline}</p>
           <h1 className="font-serif text-display text-paper mb-8 text-balance whitespace-pre-line">
             {hero.headline}

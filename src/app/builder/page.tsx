@@ -49,7 +49,7 @@ export default function BuilderPage() {
     });
   }, []);
 
-  const [leathers, leathersLoaded] = useSupabaseStored<LeatherType>("builder_leathers", defaultLeatherTypes as any);
+  const [leathers] = useSupabaseStored<LeatherType>("builder_leathers", defaultLeatherTypes as any);
   const [colors] = useSupabaseStored<ColorOption>("builder_colors", defaultColors);
   const [hardwares] = useSupabaseStored<HardwareOption>("builder_hardware", defaultHardware as any);
   const [silhouettes] = useSupabaseStored<SilhouetteOption>("builder_silhouettes", defaultSilhouettes as any);
@@ -148,7 +148,7 @@ export default function BuilderPage() {
                     leatherId === l.id ? "border-charcoal ring-1 ring-charcoal" : "border-line hover:border-charcoal/30"}`}>
                   {l.image && (
                     <div className="aspect-[3/2] overflow-hidden bg-ivory/50">
-                      <img src={l.image} alt={l.name} className={`w-full h-full object-cover transition-opacity duration-500 ${leathersLoaded ? "opacity-100" : "opacity-0"}`} />
+                      <img src={l.image} alt={l.name} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className="p-4">
