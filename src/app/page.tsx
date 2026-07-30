@@ -89,9 +89,9 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="relative h-[90vh] min-h-[650px] flex items-center bg-ivory">
-        {heroReady && <div className="absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10" />}
-        {heroReady && <img src={hero.image} alt="Hero" className="absolute inset-0 w-full h-full object-cover" />}
-        <div className="relative z-20 page-padding max-w-2xl">
+        <div className={`absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10 transition-opacity duration-300 ${heroReady ? "opacity-100" : "opacity-0"}`} />
+        <img src={hero.image} alt="Hero" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${heroReady ? "opacity-100" : "opacity-0"}`} />
+        <div className={`relative z-20 page-padding max-w-2xl transition-opacity duration-300 ${heroReady ? "opacity-100" : "opacity-0"}`}>
           <p className="section-label mb-6 tracking-label">{hero.tagline}</p>
           <h1 className="font-serif text-display text-paper mb-8 text-balance whitespace-pre-line">
             {hero.headline}

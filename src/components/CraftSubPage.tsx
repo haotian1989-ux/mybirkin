@@ -37,7 +37,7 @@ export default function CraftSubPage({ pageKey }: { pageKey: string }) {
     <>
       <section className="relative h-[45vh] min-h-[350px] flex items-center bg-ivory">
         <div className="absolute inset-0 bg-charcoal/55 z-10" />
-        {loaded && <img src={data.heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />}
+        <img src={data.heroImage} alt="" className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`} />
         <div className="relative z-20 page-padding">
           <p className="section-label mb-3 text-gold">{data.heroTagline}</p>
           <h1 className="font-serif text-display text-paper">{data.heroTitle}</h1>

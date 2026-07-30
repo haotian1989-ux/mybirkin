@@ -147,10 +147,8 @@ export default function BuilderPage() {
                   className={`text-left border transition-all duration-300 overflow-hidden ${
                     leatherId === l.id ? "border-charcoal ring-1 ring-charcoal" : "border-line hover:border-charcoal/30"}`}>
                   <div className="aspect-[3/2] overflow-hidden bg-ivory/50">
-                    {leathersLoaded && l.image ? (
-                      <img src={l.image} alt={l.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-ivory" />
+                    {l.image && (
+                      <img src={l.image} alt={l.name} className={`w-full h-full object-cover transition-opacity duration-300 ${leathersLoaded ? "opacity-100" : "opacity-0"}`} />
                     )}
                   </div>
                   <div className="p-4">
