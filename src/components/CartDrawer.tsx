@@ -1,12 +1,22 @@
 "use client";
 import { optimizeImage } from "@/lib/image";
 
-import { X, Minus, Plus, Trash2 } from "lucide-react";
+import { X, Minus, Plus, Trash2, MessageCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 
 export default function CartDrawer() {
   const { state, dispatch, itemCount, total } = useCart();
+  const [whatsappUrl, setWhatsappUrl] = useState("");
+
+  useEffect(() => {
+    supabase.from("contact_links").select("*").then(({ data }) => {
+      const wa = (data || []).find((l: any) => l.type === "whatsapp");
+      if (wa?.url) setWhatsappUrl(wa.url);
+    });
+  }, []);
 
   if (!state.isOpen) return null;
 
@@ -99,6 +109,17 @@ export default function CartDrawer() {
             >
               Proceed to Checkout
             </Link>
+            {whatsappUrl && (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary w-full mt-3 bg-[#25D366] border-[#25D366] hover:bg-[#1ea952] hover:border-[#1ea952] text-white flex items-center justify-center gap-2"
+              >
+                <MessageCircle size={16} />
+                Contact via WhatsApp
+              </a>
+            )}
             <button
               onClick={() => dispatch({ type: "CLOSE_CART" })}
               className="text-xs text-smoke/50 underline underline-offset-4 hover:text-charcoal transition-colors w-full text-center mt-4"
