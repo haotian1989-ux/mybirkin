@@ -7,9 +7,54 @@ interface ImageUploaderProps {
   value: string;
   onChange: (url: string) => void;
   label?: string;
+  compress?: boolean;
+  maxWidth?: number;
+  quality?: number;
 }
 
-export default function ImageUploader({ value, onChange, label }: ImageUploaderProps) {
+async function compressImage(file: File, maxWidth: number, quality: number): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      // Skip compression if image is already small
+      if (img.width <= maxWidth) {
+        resolve(file);
+        return;
+      }
+      
+      const ratio = maxWidth / img.width;
+      const width = maxWidth;
+      const height = Math.round(img.height * ratio);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(file); return; }
+      
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) resolve(blob);
+          else resolve(file); // fallback to original
+        },
+        "image/jpeg",
+        quality
+      );
+    };
+    img.onerror = () => resolve(file); // fallback on error
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+export default function ImageUploader({ 
+  value, onChange, label,
+  compress = true,
+  maxWidth = 1500,
+  quality = 0.85,
+}: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -19,8 +64,19 @@ export default function ImageUploader({ value, onChange, label }: ImageUploaderP
 
     setUploading(true);
     try {
+      let uploadFile: File | Blob = file;
+
+      if (compress) {
+        const compressed = await compressImage(file, maxWidth, quality);
+        if (compressed !== file) {
+          uploadFile = new File([compressed], file.name.replace(/\.[^.]+$/, ".jpg"), {
+            type: "image/jpeg",
+          });
+        }
+      }
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", uploadFile);
       formData.append("upload_preset", "mybirkin_uploads");
 
       const res = await fetch(

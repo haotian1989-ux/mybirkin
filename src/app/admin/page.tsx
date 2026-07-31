@@ -225,7 +225,7 @@ function HomepageEditor() {
       <div className="space-y-4 mb-8">
         <div>
           <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">背景图片</label>
-          <ImageUploader value={form.image || ""} onChange={(url) => upd("image", url)} />
+          <ImageUploader value={form.image || ""} onChange={(url) => upd("image", url)} compress={false} />
           {form.image && (
             <div className="mt-2 aspect-[21/9] overflow-hidden bg-ivory/50">
               <img src={form.image} alt="预览" className="w-full h-full object-cover" />
