@@ -220,8 +220,7 @@ function HomepageEditor() {
 
   return (
     <div className="max-w-2xl">
-      <div className="bg-amber-100 border border-amber-300 text-amber-800 text-xs px-3 py-2 mb-4">🔧 下方可编辑首页区块（排序/增删）— 往下滚动查看</div>
-      <h2 className="font-serif text-lg mb-1">主图区域</h2>
+<h2 className="font-serif text-lg mb-1">主图区域</h2>
       <p className="text-xs text-smoke/60 mb-6">首页主横幅</p>
       <div className="space-y-4 mb-8">
         <div>
@@ -242,13 +241,13 @@ function HomepageEditor() {
       <div className="border-t border-line pt-8 mt-8">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h2 className="font-serif text-lg">首页区块</h2>
-            <p className="text-xs text-smoke/60">拖拽排序暂不支持，请用上下箭头调整顺序</p>
+            <h2 className="font-serif text-lg">Our Collections 区块</h2>
+            <p className="text-xs text-smoke/60">首页「Our Collections」栏目的内容。上下箭头调整顺序</p>
           </div>
           <button onClick={addSection} className="btn-outline text-[10px] gap-1 py-1.5 px-3"><Plus size={12} /> 添加区块</button>
         </div>
         {sections.items.length === 0 ? (
-          <p className="text-xs text-smoke/40 py-6 text-center border border-dashed border-line">暂无区块，点击「添加区块」创建</p>
+          <p className="text-xs text-smoke/40 py-6 text-center border border-dashed border-line">暂无区块，点击「添加区块」创建新的 Collection 卡片</p>
         ) : (
           <div className="space-y-3">
             {sections.items.map((sec: any, i: number) => (
