@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { X, ZoomIn, ZoomOut } from "lucide-react";
+import { optimizeImage } from "@/lib/image";
 
 interface ImageLightboxProps {
   src: string;
@@ -13,6 +14,7 @@ interface ImageLightboxProps {
 export default function ImageLightbox({ src, alt, className = "", hover = true }: ImageLightboxProps) {
   const [open, setOpen] = useState(false);
   const [zoomed, setZoomed] = useState(false);
+  const optimizedSrc = optimizeImage(src);
 
   const toggleLightbox = useCallback(() => setOpen((o) => !o), []);
   const toggleZoom = useCallback((e: React.MouseEvent) => {
@@ -20,7 +22,7 @@ export default function ImageLightbox({ src, alt, className = "", hover = true }
     setZoomed((z) => !z);
   }, []);
 
-  if (!src) return <div className={className} />;
+  if (!optimizedSrc) return <div className={className} />;
 
   return (
     <>
@@ -29,7 +31,7 @@ export default function ImageLightbox({ src, alt, className = "", hover = true }
         onClick={toggleLightbox}
       >
         <img
-          src={src}
+          src={optimizedSrc}
           alt={alt}
           className={`w-full h-full object-cover ${
             hover ? "hover:scale-105 transition-transform duration-700 ease-out" : ""
@@ -60,7 +62,7 @@ export default function ImageLightbox({ src, alt, className = "", hover = true }
             {zoomed ? <ZoomOut size={24} strokeWidth={1} /> : <ZoomIn size={24} strokeWidth={1} />}
           </button>
           <img
-            src={src}
+            src={optimizedSrc}
             alt={alt}
             onClick={toggleZoom}
             className={`max-w-full max-h-full object-contain transition-transform duration-300 ${

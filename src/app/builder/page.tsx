@@ -11,6 +11,8 @@ import {
   LeatherType, ColorOption, HardwareOption, SilhouetteOption, ArtisanOption,
 } from "@/lib/builder-data";
 import AdminPanel from "@/components/AdminPanel";
+import { optimizeImage } from "@/lib/image";
+
 
 function useSupabaseStored<T>(table: string, defaults: T[]): [T[], boolean] {
   const [items, setItems] = useState<T[]>(defaults);
@@ -148,7 +150,7 @@ export default function BuilderPage() {
                     leatherId === l.id ? "border-charcoal ring-1 ring-charcoal" : "border-line hover:border-charcoal/30"}`}>
                   {l.image && (
                     <div className="aspect-[3/2] overflow-hidden bg-ivory/50">
-                      <img src={l.image} alt={l.name} className="w-full h-full object-cover" />
+                      <img src={optimizeImage(l.image)} alt={l.name} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className="p-4">

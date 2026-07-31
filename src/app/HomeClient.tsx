@@ -3,6 +3,8 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/lib/types";
+import { optimizeImage } from "@/lib/image";
+
 
 interface PromiseItem {
   title: string;
@@ -36,7 +38,7 @@ export default function HomeClient({
       {/* Hero */}
       <section className="relative h-[90vh] min-h-[650px] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal/50 via-charcoal/30 to-charcoal/10 z-10" />
-        {heroImage && <img src={heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" />}
+        {heroImage && <img src={optimizeImage(heroImage)} alt="" className="absolute inset-0 w-full h-full object-cover" />}
         <div className="relative z-20 page-padding max-w-2xl">
           <p className="section-label mb-6 tracking-label">{heroTagline}</p>
           <h1 className="font-serif text-display text-paper mb-8 text-balance whitespace-pre-line">
@@ -97,7 +99,7 @@ export default function HomeClient({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1.5">
             {sections.map((sec: any, i: number) => (
               <Link key={i} href={sec.link || "#"} className="group relative aspect-[4/5] overflow-hidden bg-ivory/50">
-                {sec.image && <img src={sec.image} alt={sec.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
+                {sec.image && <img src={optimizeImage(sec.image)} alt={sec.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent flex items-end p-8">
                   <h3 className="font-serif text-2xl md:text-3xl text-paper tracking-wide">{sec.title}</h3>
                 </div>
