@@ -38,7 +38,11 @@ async function fetchHomeData() {
     heroSubtext: heroRow?.subtext || "Bespoke leather goods handcrafted to order by master artisans. Italian full-grain leather, timeless design, made exclusively for you.",
     heroPrimaryBtn: heroRow?.primary_btn_label || "Explore Collection",
     heroSecondaryBtn: heroRow?.secondary_btn_label || "Our Craft",
-    sections: sections || [],
+    sections: (sections && sections.length > 0) ? sections : [
+      { title: "Handbags", description: "Explore our handbag collection", image: "", link: "/shop?category=handbags", sort_order: 0 },
+      { title: "Charms & Accents", description: "Discover our charms", image: "", link: "/shop?category=charms", sort_order: 1 },
+      { title: "Pet Collection", description: "Shop pet accessories", image: "", link: "/shop?category=pet", sort_order: 2 },
+    ],
     products: mappedProducts,
   };
 }

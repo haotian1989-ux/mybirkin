@@ -170,7 +170,11 @@ function HomepageEditor() {
     primaryBtnLabel: "探索系列",
     secondaryBtnLabel: "匠心工艺",
   });
-  const sections = useAdminSections("homepage_sections", []);
+  const sections = useAdminSections("homepage_sections", [
+    { title: "Handbags", description: "Explore our handbag collection", image: "", link: "/shop?category=handbags", sort_order: 0 },
+    { title: "Charms & Accents", description: "Discover our charms", image: "", link: "/shop?category=charms", sort_order: 1 },
+    { title: "Pet Collection", description: "Shop pet accessories", image: "", link: "/shop?category=pet", sort_order: 2 },
+  ]);
   const { moveUp, moveDown, addSection, removeSection, updateSection } = sections;
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState<any>(null);
@@ -258,8 +262,8 @@ function HomepageEditor() {
                 </div>
                 <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">标题</label><input value={sec.title || ""} onChange={(e) => updateSection(i, "title", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal" /></div>
                 <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">描述</label><textarea value={sec.description || ""} onChange={(e) => updateSection(i, "description", e.target.value)} rows={2} className="w-full border border-line px-3 py-1.5 text-xs focus:outline-none focus:border-charcoal resize-none" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">图片 URL</label><input value={sec.image || ""} onChange={(e) => updateSection(i, "image", e.target.value)} className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
+                <div className="space-y-2">
+                  <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">图片</label><ImageUploader value={sec.image || ""} onChange={(url) => updateSection(i, "image", url)} /></div>
                   <div><label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">链接</label><input value={sec.link || ""} onChange={(e) => updateSection(i, "link", e.target.value)} placeholder="/shop?category=handbags" className="w-full border border-line px-3 py-1.5 text-xs font-mono focus:outline-none focus:border-charcoal" /></div>
                 </div>
               </div>
