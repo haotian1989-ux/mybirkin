@@ -151,20 +151,30 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase.from(dbTable).upsert(toSnakeRow(data, dbTable));
       if (error) throw error;
     } else if (action === "save_homepage_sections") {
-      await supabase.from(dbTable).delete().neq("id", -1);
-      if (Array.isArray(data)) {
-        for (let i = 0; i < data.length; i++) {
-          const { error } = await supabase.from(dbTable).insert({ ...toSnakeRow(data[i], dbTable), sort_order: i });
-          if (error) throw error;
-        }
+      // Delete all existing rows
+      const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
+      if (delErr) {
+        console.error("[save_homepage_sections] delete error:", delErr.message);
+        // Try alternative filter for UUID-type id columns
+        const { error: delErr2 } = await supabase.from(dbTable).delete().not("id", "is", null);
+        if (delErr2) throw delErr2;
+      }
+      if (Array.isArray(data) && data.length > 0) {
+        const rows = data.map((d: any, i: number) => ({ ...toSnakeRow(d, dbTable), sort_order: i }));
+        const { error: insErr } = await supabase.from(dbTable).insert(rows);
+        if (insErr) throw insErr;
       }
     } else if (action === "save_contact") {
-      await supabase.from(dbTable).delete().neq("id", -1);
-      if (Array.isArray(data)) {
-        for (const item of data) {
-          const { error } = await supabase.from(dbTable).insert(toSnakeRow(item, dbTable));
-          if (error) throw error;
-        }
+      const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
+      if (delErr) {
+        console.error("[save_contact] delete error:", delErr.message);
+        const { error: delErr2 } = await supabase.from(dbTable).delete().not("id", "is", null);
+        if (delErr2) throw delErr2;
+      }
+      if (Array.isArray(data) && data.length > 0) {
+        const rows = data.map((item: any) => toSnakeRow(item, dbTable));
+        const { error: insErr } = await supabase.from(dbTable).insert(rows);
+        if (insErr) throw insErr;
       }
     }
 
