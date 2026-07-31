@@ -4,6 +4,11 @@ import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/lib/types";
 
+interface PromiseItem {
+  title: string;
+  text: string;
+}
+
 interface Props {
   heroImage: string;
   heroTagline: string;
@@ -11,6 +16,8 @@ interface Props {
   heroSubtext: string;
   heroPrimaryBtn: string;
   heroSecondaryBtn: string;
+  promiseTitle: string;
+  promiseItems: PromiseItem[];
   sections: any[];
   products: Product[];
 }
@@ -18,6 +25,7 @@ interface Props {
 export default function HomeClient({
   heroImage, heroTagline, heroHeadline, heroSubtext,
   heroPrimaryBtn, heroSecondaryBtn,
+  promiseTitle, promiseItems,
   sections, products,
 }: Props) {
   const featured = products.filter((p) => p.featured);
@@ -102,23 +110,17 @@ export default function HomeClient({
       {/* Promise */}
       <section className="bg-charcoal text-paper py-24 md:py-32">
         <div className="page-padding max-w-5xl mx-auto text-center">
-          <p className="section-label mb-8 text-gold">The MYBIRKIN Promise</p>
+          <p className="section-label mb-8 text-gold">{promiseTitle}</p>
           <h2 className="font-serif text-heading mb-16 text-balance">
             One artisan. One piece.<br />One promise.
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
-            <div>
-              <h3 className="font-serif text-lg text-gold mb-3">Italian Leather</h3>
-              <p className="text-sm text-paper/50 leading-relaxed">Full-grain hides sourced exclusively from family-owned tanneries in Tuscany, vegetable-tanned using traditions passed down through generations.</p>
-            </div>
-            <div>
-              <h3 className="font-serif text-lg text-gold mb-3">Handcrafted to Order</h3>
-              <p className="text-sm text-paper/50 leading-relaxed">No inventory, no mass production. Each piece is cut, stitched, and finished by a single artisan after you place your order.</p>
-            </div>
-            <div>
-              <h3 className="font-serif text-lg text-gold mb-3">Lifetime Care</h3>
-              <p className="text-sm text-paper/50 leading-relaxed">Every MYBIRKIN piece includes complimentary conditioning and repair for life. We stand behind our work, forever.</p>
-            </div>
+            {promiseItems.map((item, i) => (
+              <div key={i}>
+                <h3 className="font-serif text-lg text-gold mb-3">{item.title}</h3>
+                <p className="text-sm text-paper/50 leading-relaxed">{item.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

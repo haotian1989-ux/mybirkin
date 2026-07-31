@@ -237,7 +237,21 @@ function HomepageEditor() {
         <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副标题</label><textarea value={form.subtext || ""} onChange={(e) => upd("subtext", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
         <div className="grid grid-cols-2 gap-4"><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">主按钮</label><input value={form.primaryBtnLabel || ""} onChange={(e) => upd("primaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div><div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">副按钮</label><input value={form.secondaryBtnLabel || ""} onChange={(e) => upd("secondaryBtnLabel", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div></div>
       </div>
-      {/* 首页区块 */}
+
+      {/* Promise 区块编辑 */}
+      <h2 className="font-serif text-lg mb-1 mt-10">品牌承诺区块</h2>
+      <p className="text-xs text-smoke/60 mb-4">首页「The MYBIRKIN Promise」三个承诺的内容</p>
+      <div className="space-y-4 mb-6">
+        <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">区块标题</label><input value={form.promiseTitle || ""} onChange={(e) => upd("promiseTitle", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+        {[1, 2, 3].map((n) => (
+          <div key={n} className="border border-line/50 p-4 space-y-2">
+            <span className="text-[10px] text-smoke/40">承诺 #{n}</span>
+            <input value={form["promise" + n + "Title"] || ""} onChange={(e) => upd("promise" + n + "Title", e.target.value)} placeholder="标题" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+            <textarea value={form["promise" + n + "Text"] || ""} onChange={(e) => upd("promise" + n + "Text", e.target.value)} rows={3} placeholder="内容" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" />
+          </div>
+        ))}
+      </div>
+
       <div className="border-t border-line pt-8 mt-8">
         <div className="flex justify-between items-center mb-4">
           <div>

@@ -25,11 +25,9 @@ async function fetchHomeData() {
     const products = productsResult.data;
     const sections = sectionsResult.data;
 
-    // Log diagnostics
     if (sectionsResult.error) {
       console.error("[fetchHomeData] sections query error:", sectionsResult.error.message);
     }
-    console.log("[fetchHomeData] sections count:", sections?.length || 0, "hero:", !!heroRow, "products:", products?.length || 0);
 
     const image = heroRow?.image || "";
 
@@ -50,6 +48,13 @@ async function fetchHomeData() {
       newArrival: row.new_arrival,
     }));
 
+    const promiseTitle = heroRow?.promise_title || "The MYBIRKIN Promise";
+    const promiseItems = [
+      { title: heroRow?.promise_1_title || "Italian Leather", text: heroRow?.promise_1_text || "Full-grain hides sourced exclusively from family-owned tanneries in Tuscany, vegetable-tanned using traditions passed down through generations." },
+      { title: heroRow?.promise_2_title || "Handcrafted to Order", text: heroRow?.promise_2_text || "No inventory, no mass production. Each piece is cut, stitched, and finished by a single artisan after you place your order." },
+      { title: heroRow?.promise_3_title || "Lifetime Care", text: heroRow?.promise_3_text || "Every MYBIRKIN piece includes complimentary conditioning and repair for life. We stand behind our work, forever." },
+    ];
+
     return {
       heroImage: image,
       heroTagline: heroRow?.tagline || "Atelier · Est. 2024",
@@ -57,12 +62,13 @@ async function fetchHomeData() {
       heroSubtext: heroRow?.subtext || "Bespoke leather goods handcrafted to order by master artisans. Italian full-grain leather, timeless design, made exclusively for you.",
       heroPrimaryBtn: heroRow?.primary_btn_label || "Explore Collection",
       heroSecondaryBtn: heroRow?.secondary_btn_label || "Our Craft",
+      promiseTitle,
+      promiseItems,
       sections: (sections && sections.length > 0) ? sections : DEFAULT_SECTIONS,
       products: mappedProducts,
     };
   } catch (err: any) {
     console.error("[fetchHomeData] fatal error:", err.message || err);
-    // Return defaults on total failure
     return {
       heroImage: "",
       heroTagline: "Atelier · Est. 2024",
@@ -70,6 +76,12 @@ async function fetchHomeData() {
       heroSubtext: "Bespoke leather goods handcrafted to order by master artisans.",
       heroPrimaryBtn: "Explore Collection",
       heroSecondaryBtn: "Our Craft",
+      promiseTitle: "The MYBIRKIN Promise",
+      promiseItems: [
+        { title: "Italian Leather", text: "Full-grain hides sourced exclusively from family-owned tanneries in Tuscany." },
+        { title: "Handcrafted to Order", text: "No inventory, no mass production. Each piece made to order." },
+        { title: "Lifetime Care", text: "Every MYBIRKIN piece includes complimentary conditioning and repair for life." },
+      ],
       sections: DEFAULT_SECTIONS,
       products: [],
     };

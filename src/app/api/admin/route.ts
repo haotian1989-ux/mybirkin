@@ -101,6 +101,13 @@ function toSnakeRow(obj: Record<string, any>, table: string): Record<string, any
       subtext: obj.subtext,
       primary_btn_label: obj.primaryBtnLabel ?? obj.primary_btn_label,
       secondary_btn_label: obj.secondaryBtnLabel ?? obj.secondary_btn_label,
+      promise_title: obj.promiseTitle,
+      promise_1_title: obj.promise1Title,
+      promise_1_text: obj.promise1Text,
+      promise_2_title: obj.promise2Title,
+      promise_2_text: obj.promise2Text,
+      promise_3_title: obj.promise3Title,
+      promise_3_text: obj.promise3Text,
     };
   }
   if (table === "homepage_sections") {
