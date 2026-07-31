@@ -152,19 +152,22 @@ export async function POST(req: NextRequest) {
       if (error) throw error;
     } else if (action === "save_homepage_sections") {
       if (!Array.isArray(data) || data.length === 0) {
-        return NextResponse.json({ success: false, error: "没有收到区块数据，请添加至少一个区块" });
+        return NextResponse.json({ success: false, error: "没有收到区块数据" });
       }
-      // Delete all existing rows
-      const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
+      // 1. Delete all existing rows
+      const { error: delErr } = await supabase.from(dbTable).delete().gte("id", 0);
       if (delErr) {
-        console.error("[save_homepage_sections] delete error:", delErr.message);
         const { error: delErr2 } = await supabase.from(dbTable).delete().not("id", "is", null);
-        if (delErr2) throw delErr2;
+        if (delErr2) return NextResponse.json({ success: false, error: "删除旧数据失败: " + delErr2.message });
       }
+      // 2. Insert new rows
       const rows = data.map((d: any, i: number) => ({ ...toSnakeRow(d, dbTable), sort_order: i }));
-      const { error: insErr, data: inserted } = await supabase.from(dbTable).insert(rows).select();
-      if (insErr) return NextResponse.json({ success: false, error: "写入数据库失败: " + insErr.message });
-      return NextResponse.json({ success: true, count: inserted?.length || 0 });
+      const { error: insErr } = await supabase.from(dbTable).insert(rows);
+      if (insErr) return NextResponse.json({ success: false, error: "写入失败: " + insErr.message });
+      // 3. Verify by reading back
+      const { data: verify, error: verErr } = await supabase.from(dbTable).select("*");
+      if (verErr) return NextResponse.json({ success: false, error: "验证失败: " + verErr.message });
+      return NextResponse.json({ success: true, count: verify?.length || 0 });
     } else if (action === "save_contact") {
       const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
       if (delErr) {

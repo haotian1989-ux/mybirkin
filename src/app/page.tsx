@@ -2,6 +2,8 @@ import { getServiceSupabase } from "@/lib/supabase-server";
 import HomeClient from "./HomeClient";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 const DEFAULT_SECTIONS = [
   { title: "Handbags", description: "Explore our handbag collection", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80", link: "/shop?category=handbags", sort_order: 0 },
