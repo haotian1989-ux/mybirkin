@@ -210,12 +210,12 @@ function HomepageEditor() {
   const saveAll = async () => {
     setSaving(true);
     const heroErr = await hero.save(form);
-    if (heroErr) { alert("首页发布失败: " + heroErr); setSaving(false); return; }
-    const secErr = await sections.save(sections.items);
-    if (secErr) { alert("首页发布失败: " + secErr); setSaving(false); return; }
-    setMsg("已发布！");
+    if (heroErr) { setMsg("主图发布失败: " + heroErr); setSaving(false); return; }
+    const secResult = await sections.save(sections.items);
+    if (secResult.error) { setMsg("区块发布失败: " + secResult.error); setSaving(false); return; }
+    setMsg("已发布！(" + secResult.count + " 个区块)");
     setSaving(false);
-    setTimeout(() => setMsg(""), 2000);
+    setTimeout(() => setMsg(""), 3000);
   };
 
   return (
@@ -271,7 +271,7 @@ function HomepageEditor() {
         )}
       </div>
 
-      <button onClick={saveAll} disabled={saving} className={`btn-primary mt-6 ${msg ? "bg-green-800 border-0" : ""}`}>{saving ? "发布中..." : (msg || "发布首页")}</button>
+      <button onClick={saveAll} disabled={saving} className={`btn-primary mt-6 ${msg ? (msg.includes("失败") ? "bg-red-800 border-0" : "bg-green-800 border-0") : ""}`}>{saving ? "发布中..." : (msg || "发布首页")}</button>
     </div>
   );
 }

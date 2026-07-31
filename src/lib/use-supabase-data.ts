@@ -120,10 +120,10 @@ export function useAdminSections(table: string, defaults: any[]) {
     });
   }, [table]);
 
-  const save = useCallback(async (newItems: any[]): Promise<string | null> => {
+  const save = useCallback(async (newItems: any[]): Promise<{ error: string | null; count: number }> => {
     setItems(newItems);
     const res = await adminFetch(table, "save_homepage_sections", newItems);
-    return res.success ? null : (res.error || "保存失败");
+    return { error: res.success ? null : (res.error || "保存失败"), count: res.success ? ((res as any).count || 0) : 0 };
   }, [table]);
 
   const moveUp = useCallback((index: number) => {

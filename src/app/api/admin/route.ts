@@ -151,19 +151,20 @@ export async function POST(req: NextRequest) {
       const { error } = await supabase.from(dbTable).upsert(toSnakeRow(data, dbTable));
       if (error) throw error;
     } else if (action === "save_homepage_sections") {
+      if (!Array.isArray(data) || data.length === 0) {
+        return NextResponse.json({ success: false, error: "没有收到区块数据，请添加至少一个区块" });
+      }
       // Delete all existing rows
       const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
       if (delErr) {
         console.error("[save_homepage_sections] delete error:", delErr.message);
-        // Try alternative filter for UUID-type id columns
         const { error: delErr2 } = await supabase.from(dbTable).delete().not("id", "is", null);
         if (delErr2) throw delErr2;
       }
-      if (Array.isArray(data) && data.length > 0) {
-        const rows = data.map((d: any, i: number) => ({ ...toSnakeRow(d, dbTable), sort_order: i }));
-        const { error: insErr } = await supabase.from(dbTable).insert(rows);
-        if (insErr) throw insErr;
-      }
+      const rows = data.map((d: any, i: number) => ({ ...toSnakeRow(d, dbTable), sort_order: i }));
+      const { error: insErr, data: inserted } = await supabase.from(dbTable).insert(rows).select();
+      if (insErr) return NextResponse.json({ success: false, error: "写入数据库失败: " + insErr.message });
+      return NextResponse.json({ success: true, count: inserted?.length || 0 });
     } else if (action === "save_contact") {
       const { error: delErr } = await supabase.from(dbTable).delete().neq("id", -1);
       if (delErr) {
