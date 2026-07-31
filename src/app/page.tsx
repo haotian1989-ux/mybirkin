@@ -4,9 +4,9 @@ import HomeClient from "./HomeClient";
 export const dynamic = "force-dynamic";
 
 const DEFAULT_SECTIONS = [
-  { title: "Handbags", description: "Explore our handbag collection", image: "", link: "/shop?category=handbags", sort_order: 0 },
-  { title: "Charms & Accents", description: "Discover our charms", image: "", link: "/shop?category=charms", sort_order: 1 },
-  { title: "Pet Collection", description: "Shop pet accessories", image: "", link: "/shop?category=pet", sort_order: 2 },
+  { title: "Handbags", description: "Explore our handbag collection", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80", link: "/shop?category=handbags", sort_order: 0 },
+  { title: "Charms & Accents", description: "Discover our charms", image: "https://images.unsplash.com/photo-1611080627373-58a3b9cf7c68?w=800&q=80", link: "/shop?category=charms", sort_order: 1 },
+  { title: "Pet Collection", description: "Shop pet accessories", image: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&q=80", link: "/shop?category=pet", sort_order: 2 },
 ];
 
 async function fetchHomeData() {
