@@ -78,6 +78,7 @@ export default function ImageUploader({
       const formData = new FormData();
       formData.append("file", uploadFile);
       formData.append("upload_preset", "mybirkin_uploads");
+      formData.append("api_key", "565691429838718");
 
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/vzsmwu1w/image/upload`,
