@@ -3,7 +3,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./supabase";
 
-const ADMIN_PASSWORD = "mybirkin2024";
+const ADMIN_PASSWORD = "mybirkin2026";
+
+function snakeToCamel(obj: any): any {
+  if (!obj || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map(snakeToCamel);
+  const out: any = {};
+  for (const [key, val] of Object.entries(obj)) {
+    const camel = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+    out[camel] = val;
+  }
+  return out;
+}
 
 function toSnakeCase(obj: any): any {
   const row: any = {};
@@ -25,7 +36,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
         if (table === "products") {
           setItems(data.map((row: any) => ({ ...row, inStock: row.in_stock, newArrival: row.new_arrival })) as T[]);
         } else {
-          setItems(data as T[]);
+          setItems(data.map(snakeToCamel) as T[]);
         }
       }
       setLoaded(true);

@@ -124,7 +124,7 @@ function toSnakeRow(obj: Record<string, any>, table: string): Record<string, any
 
 
 export async function POST(req: NextRequest) {
-  const pw = req.headers.get("x-admin-password"); if (pw !== "mybirkin2024") {
+  const pw = req.headers.get("x-admin-password"); if (pw !== "mybirkin2026") {
     const pw = req.headers.get("x-admin-password"); return NextResponse.json({ error: "密码错误: 收到=" + (pw ? pw.substring(0,3)+"..." : "空") }, { status: 401 });
   }
 

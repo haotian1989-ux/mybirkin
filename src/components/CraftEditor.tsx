@@ -12,7 +12,7 @@ import {
 type PageKey = "overview" | "leather" | "hardware" | "artisans" | "process";
 const pages: PageKey[] = ["overview", "leather", "hardware", "artisans", "process"];
 
-const ADMIN_PASSWORD = "mybirkin2024";
+const ADMIN_PASSWORD = "mybirkin2026";
 
 async function saveToSupabase(page: PageKey, data: CraftPageData) {
   await fetch("/api/admin", {

@@ -14,7 +14,7 @@ interface Review {
   date: string; // ISO 8601 UTC
 }
 
-const ADMIN_PASSWORD = "mybirkin2024";
+const ADMIN_PASSWORD = "mybirkin2026";
 
 async function saveReviewToSupabase(review: Review) {
   await fetch("/api/admin", {

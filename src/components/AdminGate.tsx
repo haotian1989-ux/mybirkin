@@ -5,7 +5,7 @@ import { Lock, Eye, EyeOff } from "lucide-react";
 
 const SESSION_KEY = "myb_admin_session";
 const PASSWORD_KEY = "myb_admin_password";
-const DEFAULT_PASSWORD = "mybirkin2024";
+const DEFAULT_PASSWORD = "mybirkin2026";
 const SESSION_TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 hours
 
 function loadPassword(): string {
