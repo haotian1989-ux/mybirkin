@@ -102,8 +102,22 @@ export function useAdminSupabaseSingle<T extends Record<string, any>>(table: str
 
   const save = useCallback(async (v: T): Promise<string | null> => {
     setValue(v);
-    const res = await adminFetch(table, "upsert", v);
-    return res.success ? null : (res.error || "发布失败");
+    try {
+      const row: any = {};
+      for (const [key, val] of Object.entries(v as any)) {
+        // camelCase → snake_case
+        const snake = key.replace(/[A-Z]/g, (m) => "_" + m.toLowerCase());
+        row[snake] = val;
+      }
+      if (table === "homepage_hero") {
+        row.id = true;
+      }
+      const { error } = await supabase.from(table).upsert(row);
+      if (error) return error.message;
+      return null;
+    } catch (e: any) {
+      return e.message || "保存失败";
+    }
   }, [table]);
 
   return { value, loaded, save };
