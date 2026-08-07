@@ -122,8 +122,28 @@ export function useAdminSections(table: string, defaults: any[]) {
 
   const save = useCallback(async (newItems: any[]): Promise<{ error: string | null; count: number }> => {
     setItems(newItems);
-    const res = await adminFetch(table, "save_homepage_sections", newItems);
-    return { error: res.success ? null : (res.error || "保存失败"), count: res.success ? ((res as any).count || 0) : 0 };
+    try {
+      // 1. Delete all existing rows
+      const { error: delErr } = await supabase.from(table).delete().not("id", "is", null);
+      if (delErr) return { error: "删除旧数据失败: " + delErr.message, count: 0 };
+      // 2. Insert new rows
+      if (newItems.length > 0) {
+        const rows = newItems.map((item: any, i: number) => ({
+          title: item.title || "",
+          description: item.description || "",
+          image: item.image || "",
+          link: item.link || "",
+          sort_order: i,
+        }));
+        const { error: insErr } = await supabase.from(table).insert(rows);
+        if (insErr) return { error: "写入失败: " + insErr.message, count: 0 };
+      }
+      // 3. Verify
+      const { data: verify } = await supabase.from(table).select("*");
+      return { error: null, count: verify?.length || 0 };
+    } catch (e: any) {
+      return { error: e.message || "未知错误", count: 0 };
+    }
   }, [table]);
 
   const moveUp = useCallback((index: number) => {
