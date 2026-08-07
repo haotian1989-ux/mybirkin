@@ -5,36 +5,16 @@ import { supabase } from "./supabase";
 
 const ADMIN_PASSWORD = "mybirkin2024";
 
-async function adminFetch(table: string, action: string, data?: any, id?: string): Promise<{ success: boolean; error?: string }> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
-  
-  try {
-    const res = await fetch("/api/admin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-password": ADMIN_PASSWORD,
-      },
-      body: JSON.stringify({ table, action, data, id }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    
-    const json = await res.json();
-    if (!res.ok) {
-      return { success: false, error: json.error || `HTTP ${res.status}` };
-    }
-    return json;
-  } catch (e: any) {
-    clearTimeout(timeout);
-    if (e.name === "AbortError") {
-      return { success: false, error: "请求超时，请检查网络" };
-    }
-    return { success: false, error: e.message || "网络错误" };
+function toSnakeCase(obj: any): any {
+  const row: any = {};
+  for (const [key, val] of Object.entries(obj)) {
+    const snake = key.replace(/[A-Z]/g, (m) => "_" + m.toLowerCase());
+    row[snake] = val;
   }
+  return row;
 }
 
+// ── List hook (products, builder data) ──
 export function useAdminSupabaseList<T extends { id: string }>(table: string, defaults: T[]) {
   const [items, setItems] = useState<T[]>(defaults);
   const [loaded, setLoaded] = useState(false);
@@ -54,34 +34,58 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
 
   const saveAll = useCallback(async (newItems: T[]): Promise<string | null> => {
     setItems(newItems);
-    const res = await adminFetch(table, "save_all", newItems);
-    return res.success ? null : (res.error || "保存失败");
+    try {
+      await supabase.from(table).delete().not("id", "is", null);
+      if (newItems.length > 0) {
+        const rows = newItems.map((item) => {
+          if (table === "products") {
+            return { ...item, in_stock: (item as any).inStock, new_arrival: (item as any).newArrival };
+          }
+          return toSnakeCase(item);
+        });
+        const { error } = await supabase.from(table).insert(rows);
+        if (error) return error.message;
+      }
+      return null;
+    } catch (e: any) { return e.message || "保存失败"; }
   }, [table]);
 
   const add = useCallback(async (item: T): Promise<string | null> => {
     const next = [...items, item];
     setItems(next);
-    const res = await adminFetch(table, "add", item);
-    return res.success ? null : (res.error || "添加失败");
+    try {
+      const row = table === "products" ? { ...item, in_stock: (item as any).inStock, new_arrival: (item as any).newArrival } : toSnakeCase(item);
+      const { error } = await supabase.from(table).insert(row);
+      if (error) return error.message;
+      return null;
+    } catch (e: any) { return e.message || "添加失败"; }
   }, [items, table]);
 
   const remove = useCallback(async (id: string): Promise<string | null> => {
-    const next = items.filter((i) => i.id !== id);
-    setItems(next);
-    const res = await adminFetch(table, "delete", null, id);
-    return res.success ? null : (res.error || "删除失败");
-  }, [items, table]);
+    setItems((prev) => prev.filter((i) => i.id !== id));
+    try {
+      const { error } = await supabase.from(table).delete().eq("id", id);
+      if (error) return error.message;
+      return null;
+    } catch (e: any) { return e.message || "删除失败"; }
+  }, [table]);
 
   const update = useCallback(async (id: string, updates: Partial<T>): Promise<string | null> => {
-    const next = items.map((i) => i.id === id ? { ...i, ...updates } : i);
-    setItems(next);
-    const res = await adminFetch(table, "update", { ...items.find((i) => i.id === id), ...updates }, id);
-    return res.success ? null : (res.error || "更新失败");
+    setItems((prev) => prev.map((i) => i.id === id ? { ...i, ...updates } : i));
+    try {
+      const existing = items.find((i) => i.id === id);
+      const merged = { ...existing, ...updates };
+      const row = table === "products" ? { ...merged, in_stock: (merged as any).inStock, new_arrival: (merged as any).newArrival } : toSnakeCase(merged);
+      const { error } = await supabase.from(table).update(row).eq("id", id);
+      if (error) return error.message;
+      return null;
+    } catch (e: any) { return e.message || "更新失败"; }
   }, [items, table]);
 
   return { items, loaded, saveAll, add, remove, update };
 }
 
+// ── Single hook (hero, craft pages) ──
 export function useAdminSupabaseSingle<T extends Record<string, any>>(table: string, id: string | boolean, defaultValue: T) {
   const [value, setValue] = useState<T>(defaultValue);
   const [loaded, setLoaded] = useState(false);
@@ -103,26 +107,18 @@ export function useAdminSupabaseSingle<T extends Record<string, any>>(table: str
   const save = useCallback(async (v: T): Promise<string | null> => {
     setValue(v);
     try {
-      const row: any = {};
-      for (const [key, val] of Object.entries(v as any)) {
-        // camelCase → snake_case
-        const snake = key.replace(/[A-Z]/g, (m) => "_" + m.toLowerCase());
-        row[snake] = val;
-      }
-      if (table === "homepage_hero") {
-        row.id = true;
-      }
+      const row = toSnakeCase(v);
+      if (table === "homepage_hero") row.id = true;
       const { error } = await supabase.from(table).upsert(row);
       if (error) return error.message;
       return null;
-    } catch (e: any) {
-      return e.message || "保存失败";
-    }
+    } catch (e: any) { return e.message || "发布失败"; }
   }, [table]);
 
   return { value, loaded, save };
 }
 
+// ── Sections hook (homepage_sections) ──
 export function useAdminSections(table: string, defaults: any[]) {
   const [items, setItems] = useState<any[]>(defaults);
   const [loaded, setLoaded] = useState(false);
@@ -137,55 +133,37 @@ export function useAdminSections(table: string, defaults: any[]) {
   const save = useCallback(async (newItems: any[]): Promise<{ error: string | null; count: number }> => {
     setItems(newItems);
     try {
-      // 1. Delete all existing rows
       const { error: delErr } = await supabase.from(table).delete().not("id", "is", null);
       if (delErr) return { error: "删除旧数据失败: " + delErr.message, count: 0 };
-      // 2. Insert new rows
       if (newItems.length > 0) {
         const rows = newItems.map((item: any, i: number) => ({
-          title: item.title || "",
-          description: item.description || "",
-          image: item.image || "",
-          link: item.link || "",
-          sort_order: i,
+          title: item.title || "", description: item.description || "",
+          image: item.image || "", link: item.link || "", sort_order: i,
         }));
         const { error: insErr } = await supabase.from(table).insert(rows);
         if (insErr) return { error: "写入失败: " + insErr.message, count: 0 };
       }
-      // 3. Verify
       const { data: verify } = await supabase.from(table).select("*");
       return { error: null, count: verify?.length || 0 };
-    } catch (e: any) {
-      return { error: e.message || "未知错误", count: 0 };
-    }
+    } catch (e: any) { return { error: e.message || "未知错误", count: 0 }; }
   }, [table]);
 
   const moveUp = useCallback((index: number) => {
     if (index <= 0) return;
-    setItems((prev) => {
-      const next = [...prev];
-      [next[index - 1], next[index]] = [next[index], next[index - 1]];
-      return next;
-    });
+    setItems((prev) => { const n = [...prev]; [n[index-1], n[index]] = [n[index], n[index-1]]; return n; });
   }, []);
-
   const moveDown = useCallback((index: number) => {
     setItems((prev) => {
       if (index >= prev.length - 1) return prev;
-      const next = [...prev];
-      [next[index], next[index + 1]] = [next[index + 1], next[index]];
-      return next;
+      const n = [...prev]; [n[index], n[index+1]] = [n[index+1], n[index]]; return n;
     });
   }, []);
-
   const addSection = useCallback(() => {
     setItems((prev) => [...prev, { title: "", description: "", image: "", link: "", sort_order: prev.length }]);
   }, []);
-
   const removeSection = useCallback((index: number) => {
     setItems((prev) => prev.filter((_, i) => i !== index));
   }, []);
-
   const updateSection = useCallback((index: number, field: string, value: string) => {
     setItems((prev) => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
   }, []);
@@ -193,6 +171,7 @@ export function useAdminSections(table: string, defaults: any[]) {
   return { items, loaded, save, moveUp, moveDown, addSection, removeSection, updateSection };
 }
 
+// ── Contact hook ──
 export function useAdminContact(defaultLinks: any[]) {
   const [links, setLinks] = useState<any[]>(defaultLinks);
   const [loaded, setLoaded] = useState(false);
@@ -206,8 +185,14 @@ export function useAdminContact(defaultLinks: any[]) {
 
   const save = useCallback(async (newLinks: any[]): Promise<string | null> => {
     setLinks(newLinks);
-    const res = await adminFetch("contact", "save_contact", newLinks);
-    return res.success ? null : (res.error || "保存失败");
+    try {
+      await supabase.from("contact_links").delete().not("id", "is", null);
+      if (newLinks.length > 0) {
+        const { error } = await supabase.from("contact_links").insert(newLinks);
+        if (error) return error.message;
+      }
+      return null;
+    } catch (e: any) { return e.message || "保存失败"; }
   }, []);
 
   return { links, loaded, save };
