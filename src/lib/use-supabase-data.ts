@@ -5,13 +5,25 @@ import { supabase } from "./supabase";
 
 const ADMIN_PASSWORD = "mybirkin2026";
 
+const CAMEL_FIELD_MAP: Record<string, string> = {
+  description: "desc",
+  hermes_equivalent: "hermesEquivalent",
+  best_for: "bestFor",
+  base_price: "basePrice",
+  swatch_image: "swatchImage",
+};
+
 function snakeToCamel(obj: any): any {
   if (!obj || typeof obj !== "object") return obj;
   if (Array.isArray(obj)) return obj.map(snakeToCamel);
   const out: any = {};
   for (const [key, val] of Object.entries(obj)) {
-    const camel = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
-    out[camel] = val;
+    if (CAMEL_FIELD_MAP[key]) {
+      out[CAMEL_FIELD_MAP[key]] = val;
+    } else {
+      const camel = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+      out[camel] = val;
+    }
   }
   return out;
 }
