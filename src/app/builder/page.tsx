@@ -14,13 +14,26 @@ import AdminPanel from "@/components/AdminPanel";
 import { optimizeImage } from "@/lib/image";
 
 
+function snakeToCamelRow(row: any): any {
+  const MAP: Record<string, string> = {
+    description: "desc", base_price: "basePrice", hermes_equivalent: "hermesEquivalent",
+    best_for: "bestFor", swatch_image: "swatchImage",
+  };
+  const out: any = {};
+  for (const [k, v] of Object.entries(row)) {
+    const camel = MAP[k] || k.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+    out[camel] = v;
+  }
+  return out;
+}
+
 function useSupabaseStored<T>(table: string, defaults: T[]): [T[], boolean] {
   const [items, setItems] = useState<T[]>(defaults);
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     import("@/lib/supabase").then(({ supabase }) => {
       supabase.from(table).select("*").then(({ data, error }) => {
-        if (!error && data && data.length > 0) setItems(data as T[]);
+        if (!error && data && data.length > 0) setItems(data.map(snakeToCamelRow) as T[]);
         setLoaded(true);
       });
     });
