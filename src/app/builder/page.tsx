@@ -77,8 +77,9 @@ export default function BuilderPage() {
   const pColor = colors.find((c: any) => c.id === primaryColor);
   const sColor = colors.find((c: any) => c.id === secondaryColor);
 
+  const leatherPrice = isNaN(parseFloat((leather as any)?.price)) ? 0 : parseFloat((leather as any)?.price) || 0;
   const hwPrice = (hw as any)?.price || 0;
-  const totalPrice = ((sil as any)?.basePrice || 0) + hwPrice;
+  const totalPrice = ((sil as any)?.basePrice || 0) + hwPrice + leatherPrice;
 
   const canNext = () => {
     if (step === 0 && !leatherId) return false;

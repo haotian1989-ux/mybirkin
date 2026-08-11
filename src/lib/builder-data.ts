@@ -7,6 +7,7 @@ export interface LeatherType {
   characteristics: string;
   bestFor: string;
   image: string;
+  price?: string;
 }
 
 export interface ColorOption {

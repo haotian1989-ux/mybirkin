@@ -7,7 +7,7 @@ import { useAdminSupabaseList } from "@/lib/use-supabase-data";
 
 type Tab = "leathers" | "colors" | "hardware" | "silhouettes" | "artisans";
 
-interface LeatherItem { id: string; name: string; hermesEquivalent: string; grain: string; characteristics: string; bestFor: string; image: string; }
+interface LeatherItem { id: string; name: string; hermesEquivalent: string; grain: string; characteristics: string; bestFor: string; image: string; price?: string; }
 interface ColorItem { id: string; name: string; hex: string; }
 interface HardwareItem { id: string; name: string; material: string; hex: string; description: string; price: number; }
 interface SilhouetteItem { id: string; name: string; desc: string; dimensions: string; image: string; basePrice: number; }
