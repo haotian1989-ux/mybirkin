@@ -168,7 +168,11 @@ export default function BuilderPage() {
                     </div>
                   )}
                   <div className="p-4">
-                    <p className="text-sm font-medium">{l.name}</p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-sm font-medium">{l.name}</p>
+                      {l.price && !isNaN(parseFloat(l.price)) && parseFloat(l.price) > 0 && <span className="text-[10px] text-gold ml-2 flex-shrink-0">+${parseFloat(l.price).toLocaleString()}</span>}
+                      {l.price && isNaN(parseFloat(l.price)) && <span className="text-[10px] text-gold ml-2 flex-shrink-0">{l.price}</span>}
+                    </div>
                     {l.hermesEquivalent && <p className="text-[10px] text-gold tracking-label uppercase">Hermès {l.hermesEquivalent}</p>}
                     {l.grain && <p className="text-[10px] text-smoke/60 mt-1 capitalize">· {l.grain} grain</p>}
                     {l.bestFor && <p className="text-[10px] text-smoke/50 mt-0.5">{l.bestFor}</p>}
