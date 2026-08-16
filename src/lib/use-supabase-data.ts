@@ -37,6 +37,25 @@ function toSnakeCase(obj: any): any {
   return row;
 }
 
+function toProductRow(obj: any): any {
+  return {
+    id: obj.id,
+    name: obj.name,
+    slug: obj.slug,
+    category: obj.category,
+    price: obj.price,
+    description: obj.description,
+    details: obj.details,
+    materials: obj.materials,
+    dimensions: obj.dimensions,
+    colors: obj.colors,
+    images: obj.images,
+    in_stock: obj.inStock ?? obj.in_stock,
+    featured: obj.featured,
+    new_arrival: obj.newArrival ?? obj.new_arrival,
+  };
+}
+
 // ── List hook (products, builder data) ──
 export function useAdminSupabaseList<T extends { id: string }>(table: string, defaults: T[]) {
   const [items, setItems] = useState<T[]>(defaults);
@@ -62,7 +81,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
       if (newItems.length > 0) {
         const rows = newItems.map((item) => {
           if (table === "products") {
-            return { ...item, in_stock: (item as any).inStock, new_arrival: (item as any).newArrival };
+            return toProductRow(item);
           }
           return toSnakeCase(item);
         });
@@ -77,7 +96,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
     const next = [...items, item];
     setItems(next);
     try {
-      const row = table === "products" ? { ...item, in_stock: (item as any).inStock, new_arrival: (item as any).newArrival } : toSnakeCase(item);
+      const row = table === "products" ? toProductRow(item) : toSnakeCase(item);
       const { error } = await supabase.from(table).insert(row);
       if (error) return error.message;
       return null;
@@ -98,7 +117,7 @@ export function useAdminSupabaseList<T extends { id: string }>(table: string, de
     try {
       const existing = items.find((i) => i.id === id);
       const merged = { ...existing, ...updates };
-      const row = table === "products" ? { ...merged, in_stock: (merged as any).inStock, new_arrival: (merged as any).newArrival } : toSnakeCase(merged);
+      const row = table === "products" ? toProductRow(merged) : toSnakeCase(merged);
       const { error } = await supabase.from(table).update(row).eq("id", id);
       if (error) return error.message;
       return null;
