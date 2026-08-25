@@ -155,3 +155,26 @@ CREATE POLICY "public_read" ON homepage_hero FOR SELECT USING (true);
 CREATE POLICY "public_read" ON homepage_sections FOR SELECT USING (true);
 CREATE POLICY "public_read" ON contact_links FOR SELECT USING (true);
 CREATE POLICY "public_read" ON reviews FOR SELECT USING (true);
+
+-- Our Story / About 页面
+CREATE TABLE IF NOT EXISTS about_page (
+  id BOOLEAN PRIMARY KEY DEFAULT true CHECK (id = true),
+  hero_image TEXT NOT NULL DEFAULT '',
+  hero_tagline TEXT NOT NULL DEFAULT '',
+  hero_title TEXT NOT NULL DEFAULT '',
+  section1_label TEXT NOT NULL DEFAULT '',
+  section1_heading TEXT NOT NULL DEFAULT '',
+  section1_text TEXT NOT NULL DEFAULT '',
+  section1_image TEXT NOT NULL DEFAULT '',
+  section2_label TEXT NOT NULL DEFAULT '',
+  section2_heading TEXT NOT NULL DEFAULT '',
+  section2_text TEXT NOT NULL DEFAULT '',
+  section2_image TEXT NOT NULL DEFAULT '',
+  cta_text TEXT NOT NULL DEFAULT '',
+  cta_link TEXT NOT NULL DEFAULT '',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public_read" ON about_page FOR SELECT USING (true);
+CREATE POLICY "public_insert" ON about_page FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_update" ON about_page FOR UPDATE USING (true) WITH CHECK (true);
