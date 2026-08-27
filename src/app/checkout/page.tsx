@@ -3,13 +3,22 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartContext";
+import { supabase } from "@/lib/supabase";
 import { Check, ArrowLeft } from "lucide-react";
 
 export default function CheckoutPage() {
   const { state, total, dispatch } = useCart();
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [step, setStep] = useState<"shipping" | "payment">("shipping");
+  const [form, setForm] = useState({
+    firstName: "", lastName: "", email: "", phone: "",
+    address: "", city: "", postalCode: "", country: "",
+  });
   const shipping = total >= 500 ? 0 : 35;
+
+  const upd = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
 
   if (state.items.length === 0 && !submitted) {
     return (
@@ -35,6 +44,52 @@ export default function CheckoutPage() {
     );
   }
 
+  const placeOrder = async () => {
+    setError("");
+    if (!form.firstName.trim() || !form.email.trim() || !form.address.trim() || !form.city.trim() || !form.country.trim()) {
+      setError("Please complete all required shipping fields.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const { error: err } = await supabase.from("orders").insert({
+        first_name: form.firstName.trim(),
+        last_name: form.lastName.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        address: form.address.trim(),
+        city: form.city.trim(),
+        postal_code: form.postalCode.trim(),
+        country: form.country.trim(),
+        items: state.items.map((item) => ({
+          name: item.product.name,
+          slug: item.product.slug,
+          color: item.color || "",
+          quantity: item.quantity,
+          price: item.product.price,
+        })),
+        subtotal: total,
+        shipping,
+        total: total + shipping,
+        status: "pending",
+      });
+      if (err) {
+        console.error("[checkout] insert error:", err.message);
+        setError("We could not place your order. Please contact us via WhatsApp and we will assist you.");
+        setSaving(false);
+        return;
+      }
+      setSubmitted(true);
+      dispatch({ type: "CLEAR_CART" });
+    } catch (e: any) {
+      console.error("[checkout] fatal error:", e?.message || e);
+      setError("We could not place your order. Please contact us via WhatsApp and we will assist you.");
+    }
+    setSaving(false);
+  };
+
+  const inputClass = "w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal";
+
   return (
     <div className="page-padding py-14 md:py-20 max-w-5xl mx-auto">
       <h1 className="section-title mb-12">Checkout</h1>
@@ -52,34 +107,40 @@ export default function CheckoutPage() {
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">First Name</label>
-                  <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                  <input value={form.firstName} onChange={(e) => upd("firstName", e.target.value)} className={inputClass} />
                 </div>
                 <div>
                   <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Last Name</label>
-                  <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                  <input value={form.lastName} onChange={(e) => upd("lastName", e.target.value)} className={inputClass} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Email</label>
+                  <input type="email" value={form.email} onChange={(e) => upd("email", e.target.value)} className={inputClass} />
+                </div>
+                <div>
+                  <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Phone / WhatsApp</label>
+                  <input value={form.phone} onChange={(e) => upd("phone", e.target.value)} placeholder="+1 555 000 0000" className={inputClass} />
                 </div>
               </div>
               <div>
-                <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Email</label>
-                <input type="email" required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
-              </div>
-              <div>
                 <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Address</label>
-                <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                <input value={form.address} onChange={(e) => upd("address", e.target.value)} className={inputClass} />
               </div>
               <div className="grid grid-cols-2 gap-5">
                 <div>
                   <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">City</label>
-                  <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                  <input value={form.city} onChange={(e) => upd("city", e.target.value)} className={inputClass} />
                 </div>
                 <div>
                   <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Postal Code</label>
-                  <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                  <input value={form.postalCode} onChange={(e) => upd("postalCode", e.target.value)} className={inputClass} />
                 </div>
               </div>
               <div>
                 <label className="text-[11px] tracking-label uppercase text-smoke/50 block mb-1.5">Country</label>
-                <input required className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                <input value={form.country} onChange={(e) => upd("country", e.target.value)} className={inputClass} />
               </div>
               <button onClick={() => setStep("payment")} className="btn-primary w-full mt-4">
                 Continue to Payment
@@ -90,20 +151,18 @@ export default function CheckoutPage() {
               <div className="border border-line p-6">
                 <p className="text-sm text-smoke mb-5">Stripe integration ready. Supporting Stripe, PayPal, Apple Pay, and Google Pay.</p>
                 <div className="space-y-3">
-                  <input placeholder="Card number" className="w-full border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                  <input placeholder="Card number" className={inputClass} />
                   <div className="grid grid-cols-2 gap-3">
-                    <input placeholder="MM / YY" className="border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
-                    <input placeholder="CVC" className="border border-line bg-transparent px-4 py-3 text-sm focus:outline-none focus:border-charcoal" />
+                    <input placeholder="MM / YY" className={inputClass} />
+                    <input placeholder="CVC" className={inputClass} />
                   </div>
                 </div>
               </div>
+              {error && <p className="text-xs text-red-500 bg-red-50 p-3">{error}</p>}
               <div className="flex gap-4">
                 <button onClick={() => setStep("shipping")} className="btn-outline flex-1"><ArrowLeft size={14} className="mr-2" /> Back</button>
-                <button
-                  onClick={() => { setSubmitted(true); dispatch({ type: "CLEAR_CART" }); }}
-                  className="btn-primary flex-1"
-                >
-                  Place Order — ${(total + shipping).toLocaleString()}
+                <button onClick={placeOrder} disabled={saving} className="btn-primary flex-1 disabled:opacity-50">
+                  {saving ? "Processing..." : `Place Order — $${(total + shipping).toLocaleString()}`}
                 </button>
               </div>
             </div>

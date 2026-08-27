@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, Inbox, ArrowUp, ArrowDown } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
+import { supabase } from "@/lib/supabase";
 import { Product } from "@/lib/types";
 import ImageUploader from "@/components/ImageUploader";
 import { products as defaultProducts } from "@/lib/data";
@@ -11,7 +12,7 @@ import AdminPanel from "@/components/AdminPanel";
 import CraftEditor from "@/components/CraftEditor";
 import AdminGate from "@/components/AdminGate";
 
-type AdminTab = "products" | "builder" | "homepage" | "contact" | "craft" | "about";
+type AdminTab = "products" | "builder" | "homepage" | "contact" | "craft" | "about" | "orders";
 
 const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "products", label: "产品管理", icon: ShoppingBag },
@@ -20,6 +21,7 @@ const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "contact", label: "联系方式", icon: MessageCircle },
   { key: "craft", label: "工艺页面", icon: Palette },
   { key: "about", label: "关于我们", icon: BookOpen },
+  { key: "orders", label: "客户订单", icon: Inbox },
 ];
 
 function AdminContent() {
@@ -59,6 +61,7 @@ function AdminContent() {
         {activeTab === "contact" && <ContactEditor />}
         {activeTab === "craft" && <CraftEditor />}
         {activeTab === "about" && <AboutEditor />}
+        {activeTab === "orders" && <OrdersManager />}
       </div>
     </div>
   );
@@ -440,6 +443,144 @@ function AboutEditor() {
       </div>
 
       <button onClick={saveAll} disabled={saving} className={`btn-primary ${msg ? (msg.includes("失败") ? "bg-red-800 border-0" : "bg-green-800 border-0") : ""}`}>{saving ? "发布中..." : (msg || "发布")}</button>
+    </div>
+  );
+}
+
+// ── Orders Manager ──
+const ORDER_STATUS: Record<string, { label: string; className: string }> = {
+  pending: { label: "待处理", className: "bg-gold/10 text-gold" },
+  contacted: { label: "已联系", className: "bg-charcoal text-paper" },
+  completed: { label: "已完成", className: "bg-green-100 text-green-800" },
+};
+
+function formatOrderTime(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+function toWhatsAppLink(phone: string): string {
+  const digits = phone.replace(/[^0-9]/g, "");
+  if (!digits) return "";
+  return "https://wa.me/" + digits;
+}
+
+function OrdersManager() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+    if (error) {
+      console.error("[orders] load error:", error.message);
+      alert("加载订单失败: " + error.message);
+    } else {
+      setOrders(data || []);
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (id: string, status: string) => {
+    setBusy(true);
+    const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+    if (error) { alert("更新状态失败: " + error.message); setBusy(false); return; }
+    setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
+    setBusy(false);
+  };
+
+  const remove = async (id: string) => {
+    if (!window.confirm("确定删除该订单吗？删除后无法恢复。")) return;
+    setBusy(true);
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+    if (error) { alert("删除失败: " + error.message); setBusy(false); return; }
+    setOrders((prev) => prev.filter((o) => o.id !== id));
+    setBusy(false);
+  };
+
+  if (!loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
+
+  const parseItems = (items: any): any[] => {
+    if (Array.isArray(items)) return items;
+    try { return JSON.parse(items || "[]"); } catch { return []; }
+  };
+
+  return (
+    <div className="max-w-3xl">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="font-serif text-lg">客户订单</h2>
+          <p className="text-xs text-smoke/60">客户在结算页提交的订单与联系方式</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <p className="text-xs text-smoke">{orders.length} 笔订单</p>
+          <button onClick={load} className="btn-outline text-[10px] py-1.5 px-3">刷新</button>
+        </div>
+      </div>
+
+      {orders.length === 0 ? (
+        <p className="text-xs text-smoke/40 py-10 text-center border border-dashed border-line">暂无订单，客户下单后会显示在这里</p>
+      ) : (
+        <div className="space-y-3">
+          {orders.map((o: any, i: number) => {
+            const items = parseItems(o.items);
+            const st = ORDER_STATUS[o.status] || ORDER_STATUS.pending;
+            const isOpen = expanded === o.id;
+            const wa = toWhatsAppLink(o.phone || "");
+            return (
+              <div key={o.id} className="border border-line/50">
+                <button onClick={() => setExpanded(isOpen ? null : o.id)} className="w-full flex items-center gap-4 p-4 text-left hover:bg-ivory/30 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] text-smoke/40">#{orders.length - i}</span>
+                      <p className="text-sm font-medium truncate">{o.first_name} {o.last_name}</p>
+                      <span className={`text-[10px] px-1.5 py-0.5 ${st.className}`}>{st.label}</span>
+                    </div>
+                    <p className="text-[11px] text-smoke truncate">{o.email}{o.phone ? ` · ${o.phone}` : ""} · {o.country}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm">${(o.total ?? 0).toLocaleString()}</p>
+                    <p className="text-[10px] text-smoke/40">{formatOrderTime(o.created_at)}</p>
+                  </div>
+                </button>
+                {isOpen && (
+                  <div className="border-t border-line/50 p-4 bg-ivory/20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-xs mb-4">
+                      <p><span className="text-smoke/40">姓名：</span>{o.first_name} {o.last_name}</p>
+                      <p><span className="text-smoke/40">邮箱：</span><a href={`mailto:${o.email}`} className="underline hover:text-charcoal">{o.email}</a></p>
+                      <p><span className="text-smoke/40">电话：</span>{o.phone || "—"}</p>
+                      {wa && <p><a href={wa} target="_blank" rel="noreferrer" className="text-green-700 underline">WhatsApp 联系客户 →</a></p>}
+                      <p className="md:col-span-2"><span className="text-smoke/40">地址：</span>{[o.address, o.city, o.postal_code, o.country].filter(Boolean).join(", ")}</p>
+                    </div>
+                    <div className="border border-line/50 mb-4">
+                      {items.map((it: any, idx: number) => (
+                        <div key={idx} className="flex justify-between items-center px-3 py-2 text-xs border-b border-line/30 last:border-b-0">
+                          <span className="truncate mr-4">{it.name}{it.color ? ` (${it.color})` : ""} × {it.quantity}</span>
+                          <span>${((it.price || 0) * (it.quantity || 1)).toLocaleString()}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between px-3 py-2 text-xs text-smoke bg-ivory/50">
+                        <span>小计 ${(o.subtotal ?? 0).toLocaleString()} · 运费 ${(o.shipping ?? 0).toLocaleString()}</span>
+                        <span className="font-medium text-charcoal">合计 ${(o.total ?? 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      {o.status !== "contacted" && o.status !== "completed" && <button disabled={busy} onClick={() => setStatus(o.id, "contacted")} className="btn-outline text-[10px] py-1.5 px-3">标记已联系</button>}
+                      {o.status !== "completed" && <button disabled={busy} onClick={() => setStatus(o.id, "completed")} className="btn-outline text-[10px] py-1.5 px-3">标记已完成</button>}
+                      <div className="flex-1" />
+                      <button disabled={busy} onClick={() => remove(o.id)} className="text-[10px] py-1.5 px-3 text-red-600 border border-red-200 hover:bg-red-50">删除订单</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

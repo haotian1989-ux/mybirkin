@@ -178,3 +178,27 @@ ALTER TABLE about_page ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "public_read" ON about_page FOR SELECT USING (true);
 CREATE POLICY "public_insert" ON about_page FOR INSERT WITH CHECK (true);
 CREATE POLICY "public_update" ON about_page FOR UPDATE USING (true) WITH CHECK (true);
+
+-- 客户订单（结算页提交）
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  first_name TEXT NOT NULL DEFAULT '',
+  last_name TEXT NOT NULL DEFAULT '',
+  email TEXT NOT NULL DEFAULT '',
+  phone TEXT NOT NULL DEFAULT '',
+  address TEXT NOT NULL DEFAULT '',
+  city TEXT NOT NULL DEFAULT '',
+  postal_code TEXT NOT NULL DEFAULT '',
+  country TEXT NOT NULL DEFAULT '',
+  items JSONB NOT NULL DEFAULT '[]',
+  subtotal INTEGER NOT NULL DEFAULT 0,
+  shipping INTEGER NOT NULL DEFAULT 0,
+  total INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public_read" ON orders FOR SELECT USING (true);
+CREATE POLICY "public_insert" ON orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_update" ON orders FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "public_delete" ON orders FOR DELETE USING (true);
