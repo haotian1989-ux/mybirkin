@@ -8,19 +8,50 @@ import CartDrawer from "@/components/CartDrawer";
 import FloatingContact from "@/components/FloatingContact";
 import { CartProvider } from "@/components/CartContext";
 
+const SITE_URL = "https://www.mybirkin.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "MYBIRKIN | Bespoke Leather Atelier",
     template: "%s | MYBIRKIN",
   },
   description:
     "Handcrafted luxury leather goods. Bespoke handbags, pet accessories, and leather charms — made to order with Italian full-grain leather.",
+  keywords: ["luxury leather goods", "bespoke handbags", "handmade leather bags", "custom leather bag", "leather charms", "pet leather accessories", "Hermès style handbag"],
   openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "MYBIRKIN",
+    title: "MYBIRKIN | Bespoke Leather Atelier",
+    description: "Handcrafted luxury leather goods, made to order with Italian full-grain leather.",
+  },
+  twitter: {
+    card: "summary_large_image",
     title: "MYBIRKIN | Bespoke Leather Atelier",
     description: "Handcrafted luxury leather goods, made to order.",
-    url: "https://mybirkin.com",
-    siteName: "MYBIRKIN",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": SITE_URL + "/#org",
+      name: "MYBIRKIN",
+      url: SITE_URL,
+      description: "Bespoke luxury leather atelier. Handmade handbags, charms and pet accessories crafted to order.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": SITE_URL + "/#website",
+      url: SITE_URL,
+      name: "MYBIRKIN",
+      publisher: { "@id": SITE_URL + "/#org" },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -31,6 +62,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <CartProvider>
           <Navbar />
           <main className="flex-1">{children}</main>

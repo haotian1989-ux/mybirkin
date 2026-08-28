@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getServiceSupabase } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: "Our Story",
+  description:
+    "The MYBIRKIN story: one artisan, one piece, one promise. Bespoke leather goods handcrafted to order with Italian full-grain leather.",
+  alternates: { canonical: "https://www.mybirkin.com/about" },
+};
 
 const DEFAULT_ABOUT = {
   heroImage: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1800&q=85",

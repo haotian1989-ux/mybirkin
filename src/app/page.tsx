@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import HomeClient from "./HomeClient";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
 export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: { absolute: "MYBIRKIN | Bespoke Leather Atelier" },
+  description:
+    "Handcrafted luxury leather goods. Bespoke handbags, pet accessories, and leather charms — made to order with Italian full-grain leather.",
+  alternates: { canonical: "https://www.mybirkin.com" },
+};
 
 const DEFAULT_SECTIONS = [
   { title: "Handbags", description: "Explore our handbag collection", image: "https://placehold.co/800x1000/1a1a1a/d4af37?text=Handbags", link: "/shop?category=handbags", sort_order: 0 },
