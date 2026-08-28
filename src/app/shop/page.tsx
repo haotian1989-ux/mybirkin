@@ -24,7 +24,7 @@ const sortOptions = [
 function useProducts(): Product[] {
   const [items, setItems] = useState<Product[]>(defaultProducts);
   useEffect(() => {
-    supabase.from("products").select("*").then(({ data, error }) => {
+    supabase.from("products").select("*").order("created_at", { ascending: false }).then(({ data, error }) => {
       if (!error && data && data.length > 0) {
         setItems(data.map((row: any) => ({
           id: row.id,
@@ -41,6 +41,7 @@ function useProducts(): Product[] {
           inStock: row.in_stock,
           featured: row.featured,
           newArrival: row.new_arrival,
+          createdAt: row.created_at,
         })));
       }
     });
@@ -67,6 +68,13 @@ function ShopContent() {
   const filtered = useMemo(() => {
     let result = activeCat === "all" ? [...products] : products.filter((p) => p.category === activeCat);
     result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
+    if (sort === "newest") {
+      result.sort((a, b) => {
+        const at = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bt = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bt - at;
+      });
+    }
     if (sort === "price-asc") result.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") result.sort((a, b) => b.price - a.price);
     return result;

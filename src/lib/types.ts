@@ -15,6 +15,7 @@ export interface Product {
   inStock: boolean;
   featured: boolean;
   newArrival: boolean;
+  createdAt?: string;
 }
 
 export interface CartItem {

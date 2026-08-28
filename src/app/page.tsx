@@ -17,7 +17,7 @@ async function fetchHomeData() {
   try {
     const [heroResult, productsResult, sectionsResult] = await Promise.all([
       supabase.from("homepage_hero").select("*").limit(1).maybeSingle(),
-      supabase.from("products").select("*"),
+      supabase.from("products").select("*").order("created_at", { ascending: false }),
       supabase.from("homepage_sections").select("*").order("sort_order"),
     ]);
 
@@ -46,6 +46,7 @@ async function fetchHomeData() {
       inStock: row.in_stock,
       featured: row.featured,
       newArrival: row.new_arrival,
+      createdAt: row.created_at,
     }));
 
     const promiseTitle = heroRow?.promise_title || "The MYBIRKIN Promise";
