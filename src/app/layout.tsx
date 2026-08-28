@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     title: "MYBIRKIN | Bespoke Leather Atelier",
     description: "Handcrafted luxury leather goods, made to order.",
   },
+  verification: {
+    google: "soOE5sHsNPv9Pdr-EG2jFupawOfoqma4yhHQTjVjPgU",
+  },
 };
 
 const jsonLd = {
