@@ -74,6 +74,8 @@
 - 图片灯箱: `src/components/ImageLightbox.tsx`
 - 登录门: `src/components/AdminGate.tsx`
 - 数据定义: `src/lib/types.ts`, `src/lib/data.ts`, `src/lib/craft-data.ts`, `src/lib/builder-data.ts`
+- SEO: `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/icon.svg`
+- Google 验证文件: `public/googlec9f81d52f1e8993c.html` — **GSC 所有权验证用，绝对不能删除**
 
 ## 环境约束
 - 沙箱无网络，npm install 需用户在系统终端执行
