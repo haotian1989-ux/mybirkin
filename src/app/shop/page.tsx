@@ -113,43 +113,43 @@ function ShopContent() {
     return result;
   }, [activeCat, activeSub, sort, priceRange, products]);
 
+  const activeCatLabel = categories.find((c) => c.value === activeCat)?.label || "";
+
   return (
     <div className="page-padding py-14 md:py-20">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
           <p className="section-label mb-2">Collection</p>
           <h1 className="section-title">Shop All</h1>
         </div>
         <button onClick={() => setShowFilters(!showFilters)} className="md:hidden flex items-center gap-2 text-xs tracking-label uppercase text-smoke">
-          <SlidersHorizontal size={14} strokeWidth={1.5} /> Filters
+          <SlidersHorizontal size={14} strokeWidth={1.5} /> Sort & Price
         </button>
       </div>
+
+      {/* 主分类 Tab */}
+      <div className="flex gap-1 mb-6 border-b border-line overflow-x-auto">
+        {categories.map((c) => (
+          <button key={c.value} onClick={() => { setActiveCat(c.value); setActiveSub(""); updateQuery(c.value, ""); }}
+            className={`whitespace-nowrap px-4 py-2.5 text-xs tracking-label uppercase border-b-2 -mb-[1px] transition-colors ${activeCat === c.value ? "border-charcoal text-charcoal font-medium" : "border-transparent text-smoke hover:text-charcoal"}`}>{c.label}</button>
+        ))}
+      </div>
+
+      {/* 子分类 chips */}
+      {activeCat !== "all" && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button onClick={() => { setActiveSub(""); updateQuery(activeCat, ""); }}
+            className={`px-3 py-1.5 text-xs border transition-colors ${activeSub === "" ? "border-charcoal bg-charcoal text-paper" : "border-line text-smoke hover:border-charcoal"}`}>All {activeCatLabel}</button>
+          {activeSubList.map((s) => (
+            <button key={s.id} onClick={() => { setActiveSub(s.id); updateQuery(activeCat, s.id); }}
+              className={`px-3 py-1.5 text-xs border transition-colors ${activeSub === s.id ? "border-charcoal bg-charcoal text-paper" : "border-line text-smoke hover:border-charcoal"}`}>{s.name}</button>
+          ))}
+        </div>
+      )}
 
       <div className="flex gap-12">
         <aside className={`${showFilters ? "fixed inset-0 z-40 bg-paper p-8 pt-24" : "hidden"} md:block md:relative md:inset-auto md:z-auto md:bg-transparent md:p-0 md:w-52 flex-shrink-0`}>
           {showFilters && <button onClick={() => setShowFilters(false)} className="md:hidden absolute top-8 right-8"><X size={18} strokeWidth={1.5} /></button>}
-          <div className="mb-10">
-            <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Category</h3>
-            <div className="flex flex-col gap-2">
-              {categories.map((c) => (
-                <button key={c.value} onClick={() => { setActiveCat(c.value); setActiveSub(""); updateQuery(c.value, ""); }}
-                  className={`text-sm text-left py-1.5 transition-colors ${activeCat === c.value ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>{c.label}</button>
-              ))}
-            </div>
-          </div>
-          {activeCat !== "all" && (
-            <div className="mb-10">
-              <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Subcategory</h3>
-              <div className="flex flex-col gap-2">
-                <button onClick={() => { setActiveSub(""); updateQuery(activeCat, ""); }}
-                  className={`text-sm text-left py-1.5 transition-colors ${activeSub === "" ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>All</button>
-                {activeSubList.map((s) => (
-                  <button key={s.id} onClick={() => { setActiveSub(s.id); updateQuery(activeCat, s.id); }}
-                    className={`text-sm text-left py-1.5 transition-colors ${activeSub === s.id ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>{s.name}</button>
-                ))}
-              </div>
-            </div>
-          )}
           <div className="mb-10">
             <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Sort by</h3>
             <select value={sort} onChange={(e) => setSort(e.target.value)}
