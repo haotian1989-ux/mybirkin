@@ -2,20 +2,21 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, Inbox, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, Inbox, ArrowUp, ArrowDown, Tags } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
 import { supabase } from "@/lib/supabase";
-import { Product } from "@/lib/types";
+import { Product, ProductSubcategory, ProductCategory } from "@/lib/types";
 import ImageUploader from "@/components/ImageUploader";
 import { products as defaultProducts } from "@/lib/data";
 import AdminPanel from "@/components/AdminPanel";
 import CraftEditor from "@/components/CraftEditor";
 import AdminGate from "@/components/AdminGate";
 
-type AdminTab = "products" | "builder" | "homepage" | "contact" | "craft" | "about" | "orders";
+type AdminTab = "products" | "categories" | "builder" | "homepage" | "contact" | "craft" | "about" | "orders";
 
 const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "products", label: "产品管理", icon: ShoppingBag },
+  { key: "categories", label: "分类管理", icon: Tags },
   { key: "builder", label: "定制数据", icon: Palette },
   { key: "homepage", label: "首页编辑", icon: Layout },
   { key: "contact", label: "联系方式", icon: MessageCircle },
@@ -56,6 +57,7 @@ function AdminContent() {
           })}
         </div>
         {activeTab === "products" && <ProductManager />}
+        {activeTab === "categories" && <CategoryManager />}
         {activeTab === "builder" && <AdminPanel />}
         {activeTab === "homepage" && <HomepageEditor />}
         {activeTab === "contact" && <ContactEditor />}
@@ -71,19 +73,31 @@ export default function AdminDashboard() {
   return <AdminGate><AdminContent /></AdminGate>;
 }
 
+const CATEGORY_LABELS: Record<string, string> = { handbags: "手袋", charms: "挂件", pet: "宠物" };
+const CATEGORY_ORDER: ProductCategory[] = ["handbags", "charms", "pet"];
+const defaultSubcategories: ProductSubcategory[] = [
+  { id: "birkin", name: "Birkin", category: "handbags", sortOrder: 0 },
+  { id: "kelly", name: "Kelly", category: "handbags", sortOrder: 1 },
+  { id: "constance", name: "Constance", category: "handbags", sortOrder: 2 },
+  { id: "lindy", name: "Lindy", category: "handbags", sortOrder: 3 },
+];
+
 // ── Product Manager ──
 function ProductManager() {
   const products = useAdminSupabaseList<Product>("products", defaultProducts);
+  const subcats = useAdminSupabaseList<ProductSubcategory>("product_subcategories", defaultSubcategories);
   const [editing, setEditing] = useState<Product | null>(null);
   const [adding, setAdding] = useState(false);
 
   const emptyProduct: Product = {
-    id: `prod-${Date.now()}`, name: "", slug: "", category: "handbags", price: 0,
+    id: `prod-${Date.now()}`, name: "", slug: "", category: "handbags", subcategory: "", price: 0,
     description: "", details: [], materials: "", dimensions: "",
     colors: [], images: [], inStock: true, featured: false, newArrival: false,
   };
 
   if (!products.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
+
+  const subName = (id?: string) => (id ? subcats.items.find((s) => s.id === id)?.name || id : "");
 
   return (
     <div>
@@ -93,7 +107,7 @@ function ProductManager() {
           className="btn-primary text-[10px] gap-1 py-2 px-4"><Plus size={12} /> 添加产品</button>
       </div>
       {(editing || adding) && (
-        <ProductEditor product={editing!} onSave={async (p) => { if (adding) { const err = await products.add(p); if (err) { alert("添加失败: " + err); return; } setAdding(false); } else { const err = await products.update(p.id, p); if (err) { alert("更新失败: " + err); return; } setEditing(null); } }} onCancel={() => { setEditing(null); setAdding(false); }} />
+        <ProductEditor product={editing!} subcategories={subcats.items} onSave={async (p) => { if (adding) { const err = await products.add(p); if (err) { alert("添加失败: " + err); return; } setAdding(false); } else { const err = await products.update(p.id, p); if (err) { alert("更新失败: " + err); return; } setEditing(null); } }} onCancel={() => { setEditing(null); setAdding(false); }} />
       )}
       <div className="space-y-1">
         {products.items.map((p) => (
@@ -104,7 +118,7 @@ function ProductManager() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-medium truncate">{p.name || "未命名"}</p>
-                <span className="text-[10px] text-smoke/40 uppercase">{p.category}</span>
+                <span className="text-[10px] text-smoke/40">{CATEGORY_LABELS[p.category] || p.category}{p.subcategory ? ` · ${subName(p.subcategory)}` : ""}</span>
                 {p.featured && <span className="text-[9px] bg-gold/10 text-gold px-1.5 py-0.5">精选</span>}
                 {p.newArrival && <span className="text-[9px] bg-charcoal text-paper px-1.5 py-0.5">新品</span>}
               </div>
@@ -123,7 +137,7 @@ function toSlug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').replace(/-+/g, '-') || 'product';
 }
 
-function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave: (p: Product) => void; onCancel: () => void }) {
+function ProductEditor({ product, subcategories, onSave, onCancel }: { product: Product; subcategories: ProductSubcategory[]; onSave: (p: Product) => void; onCancel: () => void }) {
   const [form, setForm] = useState<Product>({ ...product });
   const slugManualRef = useRef(false);
   const upd = (k: keyof Product, v: any) => setForm((f) => ({ ...f, [k]: v }));
@@ -134,9 +148,10 @@ function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">名称</label><input value={form.name} onChange={(e) => { upd("name", e.target.value); if (!slugManualRef.current) upd("slug", toSlug(e.target.value)); }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">Slug <span className="text-smoke/30 font-normal lowercase">（输入名称自动生成）</span></label><input value={form.slug} onChange={(e) => { upd("slug", e.target.value); slugManualRef.current = true; }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">分类</label><select value={form.category} onChange={(e) => upd("category", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="handbags">手袋</option><option value="charms">挂件</option><option value="pet">宠物</option></select></div>
+          <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">分类</label><select value={form.category} onChange={(e) => { upd("category", e.target.value); upd("subcategory", ""); }} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="handbags">手袋</option><option value="charms">挂件</option><option value="pet">宠物</option></select></div>
+          <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">子分类</label><select value={form.subcategory || ""} onChange={(e) => upd("subcategory", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal bg-paper"><option value="">无子分类</option>{subcategories.filter((s) => s.category === form.category).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)).map((s) => (<option key={s.id} value={s.id}>{s.name}</option>))}</select></div>
           <div><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">价格 ($)</label><input type="number" value={form.price} onChange={(e) => upd("price", Number(e.target.value))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div className="flex items-center gap-4"><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.featured} onChange={(e) => upd("featured", e.target.checked)} className="accent-charcoal" /> 精选</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.newArrival} onChange={(e) => upd("newArrival", e.target.checked)} className="accent-charcoal" /> 新品</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.inStock} onChange={(e) => upd("inStock", e.target.checked)} className="accent-charcoal" /> 有库存</label></div>
+          <div className="col-span-2 flex items-center gap-4"><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.featured} onChange={(e) => upd("featured", e.target.checked)} className="accent-charcoal" /> 精选</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.newArrival} onChange={(e) => upd("newArrival", e.target.checked)} className="accent-charcoal" /> 新品</label><label className="flex items-center gap-1.5 text-xs"><input type="checkbox" checked={form.inStock} onChange={(e) => upd("inStock", e.target.checked)} className="accent-charcoal" /> 有库存</label></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">描述</label><textarea value={form.description} onChange={(e) => upd("description", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">材质</label><input value={form.materials} onChange={(e) => upd("materials", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">尺寸</label><input value={form.dimensions} onChange={(e) => upd("dimensions", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
@@ -160,6 +175,132 @@ function ProductEditor({ product, onSave, onCancel }: { product: Product; onSave
           <button onClick={() => onSave(form)} className="btn-primary text-xs py-2 px-6"><Save size={14} className="mr-1" /> 发布</button>
           <button onClick={onCancel} className="btn-outline text-xs py-2 px-6"><X size={14} className="mr-1" /> 取消</button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Category Manager ──
+function CategoryManager() {
+  const subcats = useAdminSupabaseList<ProductSubcategory>("product_subcategories", defaultSubcategories);
+  const [newName, setNewName] = useState("");
+  const [newCategory, setNewCategory] = useState<ProductCategory>("handbags");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  if (!subcats.loaded) return <div className="text-xs text-smoke/40 py-10">加载中...</div>;
+
+  const sorted = [...subcats.items].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+  const groupOf = (cat: ProductCategory) => sorted.filter((s) => s.category === cat);
+
+  const add = async () => {
+    const name = newName.trim();
+    if (!name) { alert("请输入子分类名称"); return; }
+    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").replace(/-+/g, "-");
+    if (!id) { alert("子分类名称需包含字母或数字"); return; }
+    if (subcats.items.some((s) => s.id === id)) { alert("该子分类已存在"); return; }
+    setBusy(true);
+    const group = groupOf(newCategory);
+    const nextSort = group.length ? Math.max(...group.map((s) => s.sortOrder ?? 0)) + 1 : 0;
+    const err = await subcats.add({ id, name, category: newCategory, sortOrder: nextSort });
+    setBusy(false);
+    if (err) { alert("添加失败: " + err); return; }
+    setNewName("");
+  };
+
+  const rename = async (id: string) => {
+    const name = editName.trim();
+    if (!name) { alert("名称不能为空"); return; }
+    const err = await subcats.update(id, { name });
+    if (err) { alert("重命名失败: " + err); return; }
+    setEditingId(null);
+  };
+
+  const remove = async (id: string, name: string) => {
+    if (!confirm(`确定删除子分类「${name}」吗？`)) return;
+    const err = await subcats.remove(id);
+    if (err) alert("删除失败: " + err);
+  };
+
+  const move = async (cat: ProductCategory, id: string, dir: -1 | 1) => {
+    const group = groupOf(cat);
+    const idx = group.findIndex((s) => s.id === id);
+    const target = idx + dir;
+    if (idx < 0 || target < 0 || target >= group.length) return;
+    const nextGroup = [...group];
+    [nextGroup[idx], nextGroup[target]] = [nextGroup[target], nextGroup[idx]];
+    const rebuilt = [
+      ...sorted.filter((s) => s.category !== cat),
+      ...nextGroup.map((s, i) => ({ ...s, sortOrder: i })),
+    ];
+    const err = await subcats.saveAll(rebuilt);
+    if (err) alert("排序失败: " + err);
+  };
+
+  return (
+    <div className="max-w-3xl">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="font-serif text-lg">分类管理</h2>
+          <p className="text-xs text-smoke/60">子分类挂在三大主分类下，用于前台更细粒度的浏览筛选</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-2 mb-8 p-4 border border-line/50">
+        <div>
+          <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">主分类</label>
+          <select value={newCategory} onChange={(e) => setNewCategory(e.target.value as ProductCategory)} className="border border-line px-3 py-2 text-sm bg-paper focus:outline-none focus:border-charcoal">
+            {CATEGORY_ORDER.map((c) => (<option key={c} value={c}>{CATEGORY_LABELS[c]}</option>))}
+          </select>
+        </div>
+        <div className="flex-1 min-w-[180px]">
+          <label className="text-[9px] tracking-label uppercase text-smoke/40 block mb-0.5">子分类名称</label>
+          <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") add(); }} placeholder="例如 Birkin" className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+        </div>
+        <button onClick={add} disabled={busy} className="btn-primary text-[10px] gap-1 py-2 px-4"><Plus size={12} /> 添加</button>
+      </div>
+
+      <div className="space-y-6">
+        {CATEGORY_ORDER.map((cat) => {
+          const group = groupOf(cat);
+          return (
+            <div key={cat}>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-serif text-base">{CATEGORY_LABELS[cat]}</h3>
+                <span className="text-[10px] text-smoke/40 uppercase">{cat}</span>
+                <span className="text-[10px] text-smoke/40">{group.length} 个子分类</span>
+              </div>
+              {group.length === 0 ? (
+                <p className="text-xs text-smoke/40 py-4 text-center border border-dashed border-line">该主分类下暂无子分类</p>
+              ) : (
+                <div className="space-y-1">
+                  {group.map((s, i) => (
+                    <div key={s.id} className="flex items-center gap-2 p-3 border border-line/50 hover:border-line transition-colors">
+                      <span className="text-[10px] text-smoke/40 w-6 text-right">{i + 1}</span>
+                      {editingId === s.id ? (
+                        <input value={editName} onChange={(e) => setEditName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") rename(s.id); }} className="flex-1 border border-line px-3 py-1.5 text-sm focus:outline-none focus:border-charcoal" autoFocus />
+                      ) : (
+                        <span className="flex-1 text-sm">{s.name}</span>
+                      )}
+                      <button onClick={() => move(cat, s.id, -1)} disabled={i === 0} className="p-1.5 text-smoke/30 hover:text-charcoal disabled:opacity-20" title="上移"><ArrowUp size={14} /></button>
+                      <button onClick={() => move(cat, s.id, 1)} disabled={i === group.length - 1} className="p-1.5 text-smoke/30 hover:text-charcoal disabled:opacity-20" title="下移"><ArrowDown size={14} /></button>
+                      {editingId === s.id ? (
+                        <>
+                          <button onClick={() => rename(s.id)} className="text-[10px] py-1.5 px-3 btn-primary">保存</button>
+                          <button onClick={() => setEditingId(null)} className="text-[10px] py-1.5 px-3 btn-outline">取消</button>
+                        </>
+                      ) : (
+                        <button onClick={() => { setEditingId(s.id); setEditName(s.name); }} className="p-1.5 text-smoke/30 hover:text-charcoal" title="重命名"><Edit3 size={14} /></button>
+                      )}
+                      <button onClick={() => remove(s.id, s.name)} className="p-1.5 text-smoke/30 hover:text-red-500" title="删除"><Trash2 size={14} /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS products (
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   category TEXT NOT NULL CHECK (category IN ('handbags', 'charms', 'pet')),
+  subcategory TEXT NOT NULL DEFAULT '',
   price INTEGER NOT NULL,
   description TEXT NOT NULL DEFAULT '',
   details JSONB NOT NULL DEFAULT '[]',
@@ -119,6 +120,15 @@ CREATE TABLE IF NOT EXISTS contact_links (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- 产品子分类
+CREATE TABLE IF NOT EXISTS product_subcategories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  category TEXT NOT NULL CHECK (category IN ('handbags', 'charms', 'pet')),
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- 评论
 CREATE TABLE IF NOT EXISTS reviews (
   id TEXT PRIMARY KEY,
@@ -141,6 +151,7 @@ ALTER TABLE craft_pages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE homepage_hero ENABLE ROW LEVEL SECURITY;
 ALTER TABLE homepage_sections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_links ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_subcategories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 
 -- 所有人可读
@@ -154,6 +165,10 @@ CREATE POLICY "public_read" ON craft_pages FOR SELECT USING (true);
 CREATE POLICY "public_read" ON homepage_hero FOR SELECT USING (true);
 CREATE POLICY "public_read" ON homepage_sections FOR SELECT USING (true);
 CREATE POLICY "public_read" ON contact_links FOR SELECT USING (true);
+CREATE POLICY "public_read" ON product_subcategories FOR SELECT USING (true);
+CREATE POLICY "public_insert" ON product_subcategories FOR INSERT WITH CHECK (true);
+CREATE POLICY "public_update" ON product_subcategories FOR UPDATE USING (true) WITH CHECK (true);
+CREATE POLICY "public_delete" ON product_subcategories FOR DELETE USING (true);
 CREATE POLICY "public_read" ON reviews FOR SELECT USING (true);
 
 -- Our Story / About 页面

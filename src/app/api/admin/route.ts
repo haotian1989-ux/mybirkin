@@ -33,6 +33,7 @@ function toSnakeRow(obj: Record<string, any>, table: string): Record<string, any
       name: obj.name,
       slug: obj.slug,
       category: obj.category,
+      subcategory: obj.subcategory ?? "",
       price: obj.price,
       description: obj.description,
       details: obj.details,

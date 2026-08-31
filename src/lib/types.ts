@@ -5,6 +5,7 @@ export interface Product {
   name: string;
   slug: string;
   category: ProductCategory;
+  subcategory?: string;
   price: number;
   description: string;
   details: string[];
@@ -16,6 +17,13 @@ export interface Product {
   featured: boolean;
   newArrival: boolean;
   createdAt?: string;
+}
+
+export interface ProductSubcategory {
+  id: string;
+  name: string;
+  category: ProductCategory;
+  sortOrder?: number;
 }
 
 export interface CartItem {

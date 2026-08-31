@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import { products as defaultProducts } from "@/lib/data";
-import { ProductCategory, Product } from "@/lib/types";
+import { ProductCategory, Product, ProductSubcategory } from "@/lib/types";
 import { SlidersHorizontal, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -13,6 +13,13 @@ const categories: { label: string; value: ProductCategory | "all" }[] = [
   { label: "Handbags", value: "handbags" },
   { label: "Charms", value: "charms" },
   { label: "Pet Collection", value: "pet" },
+];
+
+const defaultSubcategories: ProductSubcategory[] = [
+  { id: "birkin", name: "Birkin", category: "handbags", sortOrder: 0 },
+  { id: "kelly", name: "Kelly", category: "handbags", sortOrder: 1 },
+  { id: "constance", name: "Constance", category: "handbags", sortOrder: 2 },
+  { id: "lindy", name: "Lindy", category: "handbags", sortOrder: 3 },
 ];
 
 const sortOptions = [
@@ -31,6 +38,7 @@ function useProducts(): Product[] {
           name: row.name,
           slug: row.slug,
           category: row.category,
+          subcategory: row.subcategory || "",
           price: row.price,
           description: row.description || "",
           details: row.details || [],
@@ -51,22 +59,47 @@ function useProducts(): Product[] {
 
 function ShopContent() {
   const searchParams = useSearchParams();
-  const initialCat = searchParams.get("category") as ProductCategory | null;
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const [activeCat, setActiveCat] = useState<ProductCategory | "all">(initialCat || "all");
+  const [activeCat, setActiveCat] = useState<ProductCategory | "all">((searchParams.get("category") as ProductCategory | null) || "all");
+  const [activeSub, setActiveSub] = useState<string>(searchParams.get("subcategory") || "");
+  const [subcategories, setSubcategories] = useState<ProductSubcategory[]>(defaultSubcategories);
 
   useEffect(() => {
-    const cat = searchParams.get("category") as ProductCategory | null;
-    setActiveCat(cat || "all");
+    supabase.from("product_subcategories").select("*").order("sort_order", { ascending: true }).then(({ data, error }) => {
+      if (!error && data && data.length > 0) setSubcategories(data as ProductSubcategory[]);
+    });
+  }, []);
+
+  useEffect(() => {
+    setActiveCat((searchParams.get("category") as ProductCategory | null) || "all");
+    setActiveSub(searchParams.get("subcategory") || "");
   }, [searchParams]);
+
   const [sort, setSort] = useState("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [showFilters, setShowFilters] = useState(false);
 
   const products = useProducts();
 
+  const updateQuery = (cat: ProductCategory | "all", sub: string) => {
+    const params = new URLSearchParams();
+    if (cat !== "all") params.set("category", cat);
+    if (sub) params.set("subcategory", sub);
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+
+  const activeSubList = subcategories
+    .filter((s) => s.category === activeCat)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+
   const filtered = useMemo(() => {
     let result = activeCat === "all" ? [...products] : products.filter((p) => p.category === activeCat);
+    if (activeCat !== "all" && activeSub) {
+      result = result.filter((p) => p.subcategory === activeSub);
+    }
     result = result.filter((p) => p.price >= priceRange[0] && p.price <= priceRange[1]);
     if (sort === "newest") {
       result.sort((a, b) => {
@@ -78,7 +111,7 @@ function ShopContent() {
     if (sort === "price-asc") result.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") result.sort((a, b) => b.price - a.price);
     return result;
-  }, [activeCat, sort, priceRange, products]);
+  }, [activeCat, activeSub, sort, priceRange, products]);
 
   return (
     <div className="page-padding py-14 md:py-20">
@@ -99,11 +132,24 @@ function ShopContent() {
             <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Category</h3>
             <div className="flex flex-col gap-2">
               {categories.map((c) => (
-                <button key={c.value} onClick={() => setActiveCat(c.value)}
+                <button key={c.value} onClick={() => { setActiveCat(c.value); setActiveSub(""); updateQuery(c.value, ""); }}
                   className={`text-sm text-left py-1.5 transition-colors ${activeCat === c.value ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>{c.label}</button>
               ))}
             </div>
           </div>
+          {activeCat !== "all" && (
+            <div className="mb-10">
+              <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Subcategory</h3>
+              <div className="flex flex-col gap-2">
+                <button onClick={() => { setActiveSub(""); updateQuery(activeCat, ""); }}
+                  className={`text-sm text-left py-1.5 transition-colors ${activeSub === "" ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>All</button>
+                {activeSubList.map((s) => (
+                  <button key={s.id} onClick={() => { setActiveSub(s.id); updateQuery(activeCat, s.id); }}
+                    className={`text-sm text-left py-1.5 transition-colors ${activeSub === s.id ? "text-charcoal font-medium" : "text-smoke hover:text-charcoal"}`}>{s.name}</button>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="mb-10">
             <h3 className="text-[11px] tracking-label uppercase text-smoke/60 mb-4">Sort by</h3>
             <select value={sort} onChange={(e) => setSort(e.target.value)}
@@ -127,7 +173,7 @@ function ShopContent() {
           {filtered.length === 0 && (
             <div className="text-center py-24 text-smoke">
               <p className="mb-3">No products match your filters.</p>
-              <button onClick={() => { setActiveCat("all"); setPriceRange([0, 2000]); }} className="text-xs underline underline-offset-4 hover:text-charcoal">Clear all filters</button>
+              <button onClick={() => { setActiveCat("all"); setActiveSub(""); setPriceRange([0, 2000]); updateQuery("all", ""); }} className="text-xs underline underline-offset-4 hover:text-charcoal">Clear all filters</button>
             </div>
           )}
         </div>
