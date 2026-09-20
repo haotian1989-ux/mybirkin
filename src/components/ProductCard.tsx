@@ -1,22 +1,22 @@
 "use client";
-import { optimizeImage } from "@/lib/image";
+import { optimizeImage, squareImage } from "@/lib/image";
 
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { Product } from "@/lib/types";
 import ImageLightbox from "./ImageLightbox";
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product, square = false }: { product: Product; square?: boolean }) {
   const { dispatch } = useCart();
 
   return (
     <div className="group">
       <Link
         href={`/product/${product.slug}`}
-        className="block relative aspect-[3/4] overflow-hidden bg-ivory/50 mb-5"
+        className={`block relative overflow-hidden bg-ivory/50 mb-5 ${square ? "aspect-square" : "aspect-[3/4]"}`}
       >
         <ImageLightbox
-          src={optimizeImage(product.images[0])}
+          src={square ? squareImage(product.images[0]) : optimizeImage(product.images[0])}
           alt={product.name}
           className="absolute inset-0"
         />

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/lib/types";
-import { optimizeImage } from "@/lib/image";
+import { optimizeImage, squareImage } from "@/lib/image";
 
 
 interface PromiseItem {
@@ -74,7 +74,7 @@ export default function HomeClient({
             <Link href="/shop" className="hidden md:block btn-ghost">View All →</Link>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-            {newArrivals.map((p) => (<ProductCard key={p.id} product={p} />))}
+            {newArrivals.map((p) => (<ProductCard key={p.id} product={p} square />))}
           </div>
         </section>
       )}
@@ -86,7 +86,7 @@ export default function HomeClient({
             <p className="section-label mb-3">Curated Selection</p>
             <h2 className="section-title mb-14">Featured Pieces</h2>
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-              {featured.map((p) => (<ProductCard key={p.id} product={p} />))}
+              {featured.map((p) => (<ProductCard key={p.id} product={p} square />))}
             </div>
           </div>
         </section>
@@ -98,8 +98,8 @@ export default function HomeClient({
           <h2 className="section-title text-center mb-16">Our Collections</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1.5">
             {sections.map((sec: any, i: number) => (
-              <Link key={i} href={sec.link || "#"} className="group relative aspect-[4/5] overflow-hidden bg-ivory/50">
-                {sec.image && <img src={optimizeImage(sec.image)} alt={sec.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
+              <Link key={i} href={sec.link || "#"} className="group relative aspect-square overflow-hidden bg-ivory/50">
+                {sec.image && <img src={squareImage(sec.image)} alt={sec.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent flex items-end p-8">
                   <h3 className="font-serif text-2xl md:text-3xl text-paper tracking-wide">{sec.title}</h3>
                 </div>

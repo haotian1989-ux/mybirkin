@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 };
 
 const DEFAULT_SECTIONS = [
-  { title: "Handbags", description: "Explore our handbag collection", image: "https://placehold.co/800x1000/1a1a1a/d4af37?text=Handbags", link: "/shop?category=handbags", sort_order: 0 },
-  { title: "Charms & Accents", description: "Discover our charms", image: "https://placehold.co/800x1000/1a1a1a/d4af37?text=Charms", link: "/shop?category=charms", sort_order: 1 },
-  { title: "Pet Collection", description: "Shop pet accessories", image: "https://placehold.co/800x1000/1a1a1a/d4af37?text=Pets", link: "/shop?category=pet", sort_order: 2 },
+  { title: "Handbags", description: "Explore our handbag collection", image: "https://placehold.co/800x800/1a1a1a/d4af37?text=Handbags", link: "/shop?category=handbags", sort_order: 0 },
+  { title: "Charms & Accents", description: "Discover our charms", image: "https://placehold.co/800x800/1a1a1a/d4af37?text=Charms", link: "/shop?category=charms", sort_order: 1 },
+  { title: "Pet Collection", description: "Shop pet accessories", image: "https://placehold.co/800x800/1a1a1a/d4af37?text=Pets", link: "/shop?category=pet", sort_order: 2 },
 ];
 
 async function fetchHomeData() {
