@@ -33,11 +33,12 @@ export interface CartItem {
 }
 
 // ── Blog ──
-export type BlogBlockType = "h2" | "h3" | "paragraph" | "list" | "quote";
+export type BlogBlockType = "h2" | "h3" | "paragraph" | "list" | "quote" | "image";
 
 export interface BlogBlock {
   type: BlogBlockType;
   text: string;
+  image?: string;
 }
 
 export interface BlogPost {

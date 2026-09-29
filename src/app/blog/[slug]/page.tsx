@@ -106,6 +106,17 @@ function renderBlocks(blocks: BlogBlock[]) {
             {b.text}
           </blockquote>
         );
+      case "image":
+        return b.image ? (
+          <figure key={i} className="my-10">
+            <img src={b.image} alt={b.text || "MYBIRKIN atelier craftsmanship"} className="w-full" />
+            {b.text && (
+              <figcaption className="text-[11px] tracking-label uppercase text-smoke/40 mt-3 text-center">
+                {b.text}
+              </figcaption>
+            )}
+          </figure>
+        ) : null;
       default:
         return (
           <p key={i} className="text-[15px] leading-[1.9] text-charcoal/80 my-5">

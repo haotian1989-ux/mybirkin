@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import { products as defaultProducts } from "@/lib/data";
 
+// 每小时重新生成，保证新文章/新商品及时进入 sitemap
+export const revalidate = 3600;
+
 const BASE = "https://www.mybirkin.com";
 
 const staticPaths = [

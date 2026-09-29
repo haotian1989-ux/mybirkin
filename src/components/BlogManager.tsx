@@ -14,6 +14,7 @@ const BLOCK_LABELS: Record<BlogBlockType, string> = {
   paragraph: "段落",
   list: "列表（每行一项）",
   quote: "引用",
+  image: "图片",
 };
 
 const emptyBlock = (type: BlogBlockType): BlogBlock => ({ type, text: "" });
@@ -107,6 +108,7 @@ function BlogEditor({ post, onSave, onCancel }: { post: BlogPost; onSave: (p: Bl
             <button onClick={() => addBlock("h2")} className="border border-line px-3 py-1.5 text-[10px] tracking-label uppercase text-smoke hover:text-charcoal">＋ 小标题</button>
             <button onClick={() => addBlock("list")} className="border border-line px-3 py-1.5 text-[10px] tracking-label uppercase text-smoke hover:text-charcoal">＋ 列表</button>
             <button onClick={() => addBlock("quote")} className="border border-line px-3 py-1.5 text-[10px] tracking-label uppercase text-smoke hover:text-charcoal">＋ 引用</button>
+            <button onClick={() => addBlock("image")} className="border border-line px-3 py-1.5 text-[10px] tracking-label uppercase text-smoke hover:text-charcoal">＋ 图片</button>
           </div>
         </div>
         {form.blocks.length === 0 && (
@@ -121,9 +123,17 @@ function BlogEditor({ post, onSave, onCancel }: { post: BlogPost; onSave: (p: Bl
                   <option key={t} value={t}>{BLOCK_LABELS[t]}</option>
                 ))}
               </select>
-              <textarea value={b.text} onChange={(e) => updateBlock(i, { text: e.target.value })} rows={b.type === "paragraph" || b.type === "list" ? 3 : 2}
-                placeholder={b.type === "list" ? "每行一个条目" : b.type === "quote" ? "引用文字" : "正文内容"}
-                className="flex-1 border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+              {b.type === "image" ? (
+                <div className="flex-1">
+                  <ImageUploader value={b.image || ""} onChange={(url) => updateBlock(i, { image: url })} />
+                  <input value={b.text} onChange={(e) => updateBlock(i, { text: e.target.value })} placeholder="图片说明（可选，前台显示在图下方）"
+                    className="mt-2 w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+                </div>
+              ) : (
+                <textarea value={b.text} onChange={(e) => updateBlock(i, { text: e.target.value })} rows={b.type === "paragraph" || b.type === "list" ? 3 : 2}
+                  placeholder={b.type === "list" ? "每行一个条目" : b.type === "quote" ? "引用文字" : "正文内容"}
+                  className="flex-1 border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" />
+              )}
               <div className="flex flex-col gap-1">
                 <button onClick={() => moveBlock(i, -1)} disabled={i === 0} className="p-1 text-smoke hover:text-charcoal disabled:opacity-30"><ArrowUp size={13} /></button>
                 <button onClick={() => moveBlock(i, 1)} disabled={i === form.blocks.length - 1} className="p-1 text-smoke hover:text-charcoal disabled:opacity-30"><ArrowDown size={13} /></button>
