@@ -43,6 +43,14 @@ export default function ProductDetail({ product }: { product: Product }) {
   const nextImg = () => setImgIndex((i) => (i + 1) % product.images.length);
   const prevImg = () => setImgIndex((i) => (i - 1 + product.images.length) % product.images.length);
 
+  // 回车切换颜色（mycoat.shop 同款逻辑）：按一次 Enter 切到下一个颜色，循环
+  const cycleColor = () => {
+    if (product.colors.length < 2) return;
+    const current = selectedColor || product.colors[0];
+    const idx = product.colors.indexOf(current);
+    setSelectedColor(product.colors[(idx + 1) % product.colors.length]);
+  };
+
   const handleAdd = () => {
     dispatch({ type: "ADD_ITEM", product, color: selectedColor || product.colors[0] });
     setAdded(true);
@@ -98,7 +106,18 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <p className="text-[11px] tracking-label uppercase text-smoke/60 mb-3">
                   Color · <span className="text-charcoal">{selectedColor || product.colors[0]}</span>
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div
+                  tabIndex={0}
+                  role="group"
+                  aria-label="Color options — press Enter to switch"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      cycleColor();
+                    }
+                  }}
+                  className="flex flex-wrap gap-2 outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-gold"
+                >
                   {product.colors.map((c) => (
                     <button key={c} onClick={() => setSelectedColor(c)}
                       className={`px-5 py-2.5 text-xs tracking-label border transition-colors duration-300 ${
