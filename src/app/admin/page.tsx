@@ -143,7 +143,15 @@ function toSlug(name: string): string {
 function ProductEditor({ product, subcategories, onSave, onCancel }: { product: Product; subcategories: ProductSubcategory[]; onSave: (p: Product) => void; onCancel: () => void }) {
   const [form, setForm] = useState<Product>({ ...product });
   const slugManualRef = useRef(false);
+  const [colorInput, setColorInput] = useState("");
   const upd = (k: keyof Product, v: any) => setForm((f) => ({ ...f, [k]: v }));
+  // 回车添加颜色（mycoat.shop 同款）：输入颜色名按回车加入列表
+  const addColor = () => {
+    const v = colorInput.trim();
+    if (!v) return;
+    if (!form.colors.includes(v)) upd("colors", [...form.colors, v]);
+    setColorInput("");
+  };
   return (
     <div className="fixed inset-0 z-50 bg-charcoal/40 backdrop-blur-sm flex items-start justify-center pt-20 overflow-y-auto">
       <div className="bg-paper p-8 w-full max-w-2xl mx-4 shadow-2xl mb-20">
@@ -158,7 +166,36 @@ function ProductEditor({ product, subcategories, onSave, onCancel }: { product: 
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">描述</label><textarea value={form.description} onChange={(e) => upd("description", e.target.value)} rows={3} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal resize-none" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">材质</label><input value={form.materials} onChange={(e) => upd("materials", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
           <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">尺寸</label><input value={form.dimensions} onChange={(e) => upd("dimensions", e.target.value)} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
-          <div className="col-span-2"><label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">颜色（逗号分隔）</label><input value={form.colors.join(", ")} onChange={(e) => upd("colors", e.target.value.split(",").map((s) => s.trim()).filter(Boolean))} className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal" /></div>
+          <div className="col-span-2">
+            <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-1">颜色（输入后按回车添加）</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {form.colors.map((c, i) => (
+                <span key={c} className="flex items-center gap-1.5 border border-line px-3 py-1.5 text-xs bg-ivory/30">
+                  {c}
+                  <button onClick={() => upd("colors", form.colors.filter((_, j) => j !== i))} className="text-smoke/40 hover:text-red-500" title="移除"><X size={12} /></button>
+                </span>
+              ))}
+            </div>
+            <input
+              value={colorInput}
+              onChange={(e) => {
+                const v = e.target.value;
+                // 兼容粘贴逗号分隔：自动拆分成多个颜色
+                if (v.includes(",")) {
+                  const parts = v.split(",").map((s) => s.trim()).filter(Boolean);
+                  const merged = [...form.colors];
+                  parts.forEach((p) => { if (!merged.includes(p)) merged.push(p); });
+                  upd("colors", merged);
+                  setColorInput("");
+                } else {
+                  setColorInput(v);
+                }
+              }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addColor(); } }}
+              placeholder="输入颜色名，按回车添加"
+              className="w-full border border-line px-3 py-2 text-sm focus:outline-none focus:border-charcoal"
+            />
+          </div>
           <div className="col-span-2">
             <label className="text-[10px] tracking-label uppercase text-smoke/50 block mb-2">产品图片</label>
             <div className="flex flex-wrap gap-3 mb-2">
