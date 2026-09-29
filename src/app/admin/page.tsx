@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, Inbox, ArrowUp, ArrowDown, Tags } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Edit3, Save, X, Layout, ShoppingBag, MessageCircle, Palette, BookOpen, Inbox, ArrowUp, ArrowDown, Tags, Newspaper } from "lucide-react";
 import { useAdminSupabaseList, useAdminSupabaseSingle, useAdminSections, useAdminContact } from "@/lib/use-supabase-data";
 import { supabase } from "@/lib/supabase";
 import { Product, ProductSubcategory, ProductCategory } from "@/lib/types";
@@ -10,15 +10,17 @@ import ImageUploader from "@/components/ImageUploader";
 import { products as defaultProducts } from "@/lib/data";
 import AdminPanel from "@/components/AdminPanel";
 import CraftEditor from "@/components/CraftEditor";
+import BlogManager from "@/components/BlogManager";
 import AdminGate from "@/components/AdminGate";
 
-type AdminTab = "products" | "categories" | "builder" | "homepage" | "contact" | "craft" | "about" | "orders";
+type AdminTab = "products" | "categories" | "builder" | "homepage" | "contact" | "craft" | "about" | "orders" | "blog";
 
 const tabs: { key: AdminTab; label: string; icon: any }[] = [
   { key: "products", label: "产品管理", icon: ShoppingBag },
   { key: "categories", label: "分类管理", icon: Tags },
   { key: "builder", label: "定制数据", icon: Palette },
   { key: "homepage", label: "首页编辑", icon: Layout },
+  { key: "blog", label: "博客管理", icon: Newspaper },
   { key: "contact", label: "联系方式", icon: MessageCircle },
   { key: "craft", label: "工艺页面", icon: Palette },
   { key: "about", label: "关于我们", icon: BookOpen },
@@ -60,6 +62,7 @@ function AdminContent() {
         {activeTab === "categories" && <CategoryManager />}
         {activeTab === "builder" && <AdminPanel />}
         {activeTab === "homepage" && <HomepageEditor />}
+        {activeTab === "blog" && <BlogManager />}
         {activeTab === "contact" && <ContactEditor />}
         {activeTab === "craft" && <CraftEditor />}
         {activeTab === "about" && <AboutEditor />}

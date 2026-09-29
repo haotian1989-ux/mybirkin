@@ -78,6 +78,7 @@ export default function Navbar() {
           ))}
           <Link href="/craft" className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300">Craft</Link>
           <Link href="/builder" className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300">Custom</Link>
+          <Link href="/blog" className="text-[11px] tracking-label uppercase text-smoke hover:text-charcoal transition-colors duration-300">Journal</Link>
         </div>
 
         <div className="flex items-center gap-1">
@@ -143,6 +144,7 @@ export default function Navbar() {
 
             <Link href="/craft" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Craft</Link>
             <Link href="/builder" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Custom</Link>
+            <Link href="/blog" onClick={() => setMobileOpen(false)} className="text-sm tracking-label uppercase text-smoke hover:text-charcoal transition-colors py-1.5">Journal</Link>
 
             <div className="pt-3 border-t border-line mt-1">
               <button

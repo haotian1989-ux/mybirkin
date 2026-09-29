@@ -56,6 +56,19 @@ const jsonLd = {
       name: "MYBIRKIN",
       publisher: { "@id": SITE_URL + "/#org" },
     },
+    {
+      "@type": ["Store", "LocalBusiness"],
+      "@id": SITE_URL + "/#store",
+      name: "MYBIRKIN",
+      url: SITE_URL,
+      description:
+        "Bespoke leather atelier crafting premium handbags and accessories from Italian full-grain leather, handcrafted to order.",
+      currenciesAccepted: "USD",
+      paymentAccepted: "Credit Card",
+      email: "hello@mybirkin.com",
+      priceRange: "$$$",
+      brand: { "@type": "Brand", name: "MYBIRKIN" },
+    },
   ],
 };
 

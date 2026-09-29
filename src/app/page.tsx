@@ -7,9 +7,9 @@ export const fetchCache = "force-no-store";
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: { absolute: "MYBIRKIN | Bespoke Leather Atelier" },
+  title: { absolute: "MYBIRKIN | Bespoke Italian Leather Bags & Handcrafted Ateliers" },
   description:
-    "Handcrafted luxury leather goods. Bespoke handbags, pet accessories, and leather charms — made to order with Italian full-grain leather.",
+    "Discover MYBIRKIN: bespoke leather goods handcrafted to order by master artisans. Premium Italian Togo, Swift & Epsom leathers. Lifetime care included.",
   alternates: { canonical: "https://www.mybirkin.com" },
 };
 
