@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import { BlogPost, BlogBlock } from "@/lib/types";
@@ -9,6 +10,25 @@ export const fetchCache = "force-no-store";
 export const revalidate = 0;
 
 const BASE = "https://www.mybirkin.com";
+
+// 品牌词自动加内部链接（SEO 内链）：正文中的 MYBIRKIN 统一指向首页
+function linkify(text: string) {
+  const parts = text.split("MYBIRKIN");
+  if (parts.length <= 1) return text;
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      {part}
+      {i < parts.length - 1 && (
+        <a
+          href="/"
+          className="underline decoration-gold/40 underline-offset-4 hover:text-gold transition-colors"
+        >
+          MYBIRKIN
+        </a>
+      )}
+    </Fragment>
+  ));
+}
 
 function mapRow(row: any): BlogPost {
   return {
@@ -83,27 +103,27 @@ function renderBlocks(blocks: BlogBlock[]) {
       case "h2":
         return (
           <h2 key={i} className="font-serif text-2xl md:text-3xl mt-12 mb-5 leading-snug">
-            {b.text}
+            {linkify(b.text)}
           </h2>
         );
       case "h3":
         return (
           <h3 key={i} className="font-serif text-xl mt-10 mb-4">
-            {b.text}
+            {linkify(b.text)}
           </h3>
         );
       case "list":
         return (
           <ul key={i} className="list-disc pl-6 space-y-2 my-5 text-[15px] leading-relaxed text-charcoal/80">
             {b.text.split("\n").filter(Boolean).map((line, li) => (
-              <li key={li}>{line}</li>
+              <li key={li}>{linkify(line)}</li>
             ))}
           </ul>
         );
       case "quote":
         return (
           <blockquote key={i} className="border-l-2 border-gold pl-6 my-8 font-serif text-lg italic text-smoke">
-            {b.text}
+            {linkify(b.text)}
           </blockquote>
         );
       case "image":
@@ -120,7 +140,7 @@ function renderBlocks(blocks: BlogBlock[]) {
       default:
         return (
           <p key={i} className="text-[15px] leading-[1.9] text-charcoal/80 my-5">
-            {b.text}
+            {linkify(b.text)}
           </p>
         );
     }
