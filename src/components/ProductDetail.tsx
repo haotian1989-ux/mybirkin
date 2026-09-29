@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Check, Truck } from "lucide-react";
 import { useCart } from "@/components/CartContext";
@@ -10,6 +10,50 @@ import { optimizeImage } from "@/lib/image";
 import { Product } from "@/lib/types";
 
 const BASE = "https://www.mybirkin.com";
+
+// 轻量 Markdown 渲染：**粗体** 行内处理
+function renderInline(text: string): ReactNode[] {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  return parts.map((p, i) =>
+    i % 2 === 1 ? <strong key={i} className="font-medium">{p}</strong> : <span key={i}>{p}</span>
+  );
+}
+
+// 轻量 Markdown 渲染：###/## 标题、* 或 - 列表、空行分段
+function renderDescription(desc: string): ReactNode[] {
+  const lines = desc.split("\n");
+  const out: ReactNode[] = [];
+  let list: string[] = [];
+  const flushList = (key: number) => {
+    if (list.length) {
+      out.push(
+        <ul key={`ul${key}`} className="list-disc pl-5 space-y-1.5 mb-6">
+          {list.map((li, i) => <li key={i} className="body-text">{renderInline(li)}</li>)}
+        </ul>
+      );
+      list = [];
+    }
+  };
+  lines.forEach((line, idx) => {
+    const t = line.trim();
+    if (t.startsWith("### ")) {
+      flushList(idx);
+      out.push(<h3 key={idx} className="font-serif text-base mt-7 mb-2 uppercase tracking-wide">{renderInline(t.slice(4))}</h3>);
+    } else if (t.startsWith("## ")) {
+      flushList(idx);
+      out.push(<h2 key={idx} className="font-serif text-lg mt-8 mb-2 uppercase tracking-wide">{renderInline(t.slice(3))}</h2>);
+    } else if (/^[*\-]\s+/.test(t)) {
+      list.push(t.replace(/^[*\-]\s+/, ""));
+    } else if (!t) {
+      flushList(idx);
+    } else {
+      flushList(idx);
+      out.push(<p key={idx} className="body-text mb-5">{renderInline(t)}</p>);
+    }
+  });
+  flushList(lines.length + 1);
+  return out;
+}
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { dispatch } = useCart();
@@ -99,7 +143,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             <p className="section-label capitalize">{product.category}</p>
             <h1 className="font-serif text-2xl md:text-3xl mt-3 mb-4">{product.name}</h1>
             <p className="text-xl font-light mb-6">${product.price.toLocaleString()}</p>
-            <p className="body-text mb-8">{product.description}</p>
+            <div className="body-text mb-8">{renderDescription(product.description)}</div>
 
             {product.colors.length > 0 && (
               <div className="mb-8">
