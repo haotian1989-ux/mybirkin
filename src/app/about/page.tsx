@@ -7,9 +7,9 @@ export const fetchCache = "force-no-store";
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: "Our Story",
+  title: "One Artisan. One Piece. One Promise: The MYBIRKIN Story.",
   description:
-    "The MYBIRKIN story: one artisan, one piece, one promise. Bespoke leather goods handcrafted to order with Italian full-grain leather.",
+    "Stepping inside the MYBIRKIN bespoke leather atelier. Learn how our master artisans hand-saddle stitch premium Italian Togo & Epsom hides.",
   alternates: { canonical: "https://www.mybirkin.com/about" },
 };
 
