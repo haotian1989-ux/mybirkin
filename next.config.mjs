@@ -11,6 +11,7 @@ const nextConfig = {
       { source: "/journal", destination: "/blog", permanent: true },
       { source: "/product/:id(\\d+)", destination: "/shop", permanent: true },
       { source: "/product/:id(\\d+)/", destination: "/shop", permanent: true },
+      { source: "/index.php", destination: "/shop", permanent: true },
       { source: "/:path*", has: [{ type: "query", key: "route" }], destination: "https://www.mybirkin.com/shop", permanent: true },
       { source: "/:path*", has: [{ type: "query", key: "add-to-cart" }], destination: "https://www.mybirkin.com/shop", permanent: true }
     ];
