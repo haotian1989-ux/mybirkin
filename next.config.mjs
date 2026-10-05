@@ -9,8 +9,9 @@ const nextConfig = {
     return [
       { source: "/custom-bespoke-builder", destination: "/builder", permanent: true },
       { source: "/journal", destination: "/blog", permanent: true },
-      { source: "/product/:id(\\d+)/?", destination: "/shop", permanent: true },
-      { source: "/", has: [{ type: "query", key: "p" }], destination: "/", permanent: true }
+      { source: "/product/:id(\\d+)", destination: "/shop", permanent: true },
+      { source: "/product/:id(\\d+)/", destination: "/shop", permanent: true },
+      { source: "/:path*", has: [{ type: "query", key: "p" }], destination: "/", permanent: true }
     ];
   }
 };
