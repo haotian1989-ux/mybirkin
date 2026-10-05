@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Italian Leather",
   description:
     "Full-grain and top-grain hides sourced from family-owned tanneries in Tuscany, vegetable-tanned with traditional methods.",
+  alternates: { canonical: "https://www.mybirkin.com/craft/leather" },
 };
 
 export default function Page() {

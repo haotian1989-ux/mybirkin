@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Master Artisans",
   description:
     "Meet the master artisans behind MYBIRKIN. Every piece is handcrafted to order by a single artisan.",
+  alternates: { canonical: "https://www.mybirkin.com/craft/artisans" },
 };
 
 export default function Page() {

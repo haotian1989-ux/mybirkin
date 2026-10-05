@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Hardware",
   description:
     "Bespoke hardware for luxury leather goods — crafted finishes that complement every MYBIRKIN piece.",
+  alternates: { canonical: "https://www.mybirkin.com/craft/hardware" },
 };
 
 export default function Page() {
