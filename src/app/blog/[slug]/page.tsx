@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { getServiceSupabase } from "@/lib/supabase-server";
 import { BlogPost, BlogBlock } from "@/lib/types";
@@ -11,23 +10,38 @@ export const revalidate = 0;
 
 const BASE = "https://www.mybirkin.com";
 
-// 品牌词自动加内部链接（SEO 内链）：正文中的 MYBIRKIN 统一指向首页
+// 品牌词自动加内部链接（SEO 内链）：正文中的 MYBIRKIN 统一指向首页，
+// 裸写的 mybirkin.com URL 也转为可点击外链
 function linkify(text: string) {
-  const parts = text.split("MYBIRKIN");
+  const parts = text.split(/(MYBIRKIN|https:\/\/www\.mybirkin\.com\/?)/g);
   if (parts.length <= 1) return text;
-  return parts.map((part, i) => (
-    <Fragment key={i}>
-      {part}
-      {i < parts.length - 1 && (
+  return parts.map((part, i) => {
+    if (part === "MYBIRKIN") {
+      return (
         <a
+          key={i}
           href="/"
           className="underline decoration-gold/40 underline-offset-4 hover:text-gold transition-colors"
         >
           MYBIRKIN
         </a>
-      )}
-    </Fragment>
-  ));
+      );
+    }
+    if (/^https:\/\/www\.mybirkin\.com\/?$/.test(part)) {
+      return (
+        <a
+          key={i}
+          href="https://www.mybirkin.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-gold/40 underline-offset-4 hover:text-gold transition-colors break-all"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
 }
 
 function mapRow(row: any): BlogPost {
