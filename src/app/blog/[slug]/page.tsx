@@ -151,8 +151,37 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const post = await fetchPost(params.slug);
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.meta_description || undefined,
+    image: post.cover_image || undefined,
+    datePublished: post.published_at || undefined,
+    dateModified: post.published_at || undefined,
+    articleSection: post.category || undefined,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${BASE}/blog/${post.slug}`,
+    },
+    author: {
+      "@type": "Organization",
+      name: "MYBIRKIN Bespoke Leather Atelier",
+      url: BASE,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "MYBIRKIN",
+      url: BASE,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <article className="page-padding pt-16 pb-10 md:pt-24">
         <div className="max-w-3xl mx-auto">
           <p className="section-label mb-4 text-gold">{post.category}</p>
@@ -181,8 +210,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <p className="body-text max-w-md mx-auto mb-8">
           Choose your leather, hardware, and artisan. Create a one-of-a-kind MYBIRKIN piece.
         </p>
-        <div className="flex justify-center gap-3">
-          <Link href="/builder" className="btn-primary">Start Customizing</Link>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link href="/shop" className="btn-primary">Explore the Collection</Link>
+          <Link href="/builder" className="btn-outline">Start Customizing</Link>
           <Link href="/blog" className="btn-outline">Back to Journal</Link>
         </div>
       </section>
